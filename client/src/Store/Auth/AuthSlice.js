@@ -1,6 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { loadUser, registerUser, userLogin } from "./AuthSliceReducers";
+import {
+  changeUserPassword,
+  editUserProfile,
+  loadUser,
+  registerUser,
+  userDelete,
+  userLogin,
+  userLogOut,
+} from "./AuthSliceReducers";
 
 const authSlice = createSlice({
   name: "auth",
@@ -10,6 +18,10 @@ const authSlice = createSlice({
     error: null,
     userRegisterMessage: "",
     isAuthenticated: "",
+    logOutMessage: "",
+    editProfileMessage: "",
+    changeUserPasswordMessage: "",
+    deleteUserMessage: "",
   },
   reducers: {
     clearUserRegisterationMessage: (state) => {
@@ -17,6 +29,18 @@ const authSlice = createSlice({
     },
     clearError: (state) => {
       state.error = null;
+    },
+    clearLogoutMessage: (state) => {
+      state.logOutMessage = "";
+    },
+    clearEditProfileMessage: (state) => {
+      state.editProfileMessage = "";
+    },
+    clearChangeUserPasswordMessage: (state) => {
+      state.changeUserPasswordMessage = "";
+    },
+    cleareUserDeleteMessage: (state) => {
+      state.deleteUserMessage = "";
     },
   },
   extraReducers: (builder) => {
@@ -60,10 +84,62 @@ const authSlice = createSlice({
       .addCase(loadUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
+      })
+      .addCase(userLogOut.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.user = null;
+        state.isAuthenticated = "";
+        state.logOutMessage = action.payload.message;
+      })
+      .addCase(userLogOut.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(editUserProfile.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(editUserProfile.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.user = action.payload;
+        state.editProfileMessage = action.payload?.message;
+      })
+      .addCase(editUserProfile.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(changeUserPassword.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(changeUserPassword.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.changeUserPasswordMessage = action.payload?.message;
+      })
+      .addCase(changeUserPassword.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(userDelete.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.user = null;
+        state.isAuthenticated = "";
+        state.deleteUserMessage = action.payload?.message;
+      })
+      .addCase(userDelete.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
       });
   },
 });
 
-export const { clearUserRegisterationMessage, clearError } = authSlice.actions;
+export const {
+  clearUserRegisterationMessage,
+  clearError,
+  clearLogoutMessage,
+  clearEditProfileMessage,
+  clearChangeUserPasswordMessage,
+  cleareUserDeleteMessage,
+} = authSlice.actions;
 
 export default authSlice.reducer;

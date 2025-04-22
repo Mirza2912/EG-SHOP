@@ -45,7 +45,7 @@ const Signup = () => {
   useEffect(() => {
     if (error) {
       toast.error(error);
-      dispatch(clearError);
+      dispatch(clearError());
     }
 
     if (userRegisterMessage) {

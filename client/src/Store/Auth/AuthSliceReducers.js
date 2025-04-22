@@ -12,7 +12,7 @@ const config = {
 const registerUser = createAsyncThunk(
   "auth/registerUser",
   async (userData, { rejectWithValue }) => {
-    console.log(userData); // Log the user data
+    // console.log(userData); // Log the user data
 
     try {
       const response = await axios.post("/api/auth/signup", userData, config);
@@ -82,4 +82,100 @@ const loadUser = createAsyncThunk(
   }
 );
 
-export { registerUser, userLogin, loadUser };
+//For logout
+const userLogOut = createAsyncThunk("user/logOut", async () => {
+  // console.log(userData);
+
+  try {
+    const response = await axios.get("/api/auth/logout");
+    // console.log(response.data); // Log the response data
+
+    return response.data;
+  } catch (error) {
+    return rejectWithValue(
+      error.response.data?.errors ||
+        error.response.data?.message ||
+        error.message ||
+        "Failed to logout user"
+    );
+  }
+});
+
+const editUserProfile = createAsyncThunk(
+  "user/updateProfile",
+  async (userData, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(
+        "/api/auth/users/me/edit-profile",
+        userData,
+        config
+      );
+
+      // console.log(response);
+
+      return response?.data;
+    } catch (error) {
+      // console.log(error);
+      return rejectWithValue(
+        error.response.data?.errors ||
+          error.response.data?.message ||
+          error.message ||
+          "Failed to update user"
+      );
+    }
+  }
+);
+
+//for update password
+export const changeUserPassword = createAsyncThunk(
+  "user/changePassword",
+  async (userData, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(
+        "/api/auth/users/me/change-password",
+        userData,
+        config
+      );
+
+      // console.log(response?.data);
+
+      return response?.data;
+    } catch (error) {
+      // console.log(error);
+      return rejectWithValue(
+        error.response.data?.errors ||
+          error.response.data?.message ||
+          error.message ||
+          "Failed to change user's password"
+      );
+    }
+  }
+);
+
+//fro user delete permanently
+export const userDelete = createAsyncThunk(
+  "user/userDelete",
+  async (_, { rejectWithValue }) => {
+    // console.log(imageId);
+
+    try {
+      /*making api call with axios for getting user details from backend */
+      const response = await axios.delete(
+        "/api/auth/users/me/delete-account",
+        config
+      );
+
+      // console.log(data); //returning fetched data
+      return response?.data;
+    } catch (error) {
+      // console.log(error.response.data.message);
+      return rejectWithValue(
+        error.response.data?.errors ||
+          error.response.data?.message ||
+          error.message ||
+          "Failed to delete user permanently"
+      );
+    }
+  }
+);
+export { registerUser, userLogin, loadUser, userLogOut, editUserProfile };

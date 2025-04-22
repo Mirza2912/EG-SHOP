@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { userLogin } from "../../Store/Auth/AuthSliceReducers";
 import { toast } from "react-toastify";
+import { clearError } from "../../Store/Auth/AuthSlice";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -37,6 +38,7 @@ const Login = () => {
   useEffect(() => {
     if (error) {
       toast.error(error);
+      dispatch(clearError());
     }
     if (isAuthenticated !== "") {
       toast.success(isAuthenticated);

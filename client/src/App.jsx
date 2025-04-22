@@ -14,14 +14,72 @@ import Profile from "./pages/User/Profile.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import ProtectedRoute from "./routes/ProtectedRouteForUser.jsx";
 import { loadUser } from "./Store/Auth/AuthSliceReducers.js";
+import {
+  clearChangeUserPasswordMessage,
+  clearEditProfileMessage,
+  cleareUserDeleteMessage,
+  clearLogoutMessage,
+} from "./Store/Auth/AuthSlice.js";
+import { toast } from "react-toastify";
+import EditUserProfile from "./pages/User/EditUserProfile.jsx";
+import ChangeUserPassword from "./pages/User/ChangeUserPassword.jsx";
+import NotFoundPage from "./pages/NotFound/NotFoundPage.jsx";
 
 const App = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // const { isAuthenticated } = useSelector((state) => state.auth);
+  const {
+    editProfileMessage,
+    logOutMessage,
+    changeUserPasswordMessage,
+    deleteUserMessage,
+  } = useSelector((state) => state.auth);
   // console.log(isAuthenticated);
 
-  const isFetchedRef = useRef(false);
+  // const isFetchedRef = useRef(false);
+
+  useEffect(() => {
+    let timeout;
+
+    if (logOutMessage) {
+      toast.success(logOutMessage);
+      timeout = setTimeout(() => {
+        dispatch(clearLogoutMessage());
+        navigate("/login", { replace: true });
+      }, 1500);
+    }
+
+    if (editProfileMessage) {
+      toast.success(editProfileMessage);
+      timeout = setTimeout(() => {
+        dispatch(clearEditProfileMessage());
+        navigate("/profile", { replace: true });
+      }, 1500);
+    }
+
+    if (changeUserPasswordMessage) {
+      toast.success(changeUserPasswordMessage);
+      timeout = setTimeout(() => {
+        dispatch(clearChangeUserPasswordMessage());
+        navigate("/profile", { replace: true });
+      }, 1500);
+    }
+
+    if (deleteUserMessage) {
+      toast.success(deleteUserMessage);
+      timeout = setTimeout(() => {
+        dispatch(cleareUserDeleteMessage());
+        navigate("/login", { replace: true });
+      }, 1500);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [
+    logOutMessage,
+    editProfileMessage,
+    changeUserPasswordMessage,
+    deleteUserMessage,
+  ]);
 
   useEffect(() => {
     dispatch(loadUser());
@@ -41,7 +99,16 @@ const App = () => {
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<Profile />} />
         </Route>
-        <Route path="*" element={<Home />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/user/edit-profile" element={<EditUserProfile />} />
+        </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route
+            path="/user/change-password"
+            element={<ChangeUserPassword />}
+          />
+        </Route>
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Footer />
     </>

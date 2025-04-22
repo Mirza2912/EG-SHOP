@@ -1,3 +1,4 @@
+const { validationResult } = require("express-validator");
 const User = require("../Models/UserSchema");
 const bcrypt = require("bcryptjs");
 
@@ -61,14 +62,16 @@ const viewUser = async (req, res) => {
   }
 };
 // Controller to edit/update user
-const editUser = async (req, res) => {
-  const { id } = req.params; // Assuming you're passing the user ID in the route parameters
-  const { name, email, phone } = req.body; // Data you want to update (you can include other fields as needed)
-
+const editUserProfile = async (req, res) => {
+  const { name, email, phone } = req.body;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array()[0].msg });
+  }
   try {
     // Find user by ID and update the user's fields
     const updatedUser = await User.findByIdAndUpdate(
-      id,
+      req.user._id,
       { name, email, phone }, // Fields to update
       { new: true, runValidators: true } // Return the updated user and run validation on updated fields
     );
@@ -82,11 +85,11 @@ const editUser = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: updatedUser,
+      user: updatedUser,
       message: "User updated successfully",
     });
   } catch (err) {
-    console.error("Error updating user:", err);
+    // console.error("Error updating user:", err);
     res.status(500).json({
       success: false,
       message: "Server error while updating user",
@@ -95,11 +98,9 @@ const editUser = async (req, res) => {
 };
 // Controller to delete user
 const deleteUser = async (req, res) => {
-  const { id } = req.params; // Assuming you're passing the user ID in the route parameters
-
   try {
     // Find the user by ID and delete it
-    const deletedUser = await User.findByIdAndDelete(id);
+    const deletedUser = await User.findByIdAndDelete(req.user._id);
 
     if (!deletedUser) {
       return res.status(404).json({
@@ -108,13 +109,19 @@ const deleteUser = async (req, res) => {
       });
     }
 
+    // Clear the authentication cookie
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+
     res.status(200).json({
       success: true,
       message: "User deleted successfully",
-      data: deletedUser,
     });
   } catch (err) {
-    console.error("Error deleting user:", err);
+    // console.error("Error deleting user:", err);
     res.status(500).json({
       success: false,
       message: "Server error while deleting user",
@@ -123,12 +130,23 @@ const deleteUser = async (req, res) => {
 };
 //  Controller to change Password
 const changePassword = async (req, res) => {
-  const { id } = req.params;
   const { oldPassword, newPassword, confirmPassword } = req.body;
+  // console.log(oldPassword, newPassword, confirmPassword);
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    // console.log(errors.array()[0].msg);
 
+    return res.status(400).json({ errors: errors.array()[0].msg });
+  }
   try {
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      return res.status(401).json({
+        success: false,
+        message: "Provide all fields",
+      });
+    }
     // Find user by ID
-    const user = await User.findById(id);
+    const user = await User.findById(req.user._id);
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -137,7 +155,7 @@ const changePassword = async (req, res) => {
     }
 
     // Compare the provided old password with the stored hashed password
-    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    const isMatch = await bcrypt.compare(oldPassword, user?.password);
     if (!isMatch) {
       return res.status(400).json({
         success: false,
@@ -166,14 +184,13 @@ const changePassword = async (req, res) => {
     console.error("Error in changePassword:", error);
     res.status(500).json({
       success: false,
-      message: "Error in changing password",
-      error: error.message,
+      message: "Server Error in changing password",
     });
   }
 };
 module.exports = {
   getAllUsers,
-  editUser,
+  editUserProfile,
   deleteUser,
   viewUser,
   changePassword,
