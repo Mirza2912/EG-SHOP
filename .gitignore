@@ -1,0 +1,59 @@
+# -----------------------------
+# ✅ Node.js (Backend - Express)
+# -----------------------------
+/backend/node_modules/
+backend/logs/
+backend/*.log
+backend/npm-debug.log*
+backend/yarn-debug.log*
+backend/yarn-error.log*
+
+
+# Backend environment variables
+/backend/.env
+/backend/.env.local
+/backend/.env.*.local
+
+# Backend build output
+/backend/dist/
+backend/build/
+
+# Backend coverage
+/backend/coverage/
+
+# PM2 logs
+/backend/pids/
+backend/*.pid
+backend/*.seed
+backend/*.pid.lock
+
+# -----------------------------
+# ✅ React (Frontend - Client)
+# -----------------------------
+/client/node_modules/
+client/dist/
+client/build/
+client/.env
+client/.env.local
+client/.env.*.local
+
+# -----------------------------
+# ✅ OS & Editor Junk
+# -----------------------------
+/.DS_Store
+/Thumbs.db
+/.vscode/
+/.idea/
+
+# -----------------------------
+# ✅ Optional (if using Docker)
+# -----------------------------
+/.docker/
+/docker-compose.override.yml
+
+# -----------------------------
+# ✅ Optional (if using Prisma, MongoDB Compass, etc.)
+# -----------------------------
+/.prisma/
+/*.sqlite
+/*.mongodb
