@@ -9,6 +9,7 @@ const categoryRoutes = require("./Routers/categoryRoutes");
 const cartRoutes = require("./Routers/cartRoutes");
 const orderRoutes = require("./Routers/orderRoutes");
 const cloudinary = require("cloudinary");
+const fileUpload = require("express-fileupload");
 // Connect to MongoDB
 connectDB();
 // console.log(cloudinary.v2.uploader);
@@ -16,6 +17,7 @@ connectDB();
 const app = express();
 app.use(express.json());
 app.use(cookieParser()); // Use cookie-parser
+app.use(fileUpload({ useTempFiles: true }));
 
 // Global error handler
 app.use((err, req, res, next) => {

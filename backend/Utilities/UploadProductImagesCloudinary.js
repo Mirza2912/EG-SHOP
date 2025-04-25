@@ -1,4 +1,5 @@
 const cloudinary = require("cloudinary");
+const fs = require("fs");
 
 const UploadProductImagesCloudinary = async (req, res) => {
   try {
@@ -19,7 +20,7 @@ const UploadProductImagesCloudinary = async (req, res) => {
       const imagesArray = Array.isArray(req.files?.images)
         ? req.files?.images
         : [req.files?.images];
-      console.log("convert images to array " + imagesArray);
+      // console.log("convert images to array " + imagesArray);
 
       // const start = Date.now();
       //loop for upload image on cloudinary one by one and then store every image url and id in uploadedImages array
@@ -41,14 +42,15 @@ const UploadProductImagesCloudinary = async (req, res) => {
           })
         )
       );
-      console.log("uploadedLocalImages : " + uploadedLocalImages);
+
+      // console.log("uploadedLocalImages : " + uploadedLocalImages);
 
       // console.log(`Upload Time: ${Date.now() - start}ms`);
       //if not upload successfully
       if (!uploadedLocalImages) {
-        console.log("uploadedLocalImages error : " + uploadedLocalImages);
+        // console.log("uploadedLocalImages error : " + uploadedLocalImages);
 
-        res.status(500).json({
+        return res.status(500).json({
           success: false,
           message: `Something went wrong while uploading image`,
         });
@@ -61,18 +63,32 @@ const UploadProductImagesCloudinary = async (req, res) => {
           public_id: img.public_id,
         }))
       );
-      console.log("Images upload " + uploadedImages);
+
+      //now delete tempfile
+      // imagesArray.forEach((image) => {
+      //   // console.log(image);
+
+      //   fs.unlink(image.tempFilePath, (err) => {
+      //     if (err) {
+      //       console.error(
+      //         `Failed to delete temp file: ${image.tempFilePath}`,
+      //         err
+      //       );
+      //     }
+      //   });
+      // });
+      // console.log("Images upload " + uploadedImages);
     }
 
     //if user gives images from google or another as only url(string)
     if (req.body?.images) {
-      console.log("req.body?.images : " + req.body?.images);
+      // console.log("req.body?.images : " + req.body?.images);
 
       //if images not in the form of array
       const imagesArray = Array.isArray(req.body.images)
         ? req.body.images
         : [req.body.images];
-      console.log("convert images to array " + imagesArray);
+      // console.log("convert images to array " + imagesArray[0]);
       // console.log(imagesArray[0]);
 
       // const start = Date.now();
@@ -95,13 +111,14 @@ const UploadProductImagesCloudinary = async (req, res) => {
           })
         )
       );
-      console.log("uploadedLocalImages : " + uploadedLocalImages);
+
+      // console.log("uploadedLocalImages : " + uploadedLocalImages);
       // console.log(`Upload Time: ${Date.now() - start}ms`);
       //if not upload successfully
       if (!uploadedLocalImages) {
-        console.log("uploadedLocalImages error : " + uploadedLocalImages);
+        // console.log("uploadedLocalImages error : " + uploadedLocalImages);
 
-        res.status(500).json({
+        return res.status(500).json({
           success: false,
           message: `Something went wrong while uploading image`,
         });
@@ -114,15 +131,23 @@ const UploadProductImagesCloudinary = async (req, res) => {
           public_id: img.public_id,
         }))
       );
-      console.log("Uploaded images req.body.images : " + uploadedLocalImages);
+
+      //now delete tempfile
+      // imagesArray.forEach((image) => {
+      //   // console.log(image);
+
+      //   fs.unlink(image.tempFilePath);
+      // });
+
+      // console.log("Uploaded images req.body.images : " + uploadedLocalImages);
     }
 
-    console.log("Final upload " + uploadedImages);
+    // console.log("Final upload " + uploadedImages);
 
     return uploadedImages;
   } catch (error) {
-    console.log("images upload error" + error);
-    res.status(500).json({
+    console.log("images upload error " + error);
+    return res.status(500).json({
       success: false,
       message: `product images upload failed: ${error.message}`,
     });

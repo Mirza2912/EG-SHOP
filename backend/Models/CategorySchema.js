@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 
 const categorySchema = new mongoose.Schema(
   {
-    category: {
+    name: {
       type: String,
       required: true,
       unique: true, // Ensures no duplicate categories

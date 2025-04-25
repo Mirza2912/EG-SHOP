@@ -2,13 +2,42 @@ const Category = require("../Models/CategorySchema");
 
 // Create a new category
 const createCategory = async (req, res) => {
+  const { name } = req.body;
+  // console.log(req.body);
+
   try {
-    const { name, description } = req.body;
-    const category = await Category.create({ name, description });
-    res.status(201).json({ success: true, data: category });
+    // Validation
+    if (!name) {
+      return res.status(400).json({
+        success: false,
+        message: "Category name and maker ID are required",
+      });
+    }
+
+    //  check if category already exists
+    const existingCategory = await Category.findOne({
+      name: name.trim(),
+    });
+
+    if (existingCategory) {
+      return res.status(409).json({
+        success: false,
+        message: "Category already exists",
+      });
+    }
+
+    const newCategory = await Category.create({
+      name: name.trim(),
+      maker: req.user._id,
+    });
+
+    res.status(201).json({ success: true, category: newCategory });
   } catch (err) {
     console.error("Error creating category:", err);
-    res.status(500).json({ success: false, message: "Server error" });
+    res.status(500).json({
+      success: false,
+      message: "Server error while creating new category",
+    });
   }
 };
 
