@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from "react";
 import innerBannr from "../../assets/inner-banner.jpg";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { registerUser } from "../../Store/Auth/AuthSliceReducers";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import {
-  clearError,
-  clearUserRegisterationMessage,
-} from "../../Store/Auth/AuthSlice";
+import { clearError } from "../../Store/Auth/AuthSlice";
 
 const Signup = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const { isLoading, error, userRegisterMessage } = useSelector(
     (state) => state.auth
@@ -47,12 +43,7 @@ const Signup = () => {
       toast.error(error);
       dispatch(clearError());
     }
-
-    if (userRegisterMessage) {
-      toast.success(userRegisterMessage);
-      navigate("/profile", { replace: true });
-    }
-  }, [error, userRegisterMessage]);
+  }, [error]);
   return (
     <>
       <section>

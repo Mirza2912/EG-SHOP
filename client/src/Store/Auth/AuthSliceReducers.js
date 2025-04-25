@@ -127,7 +127,7 @@ const editUserProfile = createAsyncThunk(
 );
 
 //for update password
-export const changeUserPassword = createAsyncThunk(
+const changeUserPassword = createAsyncThunk(
   "user/changePassword",
   async (userData, { rejectWithValue }) => {
     try {
@@ -153,7 +153,7 @@ export const changeUserPassword = createAsyncThunk(
 );
 
 //fro user delete permanently
-export const userDelete = createAsyncThunk(
+const userDelete = createAsyncThunk(
   "user/userDelete",
   async (_, { rejectWithValue }) => {
     // console.log(imageId);
@@ -178,4 +178,42 @@ export const userDelete = createAsyncThunk(
     }
   }
 );
-export { registerUser, userLogin, loadUser, userLogOut, editUserProfile };
+
+//for forgot password
+const forgotPassword = createAsyncThunk(
+  "user/forgotPassword",
+  async (email, { rejectWithValue }) => {
+    // console.log(email);
+
+    try {
+      const response = await axios.post(
+        "/api/auth/forgot-password",
+        { email },
+        config
+      );
+
+      // console.log(response?.data);
+
+      return response?.data; //returning fetched data
+    } catch (error) {
+      // console.log(error.response.data);
+      return rejectWithValue(
+        error.response.data?.errors ||
+          error.response.data?.message ||
+          error.message ||
+          "Failed to forgot user's password"
+      );
+    }
+  }
+);
+
+export {
+  registerUser,
+  userLogin,
+  loadUser,
+  userLogOut,
+  editUserProfile,
+  changeUserPassword,
+  userDelete,
+  forgotPassword,
+};

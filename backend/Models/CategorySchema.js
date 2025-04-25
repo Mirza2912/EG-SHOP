@@ -1,21 +1,21 @@
 // Models/Category.js
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const categorySchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    unique: true, // Ensures no duplicate categories
-    trim: true,
+const categorySchema = new mongoose.Schema(
+  {
+    category: {
+      type: String,
+      required: true,
+      unique: true, // Ensures no duplicate categories
+      trim: true,
+    },
+    maker: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
   },
-  description: {
-    type: String,
-    trim: true,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  { timestamps: true }
+);
 
-module.exports = mongoose.model('Category', categorySchema);
+module.exports = mongoose.model("Category", categorySchema);

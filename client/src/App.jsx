@@ -18,12 +18,16 @@ import {
   clearChangeUserPasswordMessage,
   clearEditProfileMessage,
   cleareUserDeleteMessage,
+  clearForgotPasswordMessage,
   clearLogoutMessage,
+  clearUserRegisterationMessage,
 } from "./Store/Auth/AuthSlice.js";
 import { toast } from "react-toastify";
 import EditUserProfile from "./pages/User/EditUserProfile.jsx";
 import ChangeUserPassword from "./pages/User/ChangeUserPassword.jsx";
 import NotFoundPage from "./pages/NotFound/NotFoundPage.jsx";
+import ForgotUserPassword from "./pages/User/ForgotUserPassword.jsx";
+import OtpVerification from "./pages/User/OtpVerification.jsx";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -33,6 +37,8 @@ const App = () => {
     logOutMessage,
     changeUserPasswordMessage,
     deleteUserMessage,
+    forgotPasswordMessage,
+    userRegisterMessage,
   } = useSelector((state) => state.auth);
   // console.log(isAuthenticated);
 
@@ -40,6 +46,14 @@ const App = () => {
 
   useEffect(() => {
     let timeout;
+
+    if (userRegisterMessage) {
+      toast.success(userRegisterMessage);
+      timeout = setTimeout(() => {
+        navigate("/profile", { replace: true });
+        dispatch(clearUserRegisterationMessage());
+      }, 1500);
+    }
 
     if (logOutMessage) {
       toast.success(logOutMessage);
@@ -72,6 +86,13 @@ const App = () => {
         navigate("/login", { replace: true });
       }, 1500);
     }
+    // if (forgotPasswordMessage) {
+    //   toast.success(forgotPasswordMessage);
+    //   timeout = setTimeout(() => {
+    //     dispatch(clearForgotPasswordMessage());
+    //     navigate("/user/otp-verification", { replace: true });
+    //   }, 1500);
+    // }
 
     return () => clearTimeout(timeout);
   }, [
@@ -79,6 +100,7 @@ const App = () => {
     editProfileMessage,
     changeUserPasswordMessage,
     deleteUserMessage,
+    userRegisterMessage,
   ]);
 
   useEffect(() => {
@@ -108,6 +130,8 @@ const App = () => {
             element={<ChangeUserPassword />}
           />
         </Route>
+        <Route path="/user/forgot-password" element={<ForgotUserPassword />} />
+        <Route path="/user/otp-verification" element={<OtpVerification />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Footer />

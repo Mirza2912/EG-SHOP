@@ -7,10 +7,11 @@ const {
   logout,
 } = require("../Controllers/authController"); // Path to your signup controller
 const { body } = require("express-validator");
+const authMiddleware = require("../Middlewares/authMiddleware");
 
 const router = express.Router();
 
-// Route for user signup
+// Route for user login
 router.post(
   "/login",
   [
@@ -21,6 +22,7 @@ router.post(
   ],
   login
 );
+// Route for user sign up
 router.post(
   "/signup",
   [
@@ -39,7 +41,14 @@ router.post(
   ],
   signup
 );
-router.post("/forgot-password", forgotPassword);
+// Route for user forgot password
+router.post(
+  "/forgot-password",
+  [body("email").isEmail().withMessage("Invalid Email")],
+  forgotPassword
+);
+// Route for user reset-password
 router.put("/reset-password", verifyOtpAndResetPassword);
-router.get("/logout", logout);
+// Route for user logout
+router.get("/logout", authMiddleware, logout);
 module.exports = router;

@@ -1,4 +1,4 @@
-const Category = require('../Models/CategorySchema');
+const Category = require("../Models/CategorySchema");
 
 // Create a new category
 const createCategory = async (req, res) => {
@@ -28,7 +28,9 @@ const getCategoryById = async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
     if (!category) {
-      return res.status(404).json({ success: false, message: "Category not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Category not found" });
     }
     res.status(200).json({ success: true, data: category });
   } catch (err) {
@@ -46,7 +48,9 @@ const updateCategory = async (req, res) => {
       { new: true, runValidators: true }
     );
     if (!updatedCategory) {
-      return res.status(404).json({ success: false, message: "Category not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Category not found" });
     }
     res.status(200).json({ success: true, data: updatedCategory });
   } catch (err) {
@@ -60,9 +64,13 @@ const deleteCategory = async (req, res) => {
   try {
     const deletedCategory = await Category.findByIdAndDelete(req.params.id);
     if (!deletedCategory) {
-      return res.status(404).json({ success: false, message: "Category not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Category not found" });
     }
-    res.status(200).json({ success: true, message: "Category deleted successfully" });
+    res
+      .status(200)
+      .json({ success: true, message: "Category deleted successfully" });
   } catch (err) {
     console.error("Error deleting category:", err);
     res.status(500).json({ success: false, message: "Server error" });

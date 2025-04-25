@@ -113,6 +113,10 @@ const login = async (req, res) => {
 };
 
 const forgotPassword = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array()[0].msg });
+  }
   try {
     const { email } = req.body;
 
@@ -138,12 +142,15 @@ const forgotPassword = async (req, res) => {
     const message = `Your OTP for password reset is: ${otp}. It will expire in 10 minutes.`;
 
     await sendEmail({
-      email: user.email,
+      email,
       subject: "Password Reset OTP",
       message,
     });
 
-    res.status(200).json({ success: true, message: "OTP sent to your email" });
+    res.status(200).json({
+      success: true,
+      message: `OTP sent to  ${user?.email || "your email"}`,
+    });
   } catch (err) {
     res.status(500).json({ success: false, message: "Error in sending OTP" });
   }

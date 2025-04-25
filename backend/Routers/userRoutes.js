@@ -9,9 +9,9 @@ const {
 } = require("../Controllers/UserController");
 const { body } = require("express-validator");
 const authMiddleware = require("../Middlewares/authMiddleware");
-const adminMiddleware = require("../Middlewares/adminMiddleware");
 
 const router = express.Router();
+
 router.get("/user/profile", authMiddleware, getUserDetails);
 router.get("/users", getAllUsers);
 router.put(

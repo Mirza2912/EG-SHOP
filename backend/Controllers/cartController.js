@@ -1,14 +1,18 @@
-const Cart = require('../Models/CartSchema');
+const Cart = require("../Models/CartSchema");
 
 // Add an item to the cart
 const addItemToCart = async (req, res) => {
   try {
     const { productId, quantity, price } = req.body;
+
+    //bhai yahan pe userId nahi ana srf req.user._id because mogodb default id deti he with key of _id
     const userId = req.user.userId; // Assumes auth middleware sets req.user.userId
 
     // Validate input
     if (!productId || !quantity || !price) {
-      return res.status(400).json({ success: false, message: 'Missing required fields' });
+      return res
+        .status(400)
+        .json({ success: false, message: "Missing required fields" });
     }
 
     // Find the user's cart or create a new one
@@ -36,7 +40,9 @@ const addItemToCart = async (req, res) => {
     res.status(200).json({ success: true, data: cart });
   } catch (error) {
     console.error("Error in addItemToCart:", error);
-    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: error.message });
   }
 };
 
@@ -44,14 +50,18 @@ const addItemToCart = async (req, res) => {
 const getCart = async (req, res) => {
   try {
     const userId = req.user.userId;
-    const cart = await Cart.findOne({ user: userId }).populate('items.product');
+    const cart = await Cart.findOne({ user: userId }).populate("items.product");
     if (!cart) {
-      return res.status(404).json({ success: false, message: 'Cart not found' });
+      return res
+        .status(404)
+        .json({ success: false, message: "Cart not found" });
     }
     res.status(200).json({ success: true, data: cart });
   } catch (error) {
     console.error("Error in getCart:", error);
-    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: error.message });
   }
 };
 
@@ -63,13 +73,17 @@ const updateCartItem = async (req, res) => {
     const userId = req.user.userId;
 
     if (quantity == null) {
-      return res.status(400).json({ success: false, message: 'Quantity is required' });
+      return res
+        .status(400)
+        .json({ success: false, message: "Quantity is required" });
     }
 
     // Find user's cart
     let cart = await Cart.findOne({ user: userId });
     if (!cart) {
-      return res.status(404).json({ success: false, message: 'Cart not found' });
+      return res
+        .status(404)
+        .json({ success: false, message: "Cart not found" });
     }
 
     // Find the cart item to update
@@ -78,7 +92,9 @@ const updateCartItem = async (req, res) => {
     );
 
     if (itemIndex === -1) {
-      return res.status(404).json({ success: false, message: 'Item not found in cart' });
+      return res
+        .status(404)
+        .json({ success: false, message: "Item not found in cart" });
     }
 
     // Update the quantity
@@ -89,7 +105,9 @@ const updateCartItem = async (req, res) => {
     res.status(200).json({ success: true, data: cart });
   } catch (error) {
     console.error("Error in updateCartItem:", error);
-    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: error.message });
   }
 };
 
@@ -101,20 +119,22 @@ const removeCartItem = async (req, res) => {
 
     let cart = await Cart.findOne({ user: userId });
     if (!cart) {
-      return res.status(404).json({ success: false, message: 'Cart not found' });
+      return res
+        .status(404)
+        .json({ success: false, message: "Cart not found" });
     }
 
     // Filter out the item to be removed
-    cart.items = cart.items.filter(
-      (item) => item._id.toString() !== itemId
-    );
+    cart.items = cart.items.filter((item) => item._id.toString() !== itemId);
     cart.updatedAt = Date.now();
     await cart.save();
 
     res.status(200).json({ success: true, data: cart });
   } catch (error) {
     console.error("Error in removeCartItem:", error);
-    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: error.message });
   }
 };
 
@@ -124,17 +144,23 @@ const clearCart = async (req, res) => {
     const userId = req.user.userId;
     let cart = await Cart.findOne({ user: userId });
     if (!cart) {
-      return res.status(404).json({ success: false, message: 'Cart not found' });
+      return res
+        .status(404)
+        .json({ success: false, message: "Cart not found" });
     }
 
     cart.items = [];
     cart.updatedAt = Date.now();
     await cart.save();
 
-    res.status(200).json({ success: true, message: 'Cart cleared', data: cart });
+    res
+      .status(200)
+      .json({ success: true, message: "Cart cleared", data: cart });
   } catch (error) {
     console.error("Error in clearCart:", error);
-    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: error.message });
   }
 };
 

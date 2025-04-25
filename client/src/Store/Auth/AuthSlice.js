@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
 import {
   changeUserPassword,
   editUserProfile,
+  forgotPassword,
   loadUser,
   registerUser,
   userDelete,
@@ -22,6 +22,7 @@ const authSlice = createSlice({
     editProfileMessage: "",
     changeUserPasswordMessage: "",
     deleteUserMessage: "",
+    forgotPasswordMessage: "",
   },
   reducers: {
     clearUserRegisterationMessage: (state) => {
@@ -41,6 +42,9 @@ const authSlice = createSlice({
     },
     cleareUserDeleteMessage: (state) => {
       state.deleteUserMessage = "";
+    },
+    clearForgotPasswordMessage: (state) => {
+      state.forgotPasswordMessage = "";
     },
   },
   extraReducers: (builder) => {
@@ -129,6 +133,18 @@ const authSlice = createSlice({
       .addCase(userDelete.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
+      })
+      .addCase(forgotPassword.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(forgotPassword.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.forgotPasswordMessage = action.payload?.message;
+      })
+      .addCase(forgotPassword.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
       });
   },
 });
@@ -140,6 +156,7 @@ export const {
   clearEditProfileMessage,
   clearChangeUserPasswordMessage,
   cleareUserDeleteMessage,
+  clearForgotPasswordMessage,
 } = authSlice.actions;
 
 export default authSlice.reducer;

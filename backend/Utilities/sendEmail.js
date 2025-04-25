@@ -1,23 +1,23 @@
-const nodemailer = require('nodemailer');
+const nodemailer = require("nodemailer");
 
-const sendEmail = async (options) => {
-  
+const sendEmail = async ({ email, subject, message }) => {
   const transporter = nodemailer.createTransport({
+    service: process.env.SERVICE,
     host: process.env.MAIL_HOST,
-    port:process.env.MAIL_PORT, // Or use other services like SendGrid
+    port: process.env.SMTP_PORT, // Or use other services like SendGrid
+    secure: false,
     auth: {
       user: process.env.MAIL_AUTH_USER,
       pass: process.env.MAIL_AUTH_PASS,
-    }, 
+    },
   });
 
   const mailOptions = {
     from: process.env.EMAIL_FROM,
-    to: options.email,
-    subject: options.subject,
-    text: options.message,
+    to: email,
+    subject,
+    text: message,
   };
-  console.log("response: ",mailOptions)
   await transporter.sendMail(mailOptions);
 };
 

@@ -8,8 +8,10 @@ const productRoutes = require("./Routers/productRoutes");
 const categoryRoutes = require("./Routers/categoryRoutes");
 const cartRoutes = require("./Routers/cartRoutes");
 const orderRoutes = require("./Routers/orderRoutes");
+const cloudinary = require("cloudinary");
 // Connect to MongoDB
 connectDB();
+// console.log(cloudinary.v2.uploader);
 
 const app = express();
 app.use(express.json());
@@ -38,6 +40,13 @@ process.on("uncaughtException", (err) => {
 
 process.on("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection:", promise, "reason:", reason);
+});
+
+// Configuration of Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET,
 });
 
 // Start the server

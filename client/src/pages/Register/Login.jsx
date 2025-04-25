@@ -184,6 +184,25 @@ const Login = () => {
             >
               Login
             </button>
+            <div className="flex justify-between mt-4">
+              <p className="text-sm text-gray-600">
+                Not registered?
+                <Link
+                  to="/signup"
+                  className="text-[#f96822] hover:underline ml-1"
+                >
+                  Register here
+                </Link>
+              </p>
+              <p className="text-sm text-gray-600">
+                <Link
+                  to="/user/forgot-password"
+                  className="text-[#f96822] hover:underline"
+                >
+                  Forgot Password?
+                </Link>
+              </p>
+            </div>
           </form>
         </div>
       </section>
