@@ -4,19 +4,12 @@ const Category = require("../Models/CategorySchema");
 const Product = require("../Models/ProductSchema");
 const { validationResult } = require("express-validator");
 const cloudinary = require("cloudinary");
+const validateRequest = require("../Utilities/expressValidatore");
 
 // Create a new product
-const createProduct = async (req, res) => {
+const createProduct = async (req, res, next) => {
   const data = req.body;
   // console.log(data.category);
-
-  //check if express-validator give any error
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    // console.log(errors.array()[0].msg);
-
-    return res.status(400).json({ errors: errors.array()[0].msg });
-  }
 
   try {
     // 1.First i will check category given or not
@@ -137,7 +130,7 @@ const createProduct = async (req, res) => {
 };
 
 // Get all products
-const getAllProducts = async (req, res) => {
+const getAllProducts = async (req, res, next) => {
   try {
     const {
       keyword = "",
@@ -148,6 +141,8 @@ const getAllProducts = async (req, res) => {
       page = 1,
       limit = 8,
     } = req.query;
+
+    // console.log(req.query);
 
     const filter = {};
 
@@ -169,26 +164,27 @@ const getAllProducts = async (req, res) => {
     }
 
     //  Stock or outOfStock
-    if (stock) {
+    if (stock === "true") {
       filter.stock = { $gt: 0 };
-    } else {
+    } else if (stock === "false") {
       filter.stock = 0;
     }
 
     //  Pagination
     const pageNumber = Number(page);
-    const pageSize = Number(limit); //products to show
-    const skip = (pageNumber - 1) * pageSize; //after page=1 products will be skipped (8 x pageNumber)
+    const pageSize = Number(limit) || 8; //products to show
+    const totalProductToSend = pageNumber * pageSize; //after page=1 products will be skipped (8 x pageNumber)
 
     //  Fetch products with population and filters
     const product = await Product.find(filter)
       .populate("category", "name ")
       .populate("user", "name email")
       .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(pageSize);
+      .limit(totalProductToSend);
 
-    let productCount = product?.length;
+    const productCount = await Product.countDocuments(filter);
+
+    const filterProductCount = productCount;
     const totalProductCount = await Product.countDocuments();
 
     res.status(200).json({
@@ -197,6 +193,8 @@ const getAllProducts = async (req, res) => {
       message: "All products",
       productCount,
       totalProductCount,
+      filterProductCount,
+      totalProductToSend,
     });
   } catch (err) {
     // console.error("Error fetching products:", err);
@@ -233,14 +231,7 @@ const getProductById = async (req, res) => {
 };
 
 // Update a product by ID
-const updateProduct = async (req, res) => {
-  //check if express-validator give any error
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    // console.log(errors.array()[0].msg);
-
-    return res.status(400).json({ errors: errors.array()[0].msg });
-  }
+const updateProduct = async (req, res, next) => {
   try {
     // console.log(req.params.id + req.body.name);
     // console.log(req.files?.images);

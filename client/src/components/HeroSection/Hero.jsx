@@ -17,7 +17,6 @@ import blog4 from "../../assets/blog-h3-4.png";
 import Products from "../Products/Products";
 import Services from "../Services/Services";
 
-
 const Hero = () => {
   const categories = [
     {
@@ -169,7 +168,11 @@ const Hero = () => {
                 <div class="mr-5  mt-3 bg-white flex justify-center items-center flex-col rounded-lg shadow-lg">
                   <div className="w-[100%]">
                     <a href="#">
-                      <img className="w-[100%] rounded-t-lg" src={image} alt="" />
+                      <img
+                        className="w-[100%] rounded-t-lg"
+                        src={image}
+                        alt=""
+                      />
                     </a>
                   </div>
                   <div class="p-5 rounded-t-lg">
@@ -194,7 +197,6 @@ const Hero = () => {
       <section>
         <Services />
       </section>
-
     </>
   );
 };

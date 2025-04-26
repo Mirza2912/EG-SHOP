@@ -26,10 +26,6 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    quantity: {
-      type: Number,
-      default: 1,
-    },
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category", // References the Category model

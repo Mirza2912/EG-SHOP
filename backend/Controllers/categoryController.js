@@ -45,7 +45,9 @@ const createCategory = async (req, res) => {
 const getCategories = async (req, res) => {
   try {
     const categories = await Category.find();
-    res.status(200).json({ success: true, data: categories });
+    res
+      .status(200)
+      .json({ success: true, category: categories, message: "All categories" });
   } catch (err) {
     console.error("Error fetching categories:", err);
     res.status(500).json({ success: false, message: "Server error" });
