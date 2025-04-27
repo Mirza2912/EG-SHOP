@@ -37,11 +37,12 @@ const Login = () => {
 
   useEffect(() => {
     if (error) {
-      toast.error(error);
+      // toast.error(error);
       dispatch(clearError());
     }
     if (isAuthenticated !== "") {
       toast.success(isAuthenticated);
+
       navigate("/profile", { replace: true });
     }
   }, [error, isAuthenticated]);

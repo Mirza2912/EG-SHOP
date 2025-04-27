@@ -4,9 +4,10 @@ const Cart = require("../Models/CartSchema");
 const addItemToCart = async (req, res) => {
   try {
     const { productId, quantity, price } = req.body;
+    // console.log(productId, quantity, price);
 
     //bhai yahan pe userId nahi ana srf req.user._id because mogodb default id deti he with key of _id
-    const userId = req.user.userId; // Assumes auth middleware sets req.user.userId
+    const userId = req.user._id; // Assumes auth middleware sets req.user.userId
 
     // Validate input
     if (!productId || !quantity || !price) {
@@ -34,10 +35,12 @@ const addItemToCart = async (req, res) => {
       cart.items.push({ product: productId, quantity, price });
     }
 
-    cart.updatedAt = Date.now();
+    // cart.updatedAt = Date.now();
     await cart.save();
 
-    res.status(200).json({ success: true, data: cart });
+    res
+      .status(200)
+      .json({ success: true, cart, message: "Item add to cart successfully" });
   } catch (error) {
     console.error("Error in addItemToCart:", error);
     res
@@ -49,14 +52,14 @@ const addItemToCart = async (req, res) => {
 // Retrieve the current user's cart
 const getCart = async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const userId = req.user._id;
     const cart = await Cart.findOne({ user: userId }).populate("items.product");
     if (!cart) {
       return res
         .status(404)
         .json({ success: false, message: "Cart not found" });
     }
-    res.status(200).json({ success: true, data: cart });
+    res.status(200).json({ success: true, cart, message: "All items of cart" });
   } catch (error) {
     console.error("Error in getCart:", error);
     res
@@ -68,14 +71,14 @@ const getCart = async (req, res) => {
 // Update the quantity of a specific cart item
 const updateCartItem = async (req, res) => {
   try {
-    const { itemId } = req.params;
-    const { quantity } = req.body;
-    const userId = req.user.userId;
+    const { quantity, productId } = req.body;
+    const userId = req.user._id;
 
-    if (quantity == null) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Quantity is required" });
+    if (!quantity || !productId) {
+      return res.status(401).json({
+        success: false,
+        message: "quantity and id of product required",
+      });
     }
 
     // Find user's cart
@@ -88,7 +91,7 @@ const updateCartItem = async (req, res) => {
 
     // Find the cart item to update
     const itemIndex = cart.items.findIndex(
-      (item) => item._id.toString() === itemId
+      (item) => item._id.toString() === productId
     );
 
     if (itemIndex === -1) {
@@ -99,10 +102,11 @@ const updateCartItem = async (req, res) => {
 
     // Update the quantity
     cart.items[itemIndex].quantity = quantity;
-    cart.updatedAt = Date.now();
     await cart.save();
 
-    res.status(200).json({ success: true, data: cart });
+    res
+      .status(200)
+      .json({ success: true, cart, messaeg: "Cart updated successfully" });
   } catch (error) {
     console.error("Error in updateCartItem:", error);
     res
@@ -114,8 +118,8 @@ const updateCartItem = async (req, res) => {
 // Remove a specific item from the cart
 const removeCartItem = async (req, res) => {
   try {
-    const { itemId } = req.params;
-    const userId = req.user.userId;
+    const { id } = req.params;
+    const userId = req.user._id;
 
     let cart = await Cart.findOne({ user: userId });
     if (!cart) {
@@ -125,11 +129,14 @@ const removeCartItem = async (req, res) => {
     }
 
     // Filter out the item to be removed
-    cart.items = cart.items.filter((item) => item._id.toString() !== itemId);
-    cart.updatedAt = Date.now();
+    cart.items = cart.items.filter((item) => item._id.toString() !== id);
     await cart.save();
 
-    res.status(200).json({ success: true, data: cart });
+    res.status(200).json({
+      success: true,
+      cart,
+      messaeg: "Item is removed from cart successfully",
+    });
   } catch (error) {
     console.error("Error in removeCartItem:", error);
     res
@@ -141,7 +148,7 @@ const removeCartItem = async (req, res) => {
 // Clear the entire cart for the user
 const clearCart = async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const userId = req.user._id;
     let cart = await Cart.findOne({ user: userId });
     if (!cart) {
       return res
@@ -150,12 +157,14 @@ const clearCart = async (req, res) => {
     }
 
     cart.items = [];
-    cart.updatedAt = Date.now();
     await cart.save();
 
-    res
-      .status(200)
-      .json({ success: true, message: "Cart cleared", data: cart });
+    res.status(200).json({
+      success: true,
+      message: "Cart cleared",
+      cart,
+      message: "cart empty successfully",
+    });
   } catch (error) {
     console.error("Error in clearCart:", error);
     res

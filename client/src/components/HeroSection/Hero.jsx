@@ -79,9 +79,9 @@ const Hero = () => {
         style={{
           backgroundImage: `url("https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")`,
         }}
-        className="w-[100%] h-[100vh] bg-cover bg-center"
+        className="w-[100%] h-[calc(100vh-74px)] bg-cover bg-center my-auto"
       >
-        <div className="md:pt-[20%] pt-[60%] border-white ml-8 md:block text-center md:text-start flex flex-col items-center">
+        <div className="h-[100%] my-auto border-white  text-center  flex flex-col items-center justify-center">
           <p className="text-4xl md:text-5xl text-white font-bold">
             Bengal Vegetable Farm Organic 100%
           </p>
@@ -98,24 +98,8 @@ const Hero = () => {
         </div>
       </section>
 
-      {/* Search */}
-      <section className="mt-2 mb-[60px]">
-        <form class="mx-auto flex justify-center">
-          <div className="w-[100%] md:w-[70%] block md:flex mx-6 md:mx-4">
-            <input
-              type="search"
-              class="block w-full text-lg rounded-full text-gray-900 border border-gray-300 bg-gray-50 focus:border-gray-500 py-3"
-              placeholder="Search your products"
-            />
-            {/* <button class="bg-[#00896f] text-[white] text-lg ease-in duration-300 py-2 rounded-3xl px-4">
-              Subscribe
-            </button> */}
-          </div>
-        </form>
-      </section>
-
       {/* Category*/}
-      <section className="mt-2 mb-[80px]">
+      <section className="my-10">
         <div>
           <p className="text-4xl font-semibold text-center">
             What do you looking for ?
@@ -155,7 +139,7 @@ const Hero = () => {
         </div>
       </section>
 
-      <Products />
+      {/* <Products /> */}
 
       {/* Blogs */}
       <section>

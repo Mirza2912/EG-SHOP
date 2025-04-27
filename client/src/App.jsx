@@ -28,6 +28,17 @@ import ChangeUserPassword from "./pages/User/ChangeUserPassword.jsx";
 import NotFoundPage from "./pages/NotFound/NotFoundPage.jsx";
 import ForgotUserPassword from "./pages/User/ForgotUserPassword.jsx";
 import OtpVerification from "./pages/User/OtpVerification.jsx";
+import SingleProduct from "./pages/Shop/SingleProduct.jsx";
+import { clearSingleProductMessage } from "./Store/Products/ProductSlice.js";
+import {
+  loadCartFromLocalStorage,
+  saveCartToLocalStorage,
+} from "./Store/Cart/CartLocalStorageHandle.js";
+import { addToCartBackend, getCart } from "./Store/Cart/CartSliceReducers.js";
+import {
+  clearAddToCartBackendMessage,
+  clearCartLocal,
+} from "./Store/Cart/CartSlice.js";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -39,10 +50,11 @@ const App = () => {
     deleteUserMessage,
     forgotPasswordMessage,
     userRegisterMessage,
+    isAuthenticated,
   } = useSelector((state) => state.auth);
-  // console.log(isAuthenticated);
 
-  // const isFetchedRef = useRef(false);
+  // const { singleProductMessage } = useSelector((state) => state.products);
+  const { addToCartBackendMessage } = useSelector((state) => state.cart);
 
   useEffect(() => {
     let timeout;
@@ -57,6 +69,7 @@ const App = () => {
 
     if (logOutMessage) {
       toast.success(logOutMessage);
+      dispatch(clearCartLocal());
       timeout = setTimeout(() => {
         dispatch(clearLogoutMessage());
         navigate("/login", { replace: true });
@@ -86,13 +99,19 @@ const App = () => {
         navigate("/login", { replace: true });
       }, 1500);
     }
-    // if (forgotPasswordMessage) {
-    //   toast.success(forgotPasswordMessage);
+
+    // if (singleProductMessage) {
     //   timeout = setTimeout(() => {
-    //     dispatch(clearForgotPasswordMessage());
-    //     navigate("/user/otp-verification", { replace: true });
+    //     dispatch(clearSingleProductMessage());
     //   }, 1500);
     // }
+
+    if (addToCartBackendMessage) {
+      toast.success(addToCartBackendMessage);
+      timeout = setTimeout(() => {
+        dispatch(clearAddToCartBackendMessage());
+      }, 1500);
+    }
 
     return () => clearTimeout(timeout);
   }, [
@@ -101,17 +120,43 @@ const App = () => {
     changeUserPasswordMessage,
     deleteUserMessage,
     userRegisterMessage,
+    // singleProductMessage,
+    addToCartBackendMessage,
   ]);
 
   useEffect(() => {
     dispatch(loadUser());
-  }, []);
+
+    //if user logged in then get user cart
+    if (isAuthenticated !== "") {
+      const guestCart = loadCartFromLocalStorage(); //this will be an array
+      // console.log(guestCart);
+
+      //if logged in user have alreay select items when loggedout
+      if (guestCart?.length > 0) {
+        guestCart.forEach((item) => {
+          dispatch(
+            addToCartBackend({
+              productId: item?.productId,
+              quantity: item?.quantity,
+              price: item?.price,
+            })
+          );
+        });
+        saveCartToLocalStorage([]); // Clear Local Cart after sending
+      }
+
+      //if user logged in then fetch user cart
+      dispatch(getCart());
+    }
+  }, [isAuthenticated]);
   return (
     <>
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/shop" element={<Shop />} />
+        <Route path="/single-product/:id" element={<SingleProduct />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/cart" element={<Cart />} />

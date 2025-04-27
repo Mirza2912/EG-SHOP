@@ -1,18 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getAllProducts } from "./ProductSliceReducers";
+import { getAllProducts, getSingleProduct } from "./ProductSliceReducers";
 
 // Product slice
 const productSlice = createSlice({
   name: "products",
   initialState: {
     products: [],
+    singleProduct: {},
     page: 1,
     isLoading: false,
     error: null,
+    singleProductMessage: "",
   },
   reducers: {
-    incrementPage: (state) => {
-      state.page += 1;
+    clearSingleProductMessage: (state) => {
+      state.singleProductMessage = "";
     },
     clearError: (state) => {
       state.error = null;
@@ -31,9 +33,24 @@ const productSlice = createSlice({
       .addCase(getAllProducts.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
+      })
+      .addCase(getSingleProduct.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(getSingleProduct.fulfilled, (state, action) => {
+        state.isLoading = false;
+        const product = action.payload;
+        state.singleProduct[product._id] = product;
+        // state.singleProduct = action.payload;
+        // state.singleProductMessage = action.payload?.message;
+      })
+      .addCase(getSingleProduct.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
       });
   },
 });
 
-export const { clearError, incrementPage } = productSlice.actions;
+export const { clearError, clearSingleProductMessage } = productSlice.actions;
 export default productSlice.reducer;

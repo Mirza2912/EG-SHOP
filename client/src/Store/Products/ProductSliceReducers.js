@@ -49,4 +49,27 @@ const getAllProducts = createAsyncThunk(
   }
 );
 
-export { getAllProducts };
+//single product details
+const getSingleProduct = createAsyncThunk(
+  "products/getSingleProduct",
+  async (id, { rejectWithValue }) => {
+    try {
+      // console.log(id);
+
+      /*making api call with axios for getting single  product from backend */
+      const response = await axios.get(`/api/products/singleProduct/${id}`);
+      // console.log(response?.data);
+      return response?.data?.product; //returning fetched data
+    } catch (error) {
+      // console.log(error.response.data?.message);
+      return rejectWithValue(
+        error.response.data?.errors ||
+          error.response.data?.message ||
+          error.message ||
+          "Failed to fetch single product details"
+      );
+    }
+  }
+);
+
+export { getAllProducts, getSingleProduct };

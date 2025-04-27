@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { incrementPage } from "../../Store/Products/ProductSlice";
+// import { incrementPage } from "../../Store/Products/ProductSlice";
 
 const Products = ({ products, category, onFilterChange, isLoading }) => {
   const dispatch = useDispatch();

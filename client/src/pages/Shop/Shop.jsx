@@ -16,6 +16,7 @@ const Shop = () => {
   const dispatch = useDispatch();
 
   const [filterOpen, setFilterOpen] = useState(false);
+  // console.log(filterOpen);
 
   const [filters, setFilters] = useState({
     category: "",
@@ -86,6 +87,109 @@ const Shop = () => {
         <Banner />
       </div>
 
+      {/* filter panel  */}
+      <div
+        className={`bg-white  ease-in duration-150 z-[60] fixed left-0 top-0 w-[300px] h-full  p-5 shadow-lg   ${
+          filterOpen ? "left-0" : "-left-[100%]"
+        }`}
+      >
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl font-bold text-[#f96822]">Filter Products</h2>
+          <button
+            onClick={() => setFilterOpen(false)}
+            className="text-gray-500 hover:text-gray-800"
+          >
+            ✖
+          </button>
+        </div>
+        <div className="mt-5">
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold mb-1">Price Range</h3>
+            <div className="flex gap-4">
+              <input
+                type="number"
+                placeholder="Min Price"
+                value={filters?.minPrice}
+                onFocus={(e) => {
+                  if (e.target.value === "0") e.target.value = ""; // Clear default value on focus
+                }}
+                onChange={(e) =>
+                  handleFilterValueChange("minPrice", e.target.value)
+                }
+                className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#f96822] focus:border-[#f96822] p-2.5 w-1/2"
+              />
+              <input
+                type="number"
+                placeholder="Max Price"
+                onFocus={(e) => {
+                  if (e.target.value === "10000") e.target.value = ""; // Clear default value on focus
+                }}
+                value={filters?.maxPrice}
+                onChange={(e) =>
+                  handleFilterValueChange("maxPrice", e.target.value)
+                }
+                className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#f96822] focus:border-[#f96822] p-2.5 w-1/2"
+              />
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold">Availablity</h3>
+            <div className="flex items-center gap-2 mt-2">
+              <input
+                checked={filters?.stock}
+                onChange={(e) =>
+                  setFilters((prevFilters) => ({
+                    ...prevFilters,
+                    stock: e.target.checked,
+                  }))
+                }
+                type="checkbox"
+                id="inStock"
+                className="w-4 h-4"
+              />
+              <label htmlFor="inStock" className="text-sm">
+                In Stock
+              </label>
+            </div>
+            <div className="flex items-center gap-2 mt-2">
+              <input type="checkbox" id="OutStock" className="w-4 h-4" />
+              <label htmlFor="OutStock" className="text-sm">
+                Out Stock
+              </label>
+            </div>
+          </div>
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold mb-1">Category</h3>
+            <select
+              value={filters?.category}
+              onChange={(e) =>
+                handleFilterValueChange("category", e.target.value)
+              }
+              className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#f96822] focus:border-[#f96822] block w-full p-2.5"
+            >
+              <option value="">All Categories</option>
+              {category?.category?.map((cat) => (
+                <option key={cat._id} value={cat._id}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        <button
+          onClick={() => handleApplyFilter("filter")}
+          className="bg-[#f96822] hover:bg-[#9f522bf8] text-white text-lg w-full py-2 rounded-lg mt-5"
+        >
+          Apply Filters
+        </button>
+        <button
+          onClick={() => handleCleareFilters()}
+          className="bg-red-600 hover:bg-red-899 text-white text-lg w-full py-2 rounded-lg mt-5"
+        >
+          Clear Filters
+        </button>
+      </div>
       {/* Products */}
       <section>
         {isLoading ? (
@@ -119,143 +223,37 @@ const Shop = () => {
               </div>
             </div>
 
-            {/* filter panel  */}
-            <div
-              className={`bg-white left-0 top-0 ease-in duration-150 z-[60] fixed w-[300px] h-full  p-5 shadow-lg   ${
-                filterOpen ? "left-0" : "-left-[100%]"
-              }`}
-            >
-              <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-[#f96822]">
-                  Filter Products
-                </h2>
-                <button
-                  onClick={() => setFilterOpen(false)}
-                  className="text-gray-500 hover:text-gray-800"
-                >
-                  ✖
-                </button>
-              </div>
-              <div className="mt-5">
-                <div className="mb-4">
-                  <h3 className="text-lg font-semibold mb-1">Price Range</h3>
-                  <div className="flex gap-4">
-                    <input
-                      type="number"
-                      placeholder="Min Price"
-                      value={filters?.minPrice}
-                      onFocus={(e) => {
-                        if (e.target.value === "0") e.target.value = ""; // Clear default value on focus
-                      }}
-                      onChange={(e) =>
-                        handleFilterValueChange("minPrice", e.target.value)
-                      }
-                      className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#f96822] focus:border-[#f96822] p-2.5 w-1/2"
-                    />
-                    <input
-                      type="number"
-                      placeholder="Max Price"
-                      onFocus={(e) => {
-                        if (e.target.value === "10000") e.target.value = ""; // Clear default value on focus
-                      }}
-                      value={filters?.maxPrice}
-                      onChange={(e) =>
-                        handleFilterValueChange("maxPrice", e.target.value)
-                      }
-                      className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#f96822] focus:border-[#f96822] p-2.5 w-1/2"
-                    />
-                  </div>
-                </div>
-
-                <div className="mb-4">
-                  <h3 className="text-lg font-semibold">Availablity</h3>
-                  <div className="flex items-center gap-2 mt-2">
-                    <input
-                      checked={filters?.stock}
-                      onChange={(e) =>
-                        setFilters((prevFilters) => ({
-                          ...prevFilters,
-                          stock: e.target.checked,
-                        }))
-                      }
-                      type="checkbox"
-                      id="inStock"
-                      className="w-4 h-4"
-                    />
-                    <label htmlFor="inStock" className="text-sm">
-                      In Stock
-                    </label>
-                  </div>
-                  <div className="flex items-center gap-2 mt-2">
-                    <input type="checkbox" id="OutStock" className="w-4 h-4" />
-                    <label htmlFor="OutStock" className="text-sm">
-                      Out Stock
-                    </label>
-                  </div>
-                </div>
-                <div className="mb-4">
-                  <h3 className="text-lg font-semibold mb-1">Category</h3>
-                  <select
-                    value={filters?.category}
-                    onChange={(e) =>
-                      handleFilterValueChange("category", e.target.value)
-                    }
-                    className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#f96822] focus:border-[#f96822] block w-full p-2.5"
-                  >
-                    <option value="">All Categories</option>
-                    {category?.category?.map((cat) => (
-                      <option key={cat._id} value={cat._id}>
-                        {cat.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              <button
-                onClick={() => handleApplyFilter("filter")}
-                className="bg-[#f96822] hover:bg-[#9f522bf8] text-white text-lg w-full py-2 rounded-lg mt-5"
-              >
-                Apply Filters
-              </button>
-              <button
-                onClick={() => handleCleareFilters()}
-                className="bg-red-600 hover:bg-red-899 text-white text-lg w-full py-2 rounded-lg mt-5"
-              >
-                Clear Filters
-              </button>
-            </div>
-            {/* </div> */}
-
             <div className="grid lg:grid-cols-4  md:grid-cols-3 sm:grid-cols-2 grid-cols-1 px-[60px] mb-20 mt-5 ">
               {products?.product?.map((prod) => {
                 return (
-                  <div
-                    key={prod._id}
-                    className="mx-2 hover:bg-gray-100 mt-2 relative flex flex-col items-center bg-white  border border-gray-200 rounded-lg shadow-md cursor-pointer"
-                  >
-                    <img
-                      src={prod.images[0]?.url}
-                      className="w-[200px] h-[250px]"
-                      alt=""
-                    />
+                  <Link to={`/single-product/${prod._id}`} key={prod._id}>
+                    <div className="mx-2 hover:bg-gray-100 mt-2 relative flex flex-col items-center bg-white  border border-gray-200 rounded-lg shadow-md cursor-pointer">
+                      <img
+                        src={prod.images[0]?.url}
+                        className="w-[200px] h-[250px]"
+                        alt=""
+                      />
 
-                    <figcaption className="absolute top-2 text-white left-2 px-3 py-[3px] bg-[#f96822] rounded-full">
-                      {prod.category?.name}
-                    </figcaption>
+                      <figcaption className="absolute top-2 text-white left-2 px-3 py-[3px] bg-[#f96822] rounded-full">
+                        {prod.category?.name}
+                      </figcaption>
 
-                    <p className=" text-black text-lg font-bold">{prod.name}</p>
-                    <div className="flex gap-4">
-                      <p className="font-bold text-black text-lg">
-                        ${prod.price}
+                      <p className=" text-black text-lg font-bold">
+                        {prod.name}
                       </p>
+                      <div className="flex gap-4">
+                        <p className="font-bold text-black text-lg">
+                          ${prod.price}
+                        </p>
+                      </div>
+                      <button
+                        className="bg-[#f96822] hover:bg-[#9f522bf8] z-50 text-lg text-[#ffff] ease-in duration-200 rounded-3xl px-5 py-2 my-3"
+                        type="button"
+                      >
+                        Add to Cart
+                      </button>
                     </div>
-                    <button
-                      className="bg-[#f96822] hover:bg-[#9f522bf8] z-50 text-lg text-[#ffff] ease-in duration-200 rounded-3xl px-5 py-2 my-3"
-                      type="button"
-                    >
-                      Add to Cart
-                    </button>
-                  </div>
+                  </Link>
                 );
               })}
             </div>

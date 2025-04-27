@@ -123,7 +123,7 @@ router.put(
   updateProduct
 );
 router.get("/", validateGetAllProducts, validateRequest, getAllProducts);
-router.get("/signleProduct/:id", getProductById);
+router.get("/singleProduct/:id", getProductById);
 router.delete("/deleteProduct/:id", deleteProduct);
 router.get("/featuredProducts", getFeaturedProducts);
 

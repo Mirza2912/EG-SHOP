@@ -207,10 +207,11 @@ const getAllProducts = async (req, res, next) => {
 // Get a single product by ID
 const getProductById = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id).populate(
-      "category",
-      "name"
-    );
+    // console.log(req.params.id);
+
+    const product = await Product.findById(req.params.id)
+      .populate("category", "name")
+      .populate("user", "name email");
     // console.log(product);
 
     if (!product) {
