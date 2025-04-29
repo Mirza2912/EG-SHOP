@@ -3,7 +3,12 @@ import {
   loadCartFromLocalStorage,
   saveCartToLocalStorage,
 } from "./CartLocalStorageHandle";
-import { addToCartBackend, getCart } from "./CartSliceReducers";
+import {
+  addToCartBackend,
+  addToCartUpdateBackend,
+  getCart,
+} from "./CartSliceReducers";
+import { toast } from "react-toastify";
 
 const cartSlice = createSlice({
   name: "cart",
@@ -12,6 +17,8 @@ const cartSlice = createSlice({
     isLoading: false,
     error: null,
     addToCartBackendMessage: "",
+    addToCartUpdateBackendMessage: "",
+    updateCartOfLocalMessage: "",
   },
   reducers: {
     clearError(state) {
@@ -35,12 +42,24 @@ const cartSlice = createSlice({
     //update cart when user not logged in
     updateCartItemLocal: (state, action) => {
       const { productId, quantity } = action.payload; //user only can update quantity
-      const itemToUpdate = state.cartItems.find(
-        (item) => item.productId === productId
+      console.log(productId, quantity);
+      if (!productId || !quantity) {
+        toast.error("productId and quantity required");
+        return;
+      }
+
+      const itemToUpdate = state.cartItems?.find(
+        (item) => item._id === productId
       );
+
       if (itemToUpdate) {
-        itemToUpdate.quantity = quantity;
-        saveCartToLocalStorage(state.cartItems);
+        state.cartItems?.forEach((item) => {
+          if (item._id === itemToUpdate._id) {
+            item.quantity = quantity;
+            saveCartToLocalStorage(state.cartItems);
+            state.updateCartOfLocalMessage = "Cart updated successfully";
+          }
+        });
       }
     },
 
@@ -58,8 +77,19 @@ const cartSlice = createSlice({
       saveCartToLocalStorage([]);
     },
 
+    //clear addToCartBackendMessage
     clearAddToCartBackendMessage: (state) => {
       state.addToCartBackendMessage = "";
+    },
+
+    //clear addToCartUpdateBackendMessage
+    clearAddToCartUpdateBackendMessage: (state) => {
+      state.addToCartUpdateBackendMessage = "";
+    },
+
+    //clear update cart of local
+    clearUpdateCartOfLocalMessage: (state) => {
+      state.updateCartOfLocalMessage = "";
     },
   },
 
@@ -89,6 +119,19 @@ const cartSlice = createSlice({
       .addCase(addToCartBackend.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
+      })
+      .addCase(addToCartUpdateBackend.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(addToCartUpdateBackend.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.cartItems = action.payload?.cart?.items;
+        state.addToCartUpdateBackendMessage = action.payload?.message;
+      })
+      .addCase(addToCartUpdateBackend.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
       });
     //   .addCase(deleteCartItemBackend.fulfilled, (state, action) => {
     //     state.cartItems = action.payload;
@@ -106,7 +149,8 @@ export const {
   removeCartItemLocal,
   clearCartLocal,
   clearAddToCartBackendMessage,
-  mergeGuestCart,
+  clearAddToCartUpdateBackendMessage,
+  clearUpdateCartOfLocalMessage,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;

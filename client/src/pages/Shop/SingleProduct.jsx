@@ -8,6 +8,7 @@ import { getSingleProduct } from "../../Store/Products/ProductSliceReducers";
 import Loader from "../../components/Loader/Loader";
 import { addToCartBackend } from "../../Store/Cart/CartSliceReducers";
 import { addToCartLocal } from "../../Store/Cart/CartSlice";
+import { v4 as uuidv4 } from "uuid";
 
 const SingleProduct = () => {
   const dispatch = useDispatch();
@@ -22,8 +23,8 @@ const SingleProduct = () => {
   let product = null;
   if (id in singleProduct) {
     product = singleProduct[id];
-    // console.log(product);
   }
+  console.log(product);
 
   const { isAuthenticated } = useSelector((state) => state.auth);
 
@@ -41,16 +42,24 @@ const SingleProduct = () => {
 
   const handleAddToCart = () => {
     //data to send backend to create cart
-    const itemDataToAddToCart = {
+    const itemDataToAddToCartBackend = {
       productId: product?._id,
       quantity,
       price: product?.price,
     };
+
+    //data to send backend to create cart
+    const itemDataToAddToCartLocal = {
+      productId: product?._id,
+      quantity,
+      price: product?.price,
+      _id: uuidv4(),
+    };
     //when user logged in
     if (isAuthenticated !== "") {
-      dispatch(addToCartBackend(itemDataToAddToCart));
+      dispatch(addToCartBackend(itemDataToAddToCartBackend));
     } else {
-      dispatch(addToCartLocal(itemDataToAddToCart));
+      dispatch(addToCartLocal(itemDataToAddToCartLocal));
     }
     navigate("/cart");
   };

@@ -1,6 +1,11 @@
 import React, { useEffect, useRef } from "react";
-import Home from "./pages/Home/Home";
 import { Route, Routes, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import ProtectedRoute from "./routes/ProtectedRouteForUser.jsx";
+import { toast } from "react-toastify";
+
+/* PAGES IMPORT STATEMENT */
+import Home from "./pages/Home/Home";
 import Shop from "./pages/Shop/Shop";
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
@@ -8,12 +13,12 @@ import AboutUs from "./pages/AboutUs/AboutUs";
 import ContactUs from "./pages/ContactUs/ContactUs";
 import Cart from "./pages/Cart/Cart";
 import Checkout from "./pages/Checkout/Checkout";
+import NotFoundPage from "./pages/NotFound/NotFoundPage.jsx";
+
+/* USER IMPORT STATEMENT */
 import Login from "./pages/Register/Login";
 import Signup from "./pages/Register/Signup.jsx";
 import Profile from "./pages/User/Profile.jsx";
-import { useDispatch, useSelector } from "react-redux";
-import ProtectedRoute from "./routes/ProtectedRouteForUser.jsx";
-import { loadUser } from "./Store/Auth/AuthSliceReducers.js";
 import {
   clearChangeUserPasswordMessage,
   clearEditProfileMessage,
@@ -22,27 +27,34 @@ import {
   clearLogoutMessage,
   clearUserRegisterationMessage,
 } from "./Store/Auth/AuthSlice.js";
-import { toast } from "react-toastify";
+import { loadUser } from "./Store/Auth/AuthSliceReducers.js";
 import EditUserProfile from "./pages/User/EditUserProfile.jsx";
 import ChangeUserPassword from "./pages/User/ChangeUserPassword.jsx";
-import NotFoundPage from "./pages/NotFound/NotFoundPage.jsx";
 import ForgotUserPassword from "./pages/User/ForgotUserPassword.jsx";
 import OtpVerification from "./pages/User/OtpVerification.jsx";
+
+/* PRODUCT IMPORT STATEMENT */
 import SingleProduct from "./pages/Shop/SingleProduct.jsx";
-import { clearSingleProductMessage } from "./Store/Products/ProductSlice.js";
 import {
   loadCartFromLocalStorage,
   saveCartToLocalStorage,
 } from "./Store/Cart/CartLocalStorageHandle.js";
+
+/* CART IMPORT STATEMENT */
 import { addToCartBackend, getCart } from "./Store/Cart/CartSliceReducers.js";
 import {
   clearAddToCartBackendMessage,
+  clearAddToCartUpdateBackendMessage,
   clearCartLocal,
+  clearUpdateCartOfLocalMessage,
 } from "./Store/Cart/CartSlice.js";
 
+/* APP COMPONENT */
 const App = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  /* USER STATE*/
   const {
     editProfileMessage,
     logOutMessage,
@@ -53,12 +65,20 @@ const App = () => {
     isAuthenticated,
   } = useSelector((state) => state.auth);
 
-  // const { singleProductMessage } = useSelector((state) => state.products);
-  const { addToCartBackendMessage } = useSelector((state) => state.cart);
+  /* CART STATE*/
+  const {
+    addToCartBackendMessage,
+    addToCartUpdateBackendMessage,
+    updateCartOfLocalMessage,
+  } = useSelector((state) => state.cart);
 
+  /* USEEFFCART FOR TOAST AND CLEAR MESSAGES*/
   useEffect(() => {
     let timeout;
 
+    /* FOR USER AUTHENTICATION */
+
+    //user reagisteration success message show
     if (userRegisterMessage) {
       toast.success(userRegisterMessage);
       timeout = setTimeout(() => {
@@ -66,7 +86,7 @@ const App = () => {
         dispatch(clearUserRegisterationMessage());
       }, 1500);
     }
-
+    //user logout success message show
     if (logOutMessage) {
       toast.success(logOutMessage);
       dispatch(clearCartLocal());
@@ -75,7 +95,7 @@ const App = () => {
         navigate("/login", { replace: true });
       }, 1500);
     }
-
+    //user update profile success message show
     if (editProfileMessage) {
       toast.success(editProfileMessage);
       timeout = setTimeout(() => {
@@ -83,7 +103,7 @@ const App = () => {
         navigate("/profile", { replace: true });
       }, 1500);
     }
-
+    //user update password message success message show
     if (changeUserPasswordMessage) {
       toast.success(changeUserPasswordMessage);
       timeout = setTimeout(() => {
@@ -91,7 +111,7 @@ const App = () => {
         navigate("/profile", { replace: true });
       }, 1500);
     }
-
+    //user delete success message show
     if (deleteUserMessage) {
       toast.success(deleteUserMessage);
       timeout = setTimeout(() => {
@@ -100,16 +120,29 @@ const App = () => {
       }, 1500);
     }
 
-    // if (singleProductMessage) {
-    //   timeout = setTimeout(() => {
-    //     dispatch(clearSingleProductMessage());
-    //   }, 1500);
-    // }
+    /* FOR USER CART */
 
+    //Add to cart item to backend message -->when user logged in
     if (addToCartBackendMessage) {
       toast.success(addToCartBackendMessage);
       timeout = setTimeout(() => {
         dispatch(clearAddToCartBackendMessage());
+      }, 1500);
+    }
+
+    //update item of cart to backend message -->when user logged in
+    if (addToCartUpdateBackendMessage) {
+      toast.success(addToCartUpdateBackendMessage);
+      timeout = setTimeout(() => {
+        dispatch(clearAddToCartUpdateBackendMessage());
+      }, 1500);
+    }
+
+    //update item of cart to backend message -->when user is guest
+    if (updateCartOfLocalMessage) {
+      toast.success(updateCartOfLocalMessage);
+      timeout = setTimeout(() => {
+        dispatch(clearUpdateCartOfLocalMessage());
       }, 1500);
     }
 
@@ -120,19 +153,23 @@ const App = () => {
     changeUserPasswordMessage,
     deleteUserMessage,
     userRegisterMessage,
-    // singleProductMessage,
     addToCartBackendMessage,
+    addToCartUpdateBackendMessage,
+    updateCartOfLocalMessage,
   ]);
 
+  /* USEEFFECT FOR LOGICS*/
   useEffect(() => {
+    //AUTOMATICALLY LOAD USER WHEN PAGE RELOAD AFTER LOG IN
     dispatch(loadUser());
 
-    //if user logged in then get user cart
+    /*GET USER CART ITEMS AUTOMATICALLY WHEN APP LOAD AND RELOAD*/
+    //get cart if user logged in
     if (isAuthenticated !== "") {
       const guestCart = loadCartFromLocalStorage(); //this will be an array
       // console.log(guestCart);
 
-      //if logged in user have alreay select items when loggedout
+      //if logged in user have alreay select items when loggedout this will be store in backend also
       if (guestCart?.length > 0) {
         guestCart.forEach((item) => {
           dispatch(

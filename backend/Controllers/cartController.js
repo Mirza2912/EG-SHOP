@@ -102,11 +102,13 @@ const updateCartItem = async (req, res) => {
 
     // Update the quantity
     cart.items[itemIndex].quantity = quantity;
+    await cart.populate("items.product");
     await cart.save();
+    // console.log(cart);
 
     res
       .status(200)
-      .json({ success: true, cart, messaeg: "Cart updated successfully" });
+      .json({ success: true, cart, message: "Cart updated successfully" });
   } catch (error) {
     console.error("Error in updateCartItem:", error);
     res

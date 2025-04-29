@@ -8,39 +8,13 @@ import { getSingleProduct } from "../../Store/Products/ProductSliceReducers";
 import { FaRegFaceFrown } from "react-icons/fa6";
 import { addToCartUpdateBackend } from "../../Store/Cart/CartSliceReducers";
 import { toast } from "react-toastify";
-import { clearError } from "../../Store/Cart/CartSlice";
-
-const products = [
-  {
-    id: 1,
-    name: "Throwback Hip Bag",
-    href: "#",
-    color: "Salmon",
-    price: "$90.00",
-    quantity: 1,
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-01.jpg",
-    imageAlt:
-      "Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt.",
-  },
-  {
-    id: 2,
-    name: "Medium Stuff Satchel",
-    href: "#",
-    color: "Blue",
-    price: "$32.00",
-    quantity: 1,
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-02.jpg",
-    imageAlt:
-      "Front of satchel with blue canvas body, black straps and handle, drawstring top, and front zipper pouch.",
-  },
-  // More products...
-];
+import {
+  clearAddToCartUpdateBackendMessage,
+  clearError,
+  updateCartItemLocal,
+} from "../../Store/Cart/CartSlice";
 
 const Cart = () => {
-  const [open, setOpen] = useState(true);
-
   const dispatch = useDispatch();
 
   const { cartItems, error } = useSelector((state) => state.cart);
@@ -56,23 +30,45 @@ const Cart = () => {
 
   const [quantity, setQuantity] = useState(1);
 
-  const [availableQuantity, setavailableQuantity] = useState(null);
+  const [editCartQuantity, setEditCartQuantity] = useState(null);
 
-  const handleAddToCartUpdate = (quantity, productId) => {
-    // console.log(quantity, productId);
+  //method for handle item of cart updation
+  const handleAddToCartUpdate = (quantity, itemId) => {
+    // console.log(quantity, itemId);
 
-    const updateDataToCartItem = {
+    //object to send backend to update item
+    const updateDataToCartItemBackend = {
+      productId: itemId,
       quantity,
-      productId,
+    };
+
+    //object to send backend to update item
+    const updateDataToCartItemLocal = {
+      productId: itemId,
+      quantity,
     };
     // console.log(updateDataToCartItem);
 
+    //if user logged in
     if (isAuthenticated !== "") {
-      dispatch(addToCartUpdateBackend(updateDataToCartItem));
+      dispatch(addToCartUpdateBackend(updateDataToCartItemBackend));
     }
+
+    //if user not loggin
+    if (isAuthenticated === "") {
+      // console.log("true");
+
+      dispatch(updateCartItemLocal(updateDataToCartItemLocal));
+    }
+
+    setEditCartQuantity(null);
   };
-  const handleIncrease = () => {
-    setQuantity((prev) => prev + 1);
+
+  const handleIncrease = (id) => {
+    // console.log(id);
+
+    const findItem = cart?.find((item) => item?._id === id);
+    setQuantity((prev) => (findItem?.product?.stock > prev ? prev + 1 : prev));
   };
 
   const handleDecrease = () => {
@@ -84,11 +80,13 @@ const Cart = () => {
   useEffect(() => {
     let updatedCart = [];
 
+    //if any error come
     if (error) {
       toast.error(error);
       dispatch(clearError());
     }
 
+    //check if user not logged in then we will check singleproduct object and convert our items of cart's product id to its actuall product because if user not logged in then in cart item there will be not actual product not product id
     if (isAuthenticated === "") {
       if (cartItems?.length > 0) {
         cartItems?.forEach((item) => {
@@ -98,6 +96,7 @@ const Cart = () => {
               product: singleProduct[item.productId],
               quantity: item.quantity,
               price: item.price,
+              _id: item._id,
             });
             // console.log(updatedCart);
           } else {
@@ -197,8 +196,8 @@ const Cart = () => {
                       <li key={item?._id} className="flex py-6">
                         <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                           <img
-                            src={item?.product?.images[0].url}
-                            alt={item?.product?.images[0].public_id}
+                            src={item?.product?.images[0]?.url}
+                            alt={item?.product?.images[0]?.public_id}
                             className="h-full w-full object-cover object-center"
                           />
                         </div>
@@ -217,37 +216,50 @@ const Cart = () => {
                           </div>
                           <div className="flex flex-1 items-end justify-between text-sm">
                             <div className="flex flex-col items-center justify-center">
-                              <div className="flex items-center gap-4  mt-3">
-                                <p className="text-black text-lg ">
-                                  Quantity :
-                                </p>
-                                <div className="flex items-center gap-4 border border-gray-300 rounded">
-                                  <button
-                                    className="rounded-l border text-lg border-r-2 hover:bg-gray-400 text-gray-800 font-bold py-2 px-5 "
-                                    onClick={handleDecrease}
-                                  >
-                                    -
-                                  </button>
-                                  <div className="text-xl font-semibold w-[13px] text-center">
-                                    {quantity}
+                              {editCartQuantity === item._id ? (
+                                <div className="flex items-center gap-4  mt-3">
+                                  <div className="flex items-center gap-4 border border-gray-300 rounded">
+                                    <button
+                                      className="rounded-l border text-lg border-r-2 hover:bg-gray-400 text-gray-800 font-bold py-2 px-5 "
+                                      onClick={handleDecrease}
+                                    >
+                                      -
+                                    </button>
+                                    <div className="text-xl font-semibold w-[13px] text-center">
+                                      {quantity}
+                                    </div>
+                                    <button
+                                      className=" hover:bg-gray-400 text-gray-800  font-bold py-2 px-5 border-l-2 text-lg rounded-r "
+                                      onClick={() => handleIncrease(item?._id)}
+                                    >
+                                      +
+                                    </button>
                                   </div>
-                                  <button
-                                    className=" hover:bg-gray-400 text-gray-800  font-bold py-2 px-5 border-l-2 text-lg rounded-r "
-                                    onClick={handleIncrease}
-                                  >
-                                    +
-                                  </button>
                                 </div>
-                              </div>
-                              <button
-                                onClick={() =>
-                                  handleAddToCartUpdate(quantity, item?._id)
-                                }
-                                type="button"
-                                className="font-bold  text-[#f98622] hover:text-[#9f522bf8] "
-                              >
-                                confirm
-                              </button>
+                              ) : (
+                                <p className="text-black text-lg ">
+                                  Quantity : {item?.quantity}
+                                </p>
+                              )}
+                              {editCartQuantity === item._id ? (
+                                <button
+                                  onClick={() =>
+                                    handleAddToCartUpdate(quantity, item?._id)
+                                  }
+                                  type="button"
+                                  className="font-bold  text-[#f98622] hover:text-[#9f522bf8] "
+                                >
+                                  update quantity
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => setEditCartQuantity(item._id)}
+                                  type="button"
+                                  className="font-bold  text-[#f98622] hover:text-[#9f522bf8] "
+                                >
+                                  edit quantity
+                                </button>
+                              )}
                             </div>
 
                             <div className="flex">
@@ -287,7 +299,7 @@ const Cart = () => {
             <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
               <p>
                 or{" "}
-                <Link to={"/"}>
+                <Link to={"/shop"}>
                   <button
                     type="button"
                     className="font-medium text-[#f96822] hover:text-[#9f522bf8]"
@@ -310,7 +322,6 @@ const Cart = () => {
               <button
                 type="button"
                 className="font-medium mt-3 text-[#f96822] hover:text-[#9f522bf8]"
-                onClick={() => setOpen(false)}
               >
                 Continue Shopping
                 <span aria-hidden="true"> &rarr;</span>

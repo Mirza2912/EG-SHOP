@@ -32,7 +32,7 @@ const addToCartBackend = createAsyncThunk(
   "cart/addToCartBackend",
   async (cartData, { rejectWithValue }) => {
     try {
-      console.log(cartData);
+      // console.log(cartData);
 
       const response = await axios.post(
         "/api/cart/addToCart",
@@ -58,14 +58,14 @@ const addToCartUpdateBackend = createAsyncThunk(
   "cart/addToCartUpdateBackend",
   async (cartData, { rejectWithValue }) => {
     try {
-      console.log(cartData);
+      // console.log(cartData);
 
       const response = await axios.put(
         "/api/cart/updateCart",
         cartData,
         config
       );
-      console.log(response?.data?.cart);
+      // console.log(response?.data);
       return response?.data; //returning fetched data
     } catch (error) {
       console.log(error);
@@ -73,7 +73,7 @@ const addToCartUpdateBackend = createAsyncThunk(
         error.response.data?.errors ||
           error.response.data?.message ||
           error.message ||
-          "Failed to create cart of user"
+          "Failed to update cart of user"
       );
     }
   }
