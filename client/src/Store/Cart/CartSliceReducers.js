@@ -79,13 +79,30 @@ const addToCartUpdateBackend = createAsyncThunk(
   }
 );
 
-// export const deleteCartItemBackend = createAsyncThunk(
-//   "cart/deleteCartItemBackend",
-//   async (productId) => {
-//     const { data } = await axios.delete(`/api/cart/${productId}`);
-//     return data;
-//   }
-// );
+//remove cart item from backend
+const deleteCartItemBackend = createAsyncThunk(
+  "cart/deleteCartItemBackend",
+  async (id, { rejectWithValue }) => {
+    try {
+      console.log(id);
+
+      const response = await axios.delete(
+        `/api/cart/deleteCartItem/${id}`,
+        config
+      );
+      console.log(response?.data);
+      return response?.data; //returning fetched data
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue(
+        error.response.data?.errors ||
+          error.response.data?.message ||
+          error.message ||
+          "Failed to remove cart item"
+      );
+    }
+  }
+);
 
 // export const clearCartBackend = createAsyncThunk(
 //   "cart/clearCartBackend",
@@ -95,4 +112,9 @@ const addToCartUpdateBackend = createAsyncThunk(
 //   }
 // );
 
-export { getCart, addToCartBackend, addToCartUpdateBackend };
+export {
+  getCart,
+  addToCartBackend,
+  addToCartUpdateBackend,
+  deleteCartItemBackend,
+};

@@ -24,7 +24,7 @@ const SingleProduct = () => {
   if (id in singleProduct) {
     product = singleProduct[id];
   }
-  console.log(product);
+  // console.log(product);
 
   const { isAuthenticated } = useSelector((state) => state.auth);
 
@@ -41,6 +41,8 @@ const SingleProduct = () => {
   };
 
   const handleAddToCart = () => {
+    // console.log(product?._id);
+
     //data to send backend to create cart
     const itemDataToAddToCartBackend = {
       productId: product?._id,
@@ -50,7 +52,7 @@ const SingleProduct = () => {
 
     //data to send backend to create cart
     const itemDataToAddToCartLocal = {
-      productId: product?._id,
+      product: product?._id,
       quantity,
       price: product?.price,
       _id: uuidv4(),
@@ -58,7 +60,7 @@ const SingleProduct = () => {
     //when user logged in
     if (isAuthenticated !== "") {
       dispatch(addToCartBackend(itemDataToAddToCartBackend));
-    } else {
+    } else if (isAuthenticated === "") {
       dispatch(addToCartLocal(itemDataToAddToCartLocal));
     }
     navigate("/cart");

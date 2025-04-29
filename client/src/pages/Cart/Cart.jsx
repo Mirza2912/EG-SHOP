@@ -6,18 +6,24 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useDispatch, useSelector } from "react-redux";
 import { getSingleProduct } from "../../Store/Products/ProductSliceReducers";
 import { FaRegFaceFrown } from "react-icons/fa6";
-import { addToCartUpdateBackend } from "../../Store/Cart/CartSliceReducers";
+import {
+  addToCartUpdateBackend,
+  deleteCartItemBackend,
+  getCart,
+} from "../../Store/Cart/CartSliceReducers";
 import { toast } from "react-toastify";
 import {
   clearAddToCartUpdateBackendMessage,
   clearError,
+  removeCartItemLocal,
   updateCartItemLocal,
 } from "../../Store/Cart/CartSlice";
+import Loader from "../../components/Loader/Loader";
 
 const Cart = () => {
   const dispatch = useDispatch();
 
-  const { cartItems, error } = useSelector((state) => state.cart);
+  const { cartItems, error, isLoading } = useSelector((state) => state.cart);
   // console.log(cartItems);
 
   const { singleProduct } = useSelector((state) => state.products);
@@ -77,23 +83,42 @@ const Cart = () => {
     }
   };
 
+  const handleRemoveItem = (id) => {
+    // console.log(id);
+
+    if (isAuthenticated === "") {
+      //when local item remove
+      dispatch(removeCartItemLocal(id));
+      // setCart(cartItems);
+    } else if (isAuthenticated !== "") {
+      dispatch(deleteCartItemBackend(id));
+      // setCart(cartItems);
+    }
+  };
+
   useEffect(() => {
     let updatedCart = [];
 
     //if any error come
     if (error) {
-      toast.error(error);
+      // toast.error(error);
       dispatch(clearError());
     }
 
     //check if user not logged in then we will check singleproduct object and convert our items of cart's product id to its actuall product because if user not logged in then in cart item there will be not actual product not product id
     if (isAuthenticated === "") {
+      // console.log("ni login");
+
       if (cartItems?.length > 0) {
+        // console.log("aho wdi a");
+
         cartItems?.forEach((item) => {
+          // console.log(item?.productId);
+
           // If product details exist in the singleProduct object
-          if (singleProduct && singleProduct[item?.productId]) {
+          if (singleProduct && singleProduct[item?.product]) {
             updatedCart.push({
-              product: singleProduct[item.productId],
+              product: singleProduct[item.product],
               quantity: item.quantity,
               price: item.price,
               _id: item._id,
@@ -103,14 +128,20 @@ const Cart = () => {
             // console.log(item?.productId);
 
             // If product details are not available, dispatch to  fetch product
-            dispatch(getSingleProduct(item?.productId));
+            dispatch(getSingleProduct(item?.product));
           }
         });
 
         // Update the cart state after looping through the cartItems
         setCart(updatedCart);
+      } else {
+        setCart([]);
       }
     } else if (isAuthenticated !== "") {
+      // dispatch(getCart());
+      console.log("login wa");
+      // console.log(cartItems);
+
       setCart(cartItems);
     }
   }, [cartItems, singleProduct, isAuthenticated, error]);
@@ -182,152 +213,169 @@ const Cart = () => {
       </section>
 
       {/* Cart Table */}
-      {cart?.length > 0 ? (
-        <div className="mx-auto rounded-lg shadow-2xl mt-5 bg-white max-w-7xl px-4 sm:px-6 lg:px-8 mb-5">
-          <div className="border-gray-200 px-4 pb-6 pt-3 sm:px-6">
-            <h1 className="text-4xl text-center my-12 font-bold tracking-tight text-gray-900">
-              Cart
-            </h1>
-            <div className="flow-root">
-              <ul role="list" className="-my-6 divide-y divide-gray-200">
-                {cart?.map((item) => {
-                  return (
-                    <>
-                      <li key={item?._id} className="flex py-6">
-                        <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                          <img
-                            src={item?.product?.images[0]?.url}
-                            alt={item?.product?.images[0]?.public_id}
-                            className="h-full w-full object-cover object-center"
-                          />
-                        </div>
-
-                        <div className="ml-4 flex flex-1 flex-col">
-                          <div>
-                            <div className="flex justify-between text-base font-medium text-gray-900">
-                              <h3>
-                                <a>{item?.product?.name}</a>
-                              </h3>
-                              <p className="ml-4">
-                                {item?.price} ({item?.quantity})
-                              </p>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <>
+          {cart?.length > 0 ? (
+            <div className="mx-auto rounded-lg shadow-2xl mt-5 bg-white max-w-7xl px-4 sm:px-6 lg:px-8 mb-5">
+              <div className="border-gray-200 px-4 pb-6 pt-3 sm:px-6">
+                <h1 className="text-4xl text-center my-12 font-bold tracking-tight text-gray-900">
+                  Cart
+                </h1>
+                <div className="flow-root">
+                  <ul role="list" className="-my-6 divide-y divide-gray-200">
+                    {cart.map((item) => {
+                      return (
+                        <>
+                          <li key={item?._id} className="flex py-6">
+                            <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+                              <img
+                                src={
+                                  item?.product?.images[0]?.url ||
+                                  "/src/assets/about-bg.jpg"
+                                }
+                                alt={
+                                  item?.product?.images[0]?.public_id || "error"
+                                }
+                                className="h-full w-full object-cover object-center"
+                              />
                             </div>
-                            {/* <p className="mt-1 text-lg text-black"></p> */}
-                          </div>
-                          <div className="flex flex-1 items-end justify-between text-sm">
-                            <div className="flex flex-col items-center justify-center">
-                              {editCartQuantity === item._id ? (
-                                <div className="flex items-center gap-4  mt-3">
-                                  <div className="flex items-center gap-4 border border-gray-300 rounded">
-                                    <button
-                                      className="rounded-l border text-lg border-r-2 hover:bg-gray-400 text-gray-800 font-bold py-2 px-5 "
-                                      onClick={handleDecrease}
-                                    >
-                                      -
-                                    </button>
-                                    <div className="text-xl font-semibold w-[13px] text-center">
-                                      {quantity}
-                                    </div>
-                                    <button
-                                      className=" hover:bg-gray-400 text-gray-800  font-bold py-2 px-5 border-l-2 text-lg rounded-r "
-                                      onClick={() => handleIncrease(item?._id)}
-                                    >
-                                      +
-                                    </button>
-                                  </div>
+
+                            <div className="ml-4 flex flex-1 flex-col">
+                              <div>
+                                <div className="flex justify-between text-base font-medium text-gray-900">
+                                  <h3>
+                                    <a>{item?.product?.name}</a>
+                                  </h3>
+                                  <p className="ml-4">{item?.price}</p>
                                 </div>
-                              ) : (
-                                <p className="text-black text-lg ">
-                                  Quantity : {item?.quantity}
-                                </p>
-                              )}
-                              {editCartQuantity === item._id ? (
-                                <button
-                                  onClick={() =>
-                                    handleAddToCartUpdate(quantity, item?._id)
-                                  }
-                                  type="button"
-                                  className="font-bold  text-[#f98622] hover:text-[#9f522bf8] "
-                                >
-                                  update quantity
-                                </button>
-                              ) : (
-                                <button
-                                  onClick={() => setEditCartQuantity(item._id)}
-                                  type="button"
-                                  className="font-bold  text-[#f98622] hover:text-[#9f522bf8] "
-                                >
-                                  edit quantity
-                                </button>
-                              )}
-                            </div>
+                                {/* <p className="mt-1 text-lg text-black"></p> */}
+                              </div>
+                              <div className="flex flex-1 items-end justify-between text-sm">
+                                <div className="flex flex-col items-center justify-center">
+                                  {editCartQuantity === item._id ? (
+                                    <div className="flex items-center gap-4  mt-3">
+                                      <div className="flex items-center gap-4 border border-gray-300 rounded">
+                                        <button
+                                          className="rounded-l border text-lg border-r-2 hover:bg-gray-400 text-gray-800 font-bold py-2 px-5 "
+                                          onClick={handleDecrease}
+                                        >
+                                          -
+                                        </button>
+                                        <div className="text-xl font-semibold w-[13px] text-center">
+                                          {quantity}
+                                        </div>
+                                        <button
+                                          className=" hover:bg-gray-400 text-gray-800  font-bold py-2 px-5 border-l-2 text-lg rounded-r "
+                                          onClick={() =>
+                                            handleIncrease(item?._id)
+                                          }
+                                        >
+                                          +
+                                        </button>
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <p className="text-black text-lg ">
+                                      Quantity : {item?.quantity}
+                                    </p>
+                                  )}
+                                  {editCartQuantity === item._id ? (
+                                    <button
+                                      onClick={() =>
+                                        handleAddToCartUpdate(
+                                          quantity,
+                                          item?._id
+                                        )
+                                      }
+                                      type="button"
+                                      className="font-bold  text-[#f98622] hover:text-[#9f522bf8] "
+                                    >
+                                      update quantity
+                                    </button>
+                                  ) : (
+                                    <button
+                                      onClick={() =>
+                                        setEditCartQuantity(item._id)
+                                      }
+                                      type="button"
+                                      className="font-bold  text-[#f98622] hover:text-[#9f522bf8] "
+                                    >
+                                      edit quantity
+                                    </button>
+                                  )}
+                                </div>
 
-                            <div className="flex">
-                              <button
-                                type="button"
-                                className="font-medium text-[#f98622] hover:text-[#9f522bf8] "
-                              >
-                                Remove
-                              </button>
+                                <div className="flex">
+                                  <button
+                                    onClick={() => handleRemoveItem(item._id)}
+                                    type="button"
+                                    className="font-medium text-[#f98622] hover:text-[#9f522bf8] "
+                                  >
+                                    Remove
+                                  </button>
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                        </div>
-                      </li>
-                    </>
-                  );
-                })}
-              </ul>
-            </div>
-          </div>
+                          </li>
+                        </>
+                      );
+                    })}
+                  </ul>
+                </div>
+              </div>
 
-          <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
-            <div className="flex justify-between text-base font-medium text-gray-900">
-              <p>Subtotal</p>
-              <p>$262.00</p>
+              <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
+                <div className="flex justify-between text-base font-medium text-gray-900">
+                  <p>Subtotal</p>
+                  <p>$262.00</p>
+                </div>
+                <p className="mt-0.5 text-sm text-gray-500">
+                  Shipping and taxes calculated at checkout.
+                </p>
+                <div className="mt-6">
+                  <Link
+                    to={"/checkout"}
+                    className="flex items-center justify-center rounded-md border border-transparent bg-[#f96822] hover:text-[#9f522bf8]px-6 py-3 text-base font-medium text-white shadow-sm"
+                  >
+                    Checkout
+                  </Link>
+                </div>
+                <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
+                  <p>
+                    or{" "}
+                    <Link to={"/shop"}>
+                      <button
+                        type="button"
+                        className="font-medium text-[#f96822] hover:text-[#9f522bf8]"
+                      >
+                        Continue Shopping
+                        <span aria-hidden="true"> &rarr;</span>
+                      </button>
+                    </Link>
+                  </p>
+                </div>
+              </div>
             </div>
-            <p className="mt-0.5 text-sm text-gray-500">
-              Shipping and taxes calculated at checkout.
-            </p>
-            <div className="mt-6">
-              <Link
-                to={"/checkout"}
-                className="flex items-center justify-center rounded-md border border-transparent bg-[#f96822] hover:text-[#9f522bf8]px-6 py-3 text-base font-medium text-white shadow-sm"
-              >
-                Checkout
-              </Link>
-            </div>
-            <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
-              <p>
-                or{" "}
+          ) : (
+            <>
+              <div className="text-center my-20">
+                <p className="text-center flex items-center justify-center gap-5  text-4xl sm:text-6xl font-bold text-[#f98622] ">
+                  Empty Cart <FaRegFaceFrown />
+                </p>
                 <Link to={"/shop"}>
                   <button
                     type="button"
-                    className="font-medium text-[#f96822] hover:text-[#9f522bf8]"
+                    className="font-medium mt-3 text-[#f96822] hover:text-[#9f522bf8]"
                   >
                     Continue Shopping
                     <span aria-hidden="true"> &rarr;</span>
                   </button>
                 </Link>
-              </p>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <>
-          <div className="text-center my-20">
-            <p className="text-center flex items-center justify-center gap-5  text-4xl sm:text-6xl font-bold text-[#f98622] ">
-              Empty Cart <FaRegFaceFrown />
-            </p>
-            <Link to={"/shop"}>
-              <button
-                type="button"
-                className="font-medium mt-3 text-[#f96822] hover:text-[#9f522bf8]"
-              >
-                Continue Shopping
-                <span aria-hidden="true"> &rarr;</span>
-              </button>
-            </Link>
-          </div>
+              </div>
+            </>
+          )}
         </>
       )}
     </>

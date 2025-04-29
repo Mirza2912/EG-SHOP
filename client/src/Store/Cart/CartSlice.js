@@ -6,6 +6,7 @@ import {
 import {
   addToCartBackend,
   addToCartUpdateBackend,
+  deleteCartItemBackend,
   getCart,
 } from "./CartSliceReducers";
 import { toast } from "react-toastify";
@@ -27,9 +28,12 @@ const cartSlice = createSlice({
     //when user not logged in then user can add item to cart
     addToCartLocal: (state, action) => {
       const itemToAdd = action.payload; //store product item in which product._id store and price and quantity
+      // console.log(itemToAdd);
+
       const existItem = state.cartItems?.find(
-        (item) => item.productId === itemToAdd.productId
+        (item) => item.productId === itemToAdd.product
       );
+      // console.log(existItem);
 
       if (existItem) {
         existItem.quantity += itemToAdd.quantity;
@@ -42,7 +46,7 @@ const cartSlice = createSlice({
     //update cart when user not logged in
     updateCartItemLocal: (state, action) => {
       const { productId, quantity } = action.payload; //user only can update quantity
-      console.log(productId, quantity);
+      // console.log(productId, quantity);
       if (!productId || !quantity) {
         toast.error("productId and quantity required");
         return;
@@ -65,8 +69,10 @@ const cartSlice = createSlice({
 
     //remove cart item when use not logged in
     removeCartItemLocal: (state, action) => {
-      state.cartItems = state.cartItems.filter(
-        (item) => item.productId !== action.payload //action.payload will be only productId
+      // console.log(action.payload);
+
+      state.cartItems = state.cartItems?.filter(
+        (item) => item._id !== action.payload //action.payload will be only productId
       );
       saveCartToLocalStorage(state.cartItems);
     },
@@ -130,6 +136,18 @@ const cartSlice = createSlice({
         state.addToCartUpdateBackendMessage = action.payload?.message;
       })
       .addCase(addToCartUpdateBackend.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(deleteCartItemBackend.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(deleteCartItemBackend.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.cartItems = action.payload?.cart?.items;
+      })
+      .addCase(deleteCartItemBackend.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
       });

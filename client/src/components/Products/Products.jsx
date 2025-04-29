@@ -14,7 +14,7 @@ const Products = ({ products, category, onFilterChange, isLoading }) => {
     category: "",
     page: 1,
   });
-  console.log(filters);
+  // console.log(filters);
 
   useEffect(() => {
     // This will reset the page to 1 whenever filters change

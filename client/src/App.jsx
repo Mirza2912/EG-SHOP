@@ -174,7 +174,7 @@ const App = () => {
         guestCart.forEach((item) => {
           dispatch(
             addToCartBackend({
-              productId: item?.productId,
+              productId: item?.product,
               quantity: item?.quantity,
               price: item?.price,
             })

@@ -1,4 +1,5 @@
 const Cart = require("../Models/CartSchema");
+const Product = require("../Models/ProductSchema");
 
 // Add an item to the cart
 const addItemToCart = async (req, res) => {
@@ -26,16 +27,23 @@ const addItemToCart = async (req, res) => {
     const itemIndex = cart.items.findIndex(
       (item) => item.product.toString() === productId
     );
+    // console.log(itemIndex);
 
     if (itemIndex > -1) {
-      // If the product exists, update the quantity
-      cart.items[itemIndex].quantity += quantity;
+      const product = await Product.findById(productId);
+
+      product?.stock > quantity + cart.items[itemIndex]?.quantity
+        ? (cart.items[itemIndex].quantity += quantity)
+        : (cart.items[itemIndex].quantity = product?.stock);
     } else {
       // Add new item to the cart
       cart.items.push({ product: productId, quantity, price });
     }
 
+    // console.log(cart);
+
     // cart.updatedAt = Date.now();
+    await cart.populate("items.product");
     await cart.save();
 
     res
@@ -54,6 +62,8 @@ const getCart = async (req, res) => {
   try {
     const userId = req.user._id;
     const cart = await Cart.findOne({ user: userId }).populate("items.product");
+    // console.log(cart?.items[0]);
+
     if (!cart) {
       return res
         .status(404)
@@ -121,9 +131,14 @@ const updateCartItem = async (req, res) => {
 const removeCartItem = async (req, res) => {
   try {
     const { id } = req.params;
+    // console.log(id);
+    // console.log(req.body);
+
     const userId = req.user._id;
 
     let cart = await Cart.findOne({ user: userId });
+    // console.log(cart);
+
     if (!cart) {
       return res
         .status(404)
@@ -131,8 +146,9 @@ const removeCartItem = async (req, res) => {
     }
 
     // Filter out the item to be removed
-    cart.items = cart.items.filter((item) => item._id.toString() !== id);
+    cart.items = cart.items?.filter((item) => item._id.toString() !== id);
     await cart.save();
+    // console.log(cart);
 
     res.status(200).json({
       success: true,

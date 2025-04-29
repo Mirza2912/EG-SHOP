@@ -16,6 +16,7 @@ import blog3 from "../../assets/blog-h3-3.png";
 import blog4 from "../../assets/blog-h3-4.png";
 import Products from "../Products/Products";
 import Services from "../Services/Services";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   const categories = [
@@ -89,12 +90,12 @@ const Hero = () => {
             Up to 50% off, Only This Week Don't Miss!
           </p>
 
-          <button
+          <Link
+            to={"/shop"}
             className="bg-[white] hover:bg-[#00896f] text-lg text-[#00896f] hover:text-white ease-in duration-300 rounded-3xl px-5 py-2 mt-3"
-            type="button"
           >
             Shop Now
-          </button>
+          </Link>
         </div>
       </section>
 

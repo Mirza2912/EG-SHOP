@@ -61,7 +61,7 @@ const getSingleProduct = createAsyncThunk(
       // console.log(response?.data);
       return response?.data?.product; //returning fetched data
     } catch (error) {
-      // console.log(error.response.data?.message);
+      console.log(error.response.data?.message);
       return rejectWithValue(
         error.response.data?.errors ||
           error.response.data?.message ||
