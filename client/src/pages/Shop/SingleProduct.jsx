@@ -47,14 +47,14 @@ const SingleProduct = () => {
     const itemDataToAddToCartBackend = {
       productId: product?._id,
       quantity,
-      price: product?.price,
+      price: product?.price * quantity,
     };
 
     //data to send backend to create cart
     const itemDataToAddToCartLocal = {
       product: product?._id,
       quantity,
-      price: product?.price,
+      price: product?.price * quantity,
       _id: uuidv4(),
     };
     //when user logged in

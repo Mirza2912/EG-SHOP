@@ -162,6 +162,7 @@ const App = () => {
   useEffect(() => {
     //AUTOMATICALLY LOAD USER WHEN PAGE RELOAD AFTER LOG IN
     dispatch(loadUser());
+    // console.log(loadCartFromLocalStorage());
 
     /*GET USER CART ITEMS AUTOMATICALLY WHEN APP LOAD AND RELOAD*/
     //get cart if user logged in

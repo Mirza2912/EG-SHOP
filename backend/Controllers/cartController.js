@@ -81,13 +81,14 @@ const getCart = async (req, res) => {
 // Update the quantity of a specific cart item
 const updateCartItem = async (req, res) => {
   try {
-    const { quantity, productId } = req.body;
+    const { quantity, productId, price } = req.body;
     const userId = req.user._id;
+    // console.log(price);
 
-    if (!quantity || !productId) {
+    if (!quantity || !productId || !price) {
       return res.status(401).json({
         success: false,
-        message: "quantity and id of product required",
+        message: "quantity , id and price of product required",
       });
     }
 
@@ -112,6 +113,7 @@ const updateCartItem = async (req, res) => {
 
     // Update the quantity
     cart.items[itemIndex].quantity = quantity;
+    cart.items[itemIndex].price = price;
     await cart.populate("items.product");
     await cart.save();
     // console.log(cart);
