@@ -30,13 +30,6 @@ const EditUserProfile = () => {
     dispatch(changeUserPassword(formData));
   };
 
-  useEffect(() => {
-    if (error) {
-      toast.error(error);
-      dispatch(clearError());
-    }
-  }, [error]);
-
   return (
     <section className="container mx-auto flex justify-center flex-col items-center">
       <div className="rounded-xl shadow-2xl lg:w-[75%] w-[100%] px-9 py-5 mb-5">

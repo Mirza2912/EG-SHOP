@@ -98,10 +98,6 @@ const Shop = () => {
   };
 
   useEffect(() => {
-    if (error) {
-      toast.error(error);
-      dispatch(clearError());
-    }
     dispatch(getAllProducts());
     dispatch(getAllCategories());
   }, []);

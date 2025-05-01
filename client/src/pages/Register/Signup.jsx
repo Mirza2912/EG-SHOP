@@ -38,12 +38,6 @@ const Signup = () => {
     }
   };
 
-  useEffect(() => {
-    if (error) {
-      toast.error(error);
-      dispatch(clearError());
-    }
-  }, [error]);
   return (
     <>
       <section>

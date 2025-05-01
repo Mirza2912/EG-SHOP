@@ -24,18 +24,13 @@ const ForgotUserPassword = () => {
   };
 
   useEffect(() => {
-    if (error) {
-      toast.error(error);
-      dispatch(clearError());
-    }
-
     if (forgotPasswordMessage) {
       toast.success(forgotPasswordMessage);
       dispatch(clearForgotPasswordMessage());
       navigate("/user/otp-verification");
       setEmail("");
     }
-  }, [error, forgotPasswordMessage]);
+  }, [forgotPasswordMessage]);
   return (
     <section className="container pt-20 pb-16 mx-auto flex justify-center flex-col items-center">
       <div className="rounded-xl shadow-2xl lg:w-[75%] w-[100%] px-9 py-5 mb-5">

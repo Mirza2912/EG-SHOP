@@ -73,11 +73,6 @@ const SingleProduct = () => {
 
   useEffect(() => {
     dispatch(getSingleProduct(id));
-
-    if (error) {
-      toast.error(error);
-      dispatch(clearError());
-    }
   }, []);
 
   return (
