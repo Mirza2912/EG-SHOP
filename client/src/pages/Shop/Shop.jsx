@@ -8,10 +8,14 @@ import { toast } from "react-toastify";
 import { getAllCategories } from "../../Store/Category/CategorySliceReducers.js";
 import Loader from "../../components/Loader/Loader.jsx";
 import Banner from "../../components/Banner/Banner.jsx";
+import { v4 as uuidv4 } from "uuid";
+import { addToCartBackend } from "../../Store/Cart/CartSliceReducers.js";
+import { addToCartLocal } from "../../Store/Cart/CartSlice.js";
 
 const Shop = () => {
   const { isLoading, products, error } = useSelector((state) => state.products);
   const { category } = useSelector((state) => state.category);
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
 
@@ -67,6 +71,32 @@ const Shop = () => {
     dispatch(getAllProducts());
     setFilterOpen(false);
   };
+
+  const handleAddToCart = (id, quantity, price) => {
+    //data to send backend to create cart
+    const itemDataToAddToCartBackend = {
+      productId: id,
+      quantity,
+      price,
+    };
+
+    //data to send backend to create cart
+    const itemDataToAddToCartLocal = {
+      product: id,
+      quantity,
+      price,
+      _id: uuidv4(),
+    };
+
+    //when user logged in
+    if (isAuthenticated !== "") {
+      dispatch(addToCartBackend(itemDataToAddToCartBackend));
+    } else if (isAuthenticated === "") {
+      dispatch(addToCartLocal(itemDataToAddToCartLocal));
+      toast.success("item added to cart successfully");
+    }
+  };
+
   useEffect(() => {
     if (error) {
       toast.error(error);
@@ -246,12 +276,16 @@ const Shop = () => {
                           ${prod.price}
                         </p>
                       </div>
-                      <button
+                      <Link
+                        to={`/shop`}
+                        onClick={() =>
+                          handleAddToCart(prod?._id, 1, prod?.price)
+                        }
                         className="bg-[#f96822] hover:bg-[#9f522bf8] z-50 text-lg text-[#ffff] ease-in duration-200 rounded-3xl px-5 py-2 my-3"
                         type="button"
                       >
                         Add to Cart
-                      </button>
+                      </Link>
                     </div>
                   </Link>
                 );

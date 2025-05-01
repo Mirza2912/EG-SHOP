@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import innerBannr from "../../assets/inner-banner.jpg";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { userLogin } from "../../Store/Auth/AuthSliceReducers";
 import { toast } from "react-toastify";
@@ -9,6 +9,11 @@ import { clearError } from "../../Store/Auth/AuthSlice";
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const location = useLocation();
+
+  const from = location.state?.from?.pathname || "/profile";
+  // console.log(location);
 
   const { isLoading, error, user, isAuthenticated } = useSelector(
     (state) => state.auth
@@ -27,7 +32,7 @@ const Login = () => {
   const handleLoginSubmit = (e) => {
     e.preventDefault();
     dispatch(userLogin(formData));
-    if (isAuthenticated) {
+    if (isAuthenticated !== "") {
       setFormData({
         email: "",
         password: "",
@@ -36,16 +41,11 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if (error) {
-      // toast.error(error);
-      dispatch(clearError());
-    }
     if (isAuthenticated !== "") {
       toast.success(isAuthenticated);
-
-      navigate("/profile", { replace: true });
+      navigate(from, { replace: true });
     }
-  }, [error, isAuthenticated]);
+  }, [isAuthenticated]);
 
   return (
     <>

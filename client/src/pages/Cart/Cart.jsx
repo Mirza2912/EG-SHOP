@@ -375,7 +375,7 @@ const Cart = () => {
                 </div>
                 <div className="mt-6">
                   <Link
-                    to={"/checkout"}
+                    to={"/checkout/shipping"}
                     className="flex items-center justify-center rounded-md border border-transparent bg-[#f96822] hover:text-[#9f522bf8]px-6 py-3 text-base font-medium text-white shadow-sm"
                   >
                     Checkout

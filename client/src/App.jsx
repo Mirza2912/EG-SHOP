@@ -22,6 +22,7 @@ import Profile from "./pages/User/Profile.jsx";
 import {
   clearChangeUserPasswordMessage,
   clearEditProfileMessage,
+  clearError,
   cleareUserDeleteMessage,
   clearForgotPasswordMessage,
   clearLogoutMessage,
@@ -63,6 +64,7 @@ const App = () => {
     forgotPasswordMessage,
     userRegisterMessage,
     isAuthenticated,
+    error,
   } = useSelector((state) => state.auth);
 
   /* CART STATE*/
@@ -72,12 +74,28 @@ const App = () => {
     updateCartOfLocalMessage,
   } = useSelector((state) => state.cart);
 
+  const toastShownRef = useRef(false);
+
   /* USEEFFCART FOR TOAST AND CLEAR MESSAGES*/
   useEffect(() => {
     let timeout;
 
     /* FOR USER AUTHENTICATION */
 
+    if (error) {
+      // console.log(error);
+
+      if (error === "No token, authorization denied") {
+        timeout = setTimeout(() => {
+          dispatch(clearError());
+        }, 1500);
+      } else {
+        toast.error(error);
+        timeout = setTimeout(() => {
+          dispatch(clearError());
+        }, 1500);
+      }
+    }
     //user reagisteration success message show
     if (userRegisterMessage) {
       toast.success(userRegisterMessage);
@@ -88,11 +106,16 @@ const App = () => {
     }
     //user logout success message show
     if (logOutMessage) {
-      toast.success(logOutMessage);
+      // console.log(logOutMessage);
+      if (!toastShownRef.current) {
+        toast.success(logOutMessage);
+        toastShownRef.current = true;
+      }
+
       dispatch(clearCartLocal());
       timeout = setTimeout(() => {
         dispatch(clearLogoutMessage());
-        navigate("/login", { replace: true });
+        navigate("/login");
       }, 1500);
     }
     //user update profile success message show
@@ -156,6 +179,7 @@ const App = () => {
     addToCartBackendMessage,
     addToCartUpdateBackendMessage,
     updateCartOfLocalMessage,
+    error,
   ]);
 
   /* USEEFFECT FOR LOGICS*/
@@ -198,9 +222,11 @@ const App = () => {
         <Route path="/about" element={<AboutUs />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/cart" element={<Cart />} />
-        <Route path="/checkout" element={<Checkout />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/checkout/shipping" element={<Checkout />} />
+        </Route>
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<Profile />} />
         </Route>

@@ -7,7 +7,10 @@ import { clearError } from "../../Store/Products/ProductSlice";
 import { getSingleProduct } from "../../Store/Products/ProductSliceReducers";
 import Loader from "../../components/Loader/Loader";
 import { addToCartBackend } from "../../Store/Cart/CartSliceReducers";
-import { addToCartLocal } from "../../Store/Cart/CartSlice";
+import {
+  addToCartLocal,
+  clearAddToCartBackendMessage,
+} from "../../Store/Cart/CartSlice";
 import { v4 as uuidv4 } from "uuid";
 
 const SingleProduct = () => {
@@ -27,6 +30,7 @@ const SingleProduct = () => {
   // console.log(product);
 
   const { isAuthenticated } = useSelector((state) => state.auth);
+  const { addToCartBackendMessage } = useSelector((state) => state.cart);
 
   const [quantity, setQuantity] = useState(1);
 
@@ -62,8 +66,9 @@ const SingleProduct = () => {
       dispatch(addToCartBackend(itemDataToAddToCartBackend));
     } else if (isAuthenticated === "") {
       dispatch(addToCartLocal(itemDataToAddToCartLocal));
+      toast.success("item added to cart successfully");
     }
-    navigate("/cart");
+    navigate("/shop", { replace: true });
   };
 
   useEffect(() => {
