@@ -4,10 +4,13 @@ const Category = require("../Models/CategorySchema");
 const Product = require("../Models/ProductSchema");
 const { validationResult } = require("express-validator");
 const cloudinary = require("cloudinary");
-const validateRequest = require("../Utilities/expressValidatore");
 
 // Create a new product
 const createProduct = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array()[0].msg });
+  }
   const data = req.body;
   // console.log(data.category);
 
@@ -131,6 +134,10 @@ const createProduct = async (req, res, next) => {
 
 // Get all products
 const getAllProducts = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array()[0].msg });
+  }
   try {
     const {
       keyword = "",
@@ -206,6 +213,10 @@ const getAllProducts = async (req, res, next) => {
 
 // Get a single product by ID
 const getProductById = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array()[0].msg });
+  }
   try {
     // console.log(req.params.id);
 
@@ -233,6 +244,10 @@ const getProductById = async (req, res) => {
 
 // Update a product by ID
 const updateProduct = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array()[0].msg });
+  }
   try {
     // console.log(req.params.id + req.body.name);
     // console.log(req.files?.images);
@@ -291,6 +306,10 @@ const updateProduct = async (req, res, next) => {
 
 // Delete a product by ID
 const deleteProduct = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array()[0].msg });
+  }
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
     if (!product) {

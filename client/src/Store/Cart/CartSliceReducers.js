@@ -84,13 +84,13 @@ const deleteCartItemBackend = createAsyncThunk(
   "cart/deleteCartItemBackend",
   async (id, { rejectWithValue }) => {
     try {
-      console.log(id);
+      // console.log(id);
 
       const response = await axios.delete(
         `/api/cart/deleteCartItem/${id}`,
         config
       );
-      console.log(response?.data);
+      // console.log(response?.data);
       return response?.data; //returning fetched data
     } catch (error) {
       console.log(error);

@@ -4,7 +4,7 @@ const loadCartFromLocalStorage = () => {
   return cart ? JSON.parse(cart) : [];
 };
 const saveCartToLocalStorage = (cart) => {
-  // console.log(cart);
+  // console.log(cart?.items[0]);
 
   localStorage.setItem("cart", JSON.stringify(cart));
 };

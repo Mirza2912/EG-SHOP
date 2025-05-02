@@ -40,9 +40,11 @@ const Login = () => {
     }
   };
 
+  const toastShownRef = useRef(false);
   useEffect(() => {
-    if (isAuthenticated !== "") {
+    if (isAuthenticated !== "" && toastShownRef.current === false) {
       toast.success(isAuthenticated);
+      toastShownRef.current = true;
       navigate(from, { replace: true });
     }
   }, [isAuthenticated]);

@@ -60,6 +60,7 @@ const SingleProduct = () => {
       quantity,
       price: product?.price * quantity,
       _id: uuidv4(),
+      stock: product?.stock,
     };
     //when user logged in
     if (isAuthenticated !== "") {
@@ -134,11 +135,11 @@ const SingleProduct = () => {
                 ${product?.price}
               </p>
               {product?.discount > 0 && (
-                <p className="text-xl font-semibold text-green-600 mb-2">
+                <p className="text-xl font-semibold text-gray-800 mb-2">
                   <span className="text-[#f96822] text-2xl font-bold">
                     Discount :{" "}
                   </span>{" "}
-                  {product?.discount}%
+                  Rs.{product?.discount}
                 </p>
               )}
               <p

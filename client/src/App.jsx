@@ -1,8 +1,10 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import ProtectedRoute from "./routes/ProtectedRouteForUser.jsx";
 import { toast } from "react-toastify";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 
 /* PAGES IMPORT STATEMENT */
 import Home from "./pages/Home/Home";
@@ -12,7 +14,6 @@ import Footer from "./components/Footer/Footer";
 import AboutUs from "./pages/AboutUs/AboutUs";
 import ContactUs from "./pages/ContactUs/ContactUs";
 import Cart from "./pages/Cart/Cart";
-import Checkout from "./pages/Checkout/Checkout";
 import NotFoundPage from "./pages/NotFound/NotFoundPage.jsx";
 
 /* USER IMPORT STATEMENT */
@@ -49,11 +50,23 @@ import {
   clearCartLocal,
   clearUpdateCartOfLocalMessage,
 } from "./Store/Cart/CartSlice.js";
+import Checkout from "./pages/Order/Checkout.jsx";
+import Shipping from "./pages/Order/Shipping.jsx";
+import Payment from "./pages/Order/Payment.jsx";
+import { loadShippingFromLocalStorage } from "./Store/Order/OrderLocalStorageHandler.js";
+import ConfirmOrder from "./pages/Order/ConfirmOrder.jsx";
+import axios from "axios";
+import OrderComplete from "./pages/Order/OrderComplete.jsx";
 
 /* APP COMPONENT */
 const App = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const stripeApiKey = import.meta.env.VITE_STRIPE_API_KEY;
+  console.log(stripeApiKey);
+
+  const stripePromise = useMemo(() => loadStripe(stripeApiKey), [stripeApiKey]);
 
   /* USER STATE*/
   const {
@@ -184,6 +197,8 @@ const App = () => {
 
   /* USEEFFECT FOR LOGICS*/
   useEffect(() => {
+    // console.log(loadShippingFromLocalStorage());
+
     //AUTOMATICALLY LOAD USER WHEN PAGE RELOAD AFTER LOG IN
     dispatch(loadUser());
     // console.log(loadCartFromLocalStorage());
@@ -212,9 +227,11 @@ const App = () => {
       dispatch(getCart());
     }
   }, [isAuthenticated]);
+
   return (
     <>
       <Navbar />
+
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/shop" element={<Shop />} />
@@ -225,19 +242,30 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route element={<ProtectedRoute />}>
-          <Route path="/checkout/shipping" element={<Checkout />} />
-        </Route>
-        <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<Profile />} />
-        </Route>
-        <Route element={<ProtectedRoute />}>
           <Route path="/user/edit-profile" element={<EditUserProfile />} />
-        </Route>
-        <Route element={<ProtectedRoute />}>
           <Route
             path="/user/change-password"
             element={<ChangeUserPassword />}
           />
+          <Route path="/checkout/*" element={<Checkout />}>
+            <Route index element={<Shipping />} />
+            <Route
+              path="payment"
+              element={
+                stripeApiKey ? (
+                  <Elements stripe={stripePromise}>
+                    <Payment />
+                  </Elements>
+                ) : (
+                  <div>Loading Payment...</div>
+                )
+              }
+            />
+            <Route path="shipping" element={<Shipping />} />
+            <Route path="order-confirm" element={<ConfirmOrder />} />
+            <Route path="success" element={<OrderComplete />} />
+          </Route>
         </Route>
         <Route path="/user/forgot-password" element={<ForgotUserPassword />} />
         <Route path="/user/otp-verification" element={<OtpVerification />} />

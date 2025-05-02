@@ -1,11 +1,16 @@
 const Cart = require("../Models/CartSchema");
 const Product = require("../Models/ProductSchema");
+const { validationResult } = require("express-validator");
 
 // Add an item to the cart
 const addItemToCart = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array()[0].msg });
+  }
   try {
     const { productId, quantity, price } = req.body;
-    // console.log(productId, quantity, price);
+    // console.log("new product quantity :" + quantity);
 
     //bhai yahan pe userId nahi ana srf req.user._id because mogodb default id deti he with key of _id
     const userId = req.user._id; // Assumes auth middleware sets req.user.userId
@@ -29,26 +34,27 @@ const addItemToCart = async (req, res) => {
     );
     // console.log(itemIndex);
 
+    var message = "";
     if (itemIndex > -1) {
       const product = await Product.findById(productId);
 
-      product?.stock > quantity + cart.items[itemIndex]?.quantity
-        ? (cart.items[itemIndex].quantity += quantity)
-        : (cart.items[itemIndex].quantity = product?.stock);
+      if (product?.stock > cart.items[itemIndex]?.quantity + quantity) {
+        cart.items[itemIndex].quantity += quantity;
+        message = "Item quantity updated in cart";
+      } else {
+        cart.items[itemIndex].quantity = product?.stock;
+        message = "Item quantity updated in cart to max stock";
+      }
     } else {
       // Add new item to the cart
       cart.items.push({ product: productId, quantity, price });
+      message = "Item added to cart";
     }
 
-    // console.log(cart);
-
-    // cart.updatedAt = Date.now();
     await cart.populate("items.product");
     await cart.save();
 
-    res
-      .status(200)
-      .json({ success: true, cart, message: "Item add to cart successfully" });
+    res.status(200).json({ success: true, cart, message });
   } catch (error) {
     console.error("Error in addItemToCart:", error);
     res
@@ -80,6 +86,10 @@ const getCart = async (req, res) => {
 
 // Update the quantity of a specific cart item
 const updateCartItem = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array()[0].msg });
+  }
   try {
     const { quantity, productId, price } = req.body;
     const userId = req.user._id;
@@ -131,6 +141,10 @@ const updateCartItem = async (req, res) => {
 
 // Remove a specific item from the cart
 const removeCartItem = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array()[0].msg });
+  }
   try {
     const { id } = req.params;
     // console.log(id);
@@ -138,7 +152,7 @@ const removeCartItem = async (req, res) => {
 
     const userId = req.user._id;
 
-    let cart = await Cart.findOne({ user: userId });
+    let cart = await Cart.findOne({ user: userId }).populate("items.product");
     // console.log(cart);
 
     if (!cart) {
@@ -150,6 +164,7 @@ const removeCartItem = async (req, res) => {
     // Filter out the item to be removed
     cart.items = cart.items?.filter((item) => item._id.toString() !== id);
     await cart.save();
+
     // console.log(cart);
 
     res.status(200).json({

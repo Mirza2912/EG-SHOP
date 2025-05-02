@@ -43,7 +43,7 @@ const Cart = () => {
 
   //method for handle item of cart updation
   const handleAddToCartUpdate = (quantity, itemId, price) => {
-    console.log(quantity, itemId, price);
+    // console.log(quantity, itemId, price);
 
     //object to send backend to update item
     const updateDataToCartItemBackend = {
@@ -246,7 +246,7 @@ const Cart = () => {
                                       src={
                                         item?.product?.images?.length > 0
                                           ? item?.product?.images[0]?.url
-                                          : "/src/assets/about-bg.jpg"
+                                          : ""
                                       }
                                       alt={
                                         item?.product?.images?.length > 0
@@ -369,14 +369,17 @@ const Cart = () => {
               </div>
 
               <div className="border-t border-gray-500 px-4 py-6 sm:px-6">
-                <div className="flex justify-between text-lg font-bold text-gray-900">
+                <div className="flex justify-between items-center text-lg font-bold text-gray-900">
                   <p>Subtotal</p>
-                  <p>Rs.{subTotal}</p>
+                  <div className="flex flex-col items-end">
+                    <p className="text-gray-500 font-normal">shipping : 200</p>
+                    <p>Rs.{subTotal + 200}</p>
+                  </div>
                 </div>
                 <div className="mt-6">
                   <Link
                     to={"/checkout/shipping"}
-                    className="flex items-center justify-center rounded-md border border-transparent bg-[#f96822] hover:text-[#9f522bf8]px-6 py-3 text-base font-medium text-white shadow-sm"
+                    className="flex items-center justify-center rounded-md border border-transparent bg-[#f96822] hover:text-[#9f522bf8] px-6 py-3 text-base font-medium text-white shadow-sm"
                   >
                     Checkout
                   </Link>

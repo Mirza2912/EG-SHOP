@@ -10,6 +10,8 @@ import {
   getCart,
 } from "./CartSliceReducers";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { getSingleProduct } from "../Products/ProductSliceReducers";
 
 const cartSlice = createSlice({
   name: "cart",
@@ -31,12 +33,17 @@ const cartSlice = createSlice({
       // console.log(itemToAdd);
 
       const existItem = state.cartItems?.find(
-        (item) => item.productId === itemToAdd.product
+        (item) => item.product === itemToAdd.product
       );
-      // console.log(existItem);
 
       if (existItem) {
-        existItem.quantity += itemToAdd.quantity;
+        // console.log("Existed item find" + existItem);
+
+        if (existItem.stock > existItem?.quantity + itemToAdd?.quantity) {
+          existItem.quantity += itemToAdd.quantity;
+        } else {
+          existItem.quantity = existItem.stock;
+        }
       } else {
         state.cartItems.push(itemToAdd);
       }

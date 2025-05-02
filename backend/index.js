@@ -8,6 +8,7 @@ const productRoutes = require("./Routers/productRoutes");
 const categoryRoutes = require("./Routers/categoryRoutes");
 const cartRoutes = require("./Routers/cartRoutes");
 const orderRoutes = require("./Routers/orderRoutes");
+const paymentRouters = require("./Routers/paymentRoute");
 const cloudinary = require("cloudinary");
 const fileUpload = require("express-fileupload");
 // Connect to MongoDB
@@ -35,6 +36,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/payment", paymentRouters);
 // Uncaught Exception & Rejection Handlers
 process.on("uncaughtException", (err) => {
   console.error("Uncaught Exception:", err);

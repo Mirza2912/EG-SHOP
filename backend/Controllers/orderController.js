@@ -7,10 +7,10 @@ const createOrder = async (req, res) => {
     const {
       orderItems, // Expected as an array of items with: product, name, qty, price, image
       shippingAddress,
-      paymentMethod,
-      taxPrice,
       shippingPrice,
       totalPrice,
+      isPaid,
+      paidAt,
     } = req.body;
 
     // Validate that order items exist
@@ -19,42 +19,25 @@ const createOrder = async (req, res) => {
         .status(400)
         .json({ success: false, message: "No order items" });
     }
-
-    // Prepare order items by copying details and leaving orderId as null for now.
-    // Later, after saving the order, we update orderId field.
-    const preparedOrderItems = orderItems.map((item) => ({
-      orderId: null, // To be updated after order creation
-      product: item.product,
-      name: item.name,
-      qty: item.qty,
-      price: item.price,
-      image: item.image,
-    }));
+    console.log(orderItems);
 
     // Create a new order document with the logged-in user's ID and the order items
     const order = new Order({
-      user: req.user.userId, // Assumes auth middleware sets req.user.userId
-      orderItems: preparedOrderItems,
+      user: req.user._id, // Assumes auth middleware sets req.user.userId
+      orderItems,
       shippingAddress,
-      paymentMethod,
-      taxPrice,
+      paymentMethod: "Card Payment",
       shippingPrice,
       totalPrice,
+      isPaid,
     });
 
     // Save the order to generate an _id
     const createdOrder = await order.save();
 
-    // Update each embedded order item with the generated order _id
-    createdOrder.orderItems = createdOrder.orderItems.map((item) => {
-      item.orderId = createdOrder._id;
-      return item;
-    });
-    await createdOrder.save();
-
     // Update the user's cart accordingly.
     // Retrieve the user's cart.
-    const cart = await Cart.findOne({ user: req.user.userId });
+    const cart = await Cart.findOne({ user: req.user._id });
     if (cart) {
       // For each ordered item, adjust or remove the matching item from the cart.
       orderItems.forEach((orderedItem) => {
@@ -74,6 +57,7 @@ const createOrder = async (req, res) => {
         }
       });
       await cart.save();
+      // console.log(createdOrder);
     }
 
     res.status(201).json({ success: true, data: createdOrder });

@@ -72,7 +72,9 @@ const Shop = () => {
     setFilterOpen(false);
   };
 
-  const handleAddToCart = (id, quantity, price) => {
+  const handleAddToCart = (id, quantity, price, stock) => {
+    // console.log(stock);
+
     //data to send backend to create cart
     const itemDataToAddToCartBackend = {
       productId: id,
@@ -86,6 +88,7 @@ const Shop = () => {
       quantity,
       price,
       _id: uuidv4(),
+      stock,
     };
 
     //when user logged in
@@ -275,7 +278,12 @@ const Shop = () => {
                       <Link
                         to={`/shop`}
                         onClick={() =>
-                          handleAddToCart(prod?._id, 1, prod?.price)
+                          handleAddToCart(
+                            prod?._id,
+                            1,
+                            prod?.price,
+                            prod?.stock
+                          )
                         }
                         className="bg-[#f96822] hover:bg-[#9f522bf8] z-50 text-lg text-[#ffff] ease-in duration-200 rounded-3xl px-5 py-2 my-3"
                         type="button"
