@@ -92,11 +92,11 @@ const userLogOut = createAsyncThunk("user/logOut", async () => {
 
     return response.data;
   } catch (error) {
-    return rejectWithValue(
+    return (
       error.response.data?.errors ||
-        error.response.data?.message ||
-        error.message ||
-        "Failed to logout user"
+      error.response.data?.message ||
+      error.message ||
+      "Failed to logout user"
     );
   }
 });

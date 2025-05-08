@@ -6,14 +6,22 @@ import { useDispatch, useSelector } from "react-redux";
 import { setShippingAddress } from "../../Store/Order/OrderSlice";
 import { Country, State, City } from "country-state-city";
 import { loadShippingFromLocalStorage } from "../../Store/Order/OrderLocalStorageHandler";
+import FloatingInput from "../../components/FloatingInput/FloatingInput";
+import { FaAddressBook, FaCity } from "react-icons/fa";
+import { CiBarcode } from "react-icons/ci";
+import LoadingButton from "../../components/LoadingButton/LoadingButton";
 
 const Shipping = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const [isFocused, setIsFocused] = useState(false);
+
   // console.log(City.getCitiesOfState("PK", "PB"));
 
   const { isLoading, shippingAddress } = useSelector((state) => state.order);
+
+  const { cartItems } = useSelector((state) => state.cart);
   // console.log(shippingAddress);
 
   const [shipping, setShipping] = useState({
@@ -43,129 +51,116 @@ const Shipping = () => {
     navigate("/checkout/order-confirm");
   };
 
+  useEffect(() => {
+    if (!cartItems) {
+      navigate("/");
+    }
+  }, [cartItems]);
+
   return (
     <>
       {/* Registeration form - signup */}
       <section className="container mx-auto flex justify-center flex-col items-center">
-        <div className="rounded-xl shadow-2xl lg:w-[75%] w-[100%] px-9 py-5 mb-5">
-          <form className="mx-auto mt-4" onSubmit={submitHandler}>
-            <div>
-              <p className="text-3xl font-semibold text-center pb-5">
-                Shipping Address
-              </p>
-              <div className="mb-5">
-                <label
-                  htmlFor="address"
-                  className="block mb-2 text-sm font-medium text-gray-900"
-                >
-                  Address
-                </label>
-                <input
-                  type="text"
-                  name="address"
-                  value={shipping.address}
-                  onChange={handleChange}
-                  placeholder="Your address"
-                  className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                  required
-                />
-              </div>
-              <div className="mb-5">
-                <label
-                  htmlFor="country"
-                  className="block mb-2 text-sm font-medium text-gray-900"
-                >
-                  Country
-                </label>
-                <input
-                  type="text"
-                  name="country"
-                  placeholder="Enter your email"
-                  value={shipping.country}
-                  readOnly
-                  className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                  required
-                />
-              </div>
-              <div className="mb-5">
-                <label
-                  htmlFor="state"
-                  className="block mb-2 text-sm font-medium text-gray-900"
-                >
-                  State
-                </label>
-                <select
-                  name="state"
-                  value={shipping.state}
-                  onChange={handleChange}
-                  className=" bg-white border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                >
-                  <option value="">Select State</option>
-                  {State.getStatesOfCountry("PK").map((state) => (
-                    <option key={state.isoCode} value={state.name}>
-                      {state.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="mb-5">
-                <label
-                  htmlFor="city"
-                  className="block mb-2 text-sm font-medium text-gray-900"
-                >
-                  City
-                </label>
-                <select
-                  name="city"
-                  value={shipping.city}
-                  onChange={handleChange}
-                  className=" bg-white border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                >
-                  <option value="">Select City</option>
-                  {City.getCitiesOfState(
-                    "PK",
-                    `${
-                      State.getStatesOfCountry("PK").find(
-                        (state) => state.name === shipping.state
-                      )?.isoCode
-                    }`
-                  ).map((city) => (
-                    <option key={city.name} value={city.name}>
-                      {city.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="mb-5">
-                <label
-                  htmlFor="postalCode"
-                  className="block mb-2 text-sm font-medium text-gray-900"
-                >
-                  Postal Code
-                </label>
-                <input
-                  type="number"
-                  placeholder="Your postal code"
-                  value={shipping.postalCode}
-                  onChange={handleChange}
-                  name="postalCode"
-                  className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                  required
-                />
-              </div>
+        <div className="max-w-xl lg:max-w-2xl w-full mx-auto bg-white rounded-xl shadow-xl p-6 mb-10">
+          <form onSubmit={submitHandler}>
+            <p className="text-2xl sm:text-3xl font-semibold text-center mb-6">
+              Shipping Info
+            </p>
+            <FloatingInput
+              label="Address"
+              name="address"
+              icon={FaAddressBook}
+              type="text"
+              value={shipping.address}
+              onChange={handleChange}
+            />
+
+            <FloatingInput
+              label="Country"
+              name="country"
+              icon={FaCity}
+              type="text"
+              value={shipping.country}
+              onChange={handleChange}
+            />
+
+            <div className="mb-7 relative">
+              <FaCity className="text-xl text-gray-500 absolute top-4 left-2.5 z-10" />
+              <select
+                name="state"
+                value={shipping.state}
+                onChange={handleChange}
+                className={`w-full relative pl-10 pr-3 py-3 border border-gray-300 rounded-lg outline-none text-gray-800 bg-white peer transition-all duration-200 
+                    focus:border-gray-300 focus:ring-1 focus:ring-gray-300`}
+              >
+                <option value="">Select State</option>
+                {State.getStatesOfCountry("PK").map((state) => (
+                  <option key={state.isoCode} value={state.name}>
+                    {state.name}
+                  </option>
+                ))}
+              </select>
+              <label
+                htmlFor="state"
+                className={`absolute left-10 transition-all duration-200 text-gray-500 bg-white px-1
+            ${
+              isFocused || (shipping.state && shipping.state.length > 0)
+                ? "-top-2.5 text-sm text-[#f96822]"
+                : "top-1/2 -translate-y-1/2 text-base"
+            }
+          `}
+              >
+                State
+              </label>
             </div>
 
-            <button
-              type="submit"
-              disabled={isLoading}
-              className={`text-white mt-5 bg-[#f96822] hover:bg-[#f0824a] rounded-lg text-lg w-full px-5 py-6 text-center shadow-xl ${
-                isLoading &&
-                isLoading === true &&
-                "opacity-50 cursor-not-allowed"
-              }`}
-            >
-              Continue
-            </button>
+            <div className="mb-7 relative">
+              <FaCity className="text-xl text-gray-500 absolute top-4 left-2.5 z-10" />
+              <select
+                name="city"
+                value={shipping.city}
+                onChange={handleChange}
+                className={`w-full relative pl-10 pr-3 py-3 border border-gray-300 rounded-lg outline-none text-gray-800 bg-white peer transition-all duration-200 
+                    focus:border-gray-300 focus:ring-1 focus:ring-gray-300`}
+              >
+                <option value="">Select City</option>
+                {City.getCitiesOfState(
+                  "PK",
+                  `${
+                    State.getStatesOfCountry("PK").find(
+                      (state) => state.name === shipping.state
+                    )?.isoCode
+                  }`
+                ).map((city) => (
+                  <option key={city.name} value={city.name}>
+                    {city.name}
+                  </option>
+                ))}
+              </select>
+              <label
+                htmlFor="city"
+                className={`absolute left-10 transition-all duration-200 text-gray-500 bg-white px-1
+            ${
+              isFocused || (shipping.city && shipping.city.length > 0)
+                ? "-top-2.5 text-sm text-[#f96822]"
+                : "top-1/2 -translate-y-1/2 text-base"
+            }
+          `}
+              >
+                State
+              </label>
+            </div>
+
+            <FloatingInput
+              label="Postal Code"
+              name="postalCode"
+              icon={CiBarcode}
+              type="number"
+              value={shipping.postalCode}
+              onChange={handleChange}
+            />
+
+            <LoadingButton isLoading={isLoading}>Continue</LoadingButton>
           </form>
         </div>
       </section>

@@ -5,6 +5,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { userLogin } from "../../Store/Auth/AuthSliceReducers";
 import { toast } from "react-toastify";
 import { clearError } from "../../Store/Auth/AuthSlice";
+import { FiUser } from "react-icons/fi";
+import { MdOutlineMail } from "react-icons/md";
+import { RiLockPasswordLine } from "react-icons/ri";
+import FloatingInput from "../../components/FloatingInput/FloatingInput";
+import LoadingButton from "../../components/LoadingButton/LoadingButton";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -12,7 +17,9 @@ const Login = () => {
 
   const location = useLocation();
 
-  const from = location.state?.from?.pathname || "/profile";
+  const [isFocused, setIsFocused] = useState(null);
+
+  const from = location.state?.from?.pathname || "/";
   // console.log(location);
 
   const { isLoading, error, user, isAuthenticated } = useSelector(
@@ -51,7 +58,7 @@ const Login = () => {
 
   return (
     <>
-      <section>
+      <section className="w-full">
         {/* Banner */}
         <div
           style={{
@@ -59,23 +66,21 @@ const Login = () => {
           }}
           className="bg-cover bg-center"
         >
-          <p className="text-4xl text-center text-white font-bold pt-28">
+          <p className="text-3xl md:text-4xl text-center text-white font-bold pt-20 md:pt-28">
             Login
           </p>
-          {/* Breadcrumbs */}
-          <div className="pb-28">
+
+          {/* Breadcrumb */}
+          <div className="pb-20 md:pb-28">
             <nav className="text-center font-bold mt-4" aria-label="Breadcrumb">
-              <ol className="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
+              <ol className="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse text-sm">
                 <li className="inline-flex items-center">
                   <Link
-                    to={"/"}
-                    href="#"
+                    to="/"
                     className="inline-flex items-center text-white hover:text-gray-300 duration-300"
                   >
                     <svg
                       className="w-3 h-3 me-2.5"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -84,26 +89,21 @@ const Login = () => {
                     Home
                   </Link>
                 </li>
-
                 <li>
                   <div className="flex items-center">
                     <svg
                       className="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 6 10"
                     >
                       <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
                         d="m1 9 4-4-4-4"
+                        stroke="currentColor"
+                        strokeWidth="2"
                       />
                     </svg>
                     <Link
-                      to={"/login"}
+                      to="/login"
                       className="ms-1 text-white hover:text-gray-300 duration-300"
                     >
                       Login
@@ -116,79 +116,53 @@ const Login = () => {
         </div>
       </section>
 
-      {/* Registeration form - login */}
-      <section className="container mx-auto flex justify-center flex-col items-center">
-        <div className="flex justify-center items-center gap-3 mt-20 mb-8">
+      <section className="w-full px-4 sm:px-6 lg:px-8 py-10">
+        {/* Tabs */}
+        <div className="flex justify-center gap-10 mb-10">
           <Link
-            to={"/signup"}
-            className="bg-[white] hover:bg-[#ff9763] text-xl text-black ease-in duration-300 rounded-xl px-12 py-4 my-3 shadow-2xl"
-            type="button"
-          >
-            Register
-          </Link>
-          <Link
-            to={"/login"}
-            className=" bg-[#f96822] hover:bg-[#f96822] hover:text-white text-xl text-white ease-in duration-300 rounded-xl px-12 py-4 my-3 shadow-2xl"
-            type="button"
+            to="/login"
+            className="relative text-xl font-medium text-[#f96822] transition-all duration-300 hover:text-[#ff8a4c] after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#ff8a4c] hover:after:w-full after:transition-all after:duration-300"
           >
             Login
           </Link>
+          <Link
+            to="/signup"
+            className="relative text-xl font-medium text-gray-800 transition-all duration-300 hover:text-[#f96822] after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#f96822] hover:after:w-full after:transition-all after:duration-300"
+          >
+            Register
+          </Link>
         </div>
 
-        <div className="rounded-xl shadow-2xl lg:w-[75%] w-[100%] px-9 py-5 mb-5">
-          <form className="mx-auto mt-4" onSubmit={handleLoginSubmit}>
-            <div>
-              <p className="text-3xl font-semibold text-center pb-5">
-                LOGIN YOUR ACCOUNT
-              </p>
+        {/* Form Box */}
+        <div className="max-w-xl lg:max-w-2xl w-full mx-auto bg-white rounded-xl shadow-xl p-6">
+          <form onSubmit={handleLoginSubmit}>
+            <p className="text-2xl sm:text-3xl font-semibold text-center mb-6">
+              LOGIN YOUR ACCOUNT
+            </p>
 
-              <div className="mb-5">
-                <label
-                  htmlFor="email"
-                  className="block mb-2 text-sm font-medium text-gray-900"
-                >
-                  Email
-                </label>
-                <input
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                  required
-                />
-              </div>
-              <div className="mb-5">
-                <label
-                  htmlFor="password"
-                  className="block mb-2 text-sm font-medium text-gray-900"
-                >
-                  Password
-                </label>
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                  required
-                />
-              </div>
-            </div>
+            {/* email  */}
+            <FloatingInput
+              label="Email"
+              name="email"
+              icon={MdOutlineMail}
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+            />
 
-            <button
-              type="submit"
-              disabled={isLoading}
-              className={`text-white mt-5 bg-[#f96822] hover:bg-[#f0824a] rounded-lg text-lg w-full px-5 py-6 text-center shadow-xl ${
-                isLoading &&
-                isLoading === true &&
-                "opacity-50 cursor-not-allowed"
-              }`}
-            >
-              Login
-            </button>
-            <div className="flex justify-between mt-4">
-              <p className="text-sm text-gray-600">
+            {/* password  */}
+            <FloatingInput
+              label="Password"
+              name="password"
+              icon={RiLockPasswordLine}
+              type="password"
+              value={formData.password}
+              onChange={handleChange}
+            />
+            <LoadingButton isLoading={isLoading}>Login</LoadingButton>
+
+            <div className="flex flex-col sm:flex-row justify-between mt-4 text-sm text-gray-600 text-center sm:text-left">
+              <p>
                 Not registered?
                 <Link
                   to="/signup"
@@ -197,7 +171,7 @@ const Login = () => {
                   Register here
                 </Link>
               </p>
-              <p className="text-sm text-gray-600">
+              <p>
                 <Link
                   to="/user/forgot-password"
                   className="text-[#f96822] hover:underline"

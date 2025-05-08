@@ -11,6 +11,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { createOrder } from "../../Store/Order/OrderSliceReducer";
+import { FaAddressCard } from "react-icons/fa";
+import { FcExpired } from "react-icons/fc";
+import LoadingButton from "../../components/LoadingButton/LoadingButton";
 
 const Payment = () => {
   const orderInfo = JSON.parse(sessionStorage.getItem("orderInfo"));
@@ -143,42 +146,63 @@ const Payment = () => {
 
   return (
     <>
-      <div className="flex justify-center items-center py-6 ">
-        <div>
-          <form
-            className="w-[100%]  bg-white shadow-md rounded-lg p-6"
-            onSubmit={(e) => handleSubmit(e)}
-          >
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
-              Card Info
-            </h2>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-medium mb-2">
-                Card Number
-              </label>
-              <CardNumberElement className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-medium mb-2">
-                Expiry Date
-              </label>
-              <CardExpiryElement className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-            <div className="mb-6">
-              <label className="block text-gray-700 text-sm font-medium mb-2">
-                CVC
-              </label>
-              <CardCvcElement className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-            <button
-              type="submit"
-              ref={payBtn}
-              className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300 disabled:opacity-50"
+      <div className="max-w-xl lg:max-w-2xl w-full mx-auto bg-white rounded-xl shadow-xl p-6 mb-10">
+        <form onSubmit={(e) => handleSubmit(e)}>
+          <h2 className="text-2xl sm:text-3xl font-semibold text-center mb-6">
+            Card Info
+          </h2>
+          <div className="mb-7 relative">
+            <FaAddressCard className="text-xl text-gray-500 absolute top-3 left-2.5 z-10" />
+
+            <CardNumberElement
+              className={`w-full relative pl-10 pr-3 py-3 border border-gray-300 rounded-lg outline-none text-gray-800 bg-white peer transition-all duration-200 
+            focus:border-gray-300 focus:ring-1 focus:ring-gray-300`}
+            />
+            <label
+              className={`absolute left-10 transition-all duration-200 text-gray-500 bg-white px-1 -top-3 text-sm 
+           
+          `}
             >
-              Pay - Rs.{orderInfo && orderInfo.totalPrice}
-            </button>
-          </form>
-        </div>
+              Card Number
+            </label>
+          </div>
+          <div className="mb-7 relative">
+            <FcExpired className="text-xl text-gray-500 absolute top-3 left-2.5 z-10" />
+
+            <CardExpiryElement
+              className={`w-full relative pl-10 pr-3 py-3 border border-gray-300 rounded-lg outline-none text-gray-800 bg-white peer transition-all duration-200 
+            focus:border-gray-300 focus:ring-1 focus:ring-gray-300`}
+            />
+            <label
+              className={`absolute left-10 transition-all duration-200 text-gray-500 bg-white px-1 -top-3 text-sm 
+           
+          `}
+            >
+              Expiry Date
+            </label>
+          </div>
+          <div className="mb-7 relative">
+            <FaAddressCard className="text-xl text-gray-500 absolute top-3 left-2.5 z-10" />
+            <CardCvcElement
+              className={`w-full relative pl-10 pr-3 py-3 border border-gray-300 rounded-lg outline-none text-gray-800 bg-white peer transition-all duration-200 
+            focus:border-gray-300 focus:ring-1 focus:ring-gray-300`}
+            />
+            <label
+              className={`absolute left-10 transition-all duration-200 text-gray-500 bg-white px-1 -top-3 text-sm 
+           
+          `}
+            >
+              CVC
+            </label>
+          </div>
+          <button
+            type="submit"
+            ref={payBtn}
+            className="w-full py-3 mt-2 text-lg font-medium text-white rounded-lg shadow-md transition duration-300 bg-[#f96822] hover:bg-[#f0824a]"
+          >
+            Pay - Rs.{orderInfo && orderInfo.totalPrice}
+          </button>
+        </form>
       </div>
     </>
   );

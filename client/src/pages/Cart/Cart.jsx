@@ -43,7 +43,7 @@ const Cart = () => {
 
   //method for handle item of cart updation
   const handleAddToCartUpdate = (quantity, itemId, price) => {
-    // console.log(quantity, itemId, price);
+    console.log(quantity, itemId, price);
 
     //object to send backend to update item
     const updateDataToCartItemBackend = {

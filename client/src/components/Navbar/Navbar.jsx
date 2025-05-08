@@ -25,7 +25,6 @@ const Navbar = () => {
 
   const handleLogout = () => {
     dispatch(userLogOut());
-    // navigate("/");
   };
 
   return (
@@ -114,7 +113,7 @@ const Navbar = () => {
           <div className="hidden md:flex  justify-center items-center gap-7">
             <div className="relative  w-7 h-7">
               <p className="absolute bottom-5 text-center pt-0.5 -right-4 w-full h-full rounded-full bg-[#f96822]">
-                {cartItems?.length}
+                {cartItems?.length > 0 ? cartItems?.length : 0}
               </p>
               <Link
                 to={"/cart"}

@@ -5,6 +5,12 @@ import { registerUser } from "../../Store/Auth/AuthSliceReducers";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { clearError } from "../../Store/Auth/AuthSlice";
+import { CiUser } from "react-icons/ci";
+import { MdOutlineMail } from "react-icons/md";
+import { RiLockPasswordLine } from "react-icons/ri";
+import { FaPhoneAlt, FaUserCircle } from "react-icons/fa";
+import FloatingInput from "../../components/FloatingInput/FloatingInput";
+import LoadingButton from "../../components/LoadingButton/LoadingButton";
 
 const Signup = () => {
   const dispatch = useDispatch();
@@ -40,8 +46,8 @@ const Signup = () => {
 
   return (
     <>
+      {/* Banner */}
       <section>
-        {/* Banner */}
         <div
           style={{
             background: `linear-gradient(rgba(34, 46, 89, 0.7), rgba(7, 18, 62, 0.7)),url(${innerBannr})`,
@@ -51,19 +57,18 @@ const Signup = () => {
           <p className="text-4xl text-center text-white font-bold pt-28">
             Signup
           </p>
+
           {/* Breadcrumbs */}
           <div className="pb-28">
             <nav className="text-center font-bold mt-4" aria-label="Breadcrumb">
-              <ol className="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
+              <ol className="inline-flex items-center space-x-1 md:space-x-2">
                 <li className="inline-flex items-center">
                   <Link
                     to={"/"}
-                    href="#"
                     className="inline-flex items-center text-white hover:text-gray-300 duration-300"
                   >
                     <svg
                       className="w-3 h-3 me-2.5"
-                      aria-hidden="true"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="currentColor"
                       viewBox="0 0 20 20"
@@ -73,12 +78,10 @@ const Signup = () => {
                     Home
                   </Link>
                 </li>
-
                 <li>
                   <div className="flex items-center">
                     <svg
-                      className="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1"
-                      aria-hidden="true"
+                      className="w-3 h-3 text-gray-400 mx-1"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 6 10"
@@ -105,124 +108,103 @@ const Signup = () => {
         </div>
       </section>
 
-      {/* Registeration form - signup */}
-      <section className="container mx-auto flex justify-center flex-col items-center">
-        <div className="flex justify-center items-center gap-3 mt-20 mb-8">
+      {/* Signup Form Section */}
+      <section className="container mx-auto px-4 py-16">
+        <div className="flex justify-center gap-10 mb-10">
           <Link
-            to={"/signup"}
-            className="bg-[#f96822] hover:bg-[#ff9763] text-xl text-[#ffff] ease-in duration-300 rounded-xl px-12 py-4 my-3 shadow-2xl"
-            type="button"
+            to="/signup"
+            className="relative text-xl font-medium text-[#f96822] transition-all duration-300 hover:text-[#ff8a4c] after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#ff8a4c] hover:after:w-full after:transition-all after:duration-300"
           >
             Register
           </Link>
           <Link
-            to={"/login"}
-            className="bg-[white] hover:bg-[#f96822] hover:text-white text-xl text-black ease-in duration-300 rounded-xl px-12 py-4 my-3 shadow-2xl"
-            type="button"
+            to="/login"
+            className="relative text-xl font-medium text-gray-800 transition-all duration-300 hover:text-[#f96822] after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#f96822] hover:after:w-full after:transition-all after:duration-300"
           >
             Login
           </Link>
         </div>
 
-        <div className="rounded-xl shadow-2xl lg:w-[75%] w-[100%] px-9 py-5 mb-5">
-          <form className="mx-auto mt-4" onSubmit={submitHandler}>
-            <div>
-              <p className="text-3xl font-semibold text-center pb-5">
-                REGISTER YOUR ACCOUNT
-              </p>
-              <div className="mb-5">
-                <label
-                  htmlFor="name"
-                  className="block mb-2 text-sm font-medium text-gray-900"
-                >
-                  Username
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="Enter your username"
-                  className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                  required
-                />
-              </div>
-              <div className="mb-5">
-                <label
-                  htmlFor="email"
-                  className="block mb-2 text-sm font-medium text-gray-900"
-                >
-                  Email
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Enter your email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                  required
-                />
-              </div>
-              <div className="mb-5">
-                <label
-                  htmlFor="password"
-                  className="block mb-2 text-sm font-medium text-gray-900"
-                >
-                  Password
-                </label>
-                <input
-                  placeholder="Enter your password"
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                  required
-                />
-              </div>
-              <div className="mb-5">
-                <label
-                  htmlFor="phone"
-                  className="block mb-2 text-sm font-medium text-gray-900"
-                >
-                  Contact No
-                </label>
-                <input
-                  type="Number"
-                  placeholder="Contact No eg. 03001234567"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  name="phone"
-                  className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                  required
-                />
-              </div>
+        <div className="max-w-xl lg:max-w-2xl w-full mx-auto bg-white rounded-xl shadow-xl p-6">
+          <form onSubmit={submitHandler}>
+            <h2 className="text-2xl sm:text-3xl font-semibold text-center mb-6">
+              REGISTER YOUR ACCOUNT
+            </h2>
 
-              <div className="flex items-center ">
-                <input
-                  id="checkbox"
-                  type="checkbox"
-                  required
-                  className="mt-1 w-4 h-4 border-gray-300"
-                />
-                <label htmlFor="checkbox" className="ms-2 font-medium">
-                  I've agreed to terms and conditions
-                </label>
-              </div>
+            {/* Username */}
+            <FloatingInput
+              label="Username"
+              name="name"
+              icon={FaUserCircle}
+              type="text"
+              value={formData.name}
+              onChange={handleChange}
+            />
+
+            {/* Email */}
+            <FloatingInput
+              label="Email"
+              name="email"
+              icon={MdOutlineMail}
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+            />
+
+            {/* Password */}
+            <FloatingInput
+              label="Password"
+              name="password"
+              icon={RiLockPasswordLine}
+              type="password"
+              value={formData.password}
+              onChange={handleChange}
+            />
+
+            {/* Phone */}
+            <FloatingInput
+              label="Phone 03xxxxxxxxx"
+              name="phone"
+              icon={FaPhoneAlt}
+              type="number"
+              value={formData.phone}
+              onChange={handleChange}
+            />
+
+            {/* Terms */}
+            <div className="flex items-center space-x-2">
+              <input
+                id="checkbox"
+                type="checkbox"
+                required
+                className="w-4 h-4 text-[#f96822] border-gray-300 rounded focus:ring-[#f96822]"
+              />
+              <label htmlFor="checkbox" className="text-gray-900 mb-2">
+                I've agreed to terms and conditions
+              </label>
             </div>
 
-            <button
-              type="submit"
-              disabled={isLoading}
-              className={`text-white mt-5 bg-[#f96822] hover:bg-[#f0824a] rounded-lg text-lg w-full px-5 py-6 text-center shadow-xl ${
-                isLoading &&
-                isLoading === true &&
-                "opacity-50 cursor-not-allowed"
-              }`}
-            >
-              Create an account
-            </button>
+            {/* Submit Button */}
+            <LoadingButton isLoading={isLoading}>Register</LoadingButton>
+            <div className="flex flex-col sm:flex-row justify-between mt-4 text-sm text-gray-600 text-center sm:text-left">
+              <p>
+                Already registered?
+                <Link
+                  to="/login"
+                  className="text-[#f96822] hover:underline ml-1"
+                >
+                  Login here
+                </Link>
+              </p>
+              <p>
+                <Link
+                  to="/user/forgot-password"
+                  className="text-[#f96822] hover:underline"
+                >
+                  Forgot Password?
+                </Link>
+              </p>
+            </div>
           </form>
         </div>
       </section>

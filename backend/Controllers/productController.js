@@ -167,7 +167,16 @@ const getAllProducts = async (req, res, next) => {
 
     // if add category
     if (category) {
-      filter.category = category; // category should be ID from frontend id come
+      const categoryObj = await Category.findOne({
+        name: category,
+      });
+      if (!categoryObj) {
+        return res.status(400).json({
+          success: false,
+          message: "Category not found",
+        });
+      }
+      filter.category = categoryObj._id; // category should be ID from frontend id come
     }
 
     //  Stock or outOfStock

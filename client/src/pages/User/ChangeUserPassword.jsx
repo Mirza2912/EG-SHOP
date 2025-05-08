@@ -7,10 +7,15 @@ import {
 } from "../../Store/Auth/AuthSliceReducers";
 import { toast } from "react-toastify";
 import { clearError } from "../../Store/Auth/AuthSlice";
+import { RiLockPasswordLine } from "react-icons/ri";
+import FloatingInput from "../../components/FloatingInput/FloatingInput";
+import LoadingButton from "../../components/LoadingButton/LoadingButton";
 
 const EditUserProfile = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const [isFocused, setIsFocused] = useState(null);
   const { isLoading, error } = useSelector((state) => state.auth);
 
   const [formData, setFormData] = useState({
@@ -31,75 +36,42 @@ const EditUserProfile = () => {
   };
 
   return (
-    <section className="container mx-auto flex justify-center flex-col items-center">
-      <div className="rounded-xl shadow-2xl lg:w-[75%] w-[100%] px-9 py-5 mb-5">
+    <section className="w-full px-4 sm:px-6 lg:px-8 py-10">
+      <div className="max-w-xl lg:max-w-2xl w-full mx-auto bg-white rounded-xl shadow-xl p-6">
         <form className="mx-auto mt-4" onSubmit={handleSubmit}>
           <div>
-            <p className="text-3xl font-semibold text-center pb-5">
-              Update Your Profile
+            <p className="text-2xl sm:text-3xl font-semibold text-center mb-6">
+              Change Password
             </p>
-            <div className="mb-5">
-              <label
-                htmlFor="oldPassword"
-                className="block mb-2 text-sm font-medium text-gray-900"
-              >
-                Old Password
-              </label>
-              <input
-                type="password"
-                name="oldPassword"
-                value={formData.oldPassword}
-                onChange={handleUpdatePasswordChange}
-                placeholder="Your old password"
-                className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                required
-              />
-            </div>
-            <div className="mb-5">
-              <label
-                htmlFor="newPassword"
-                className="block mb-2 text-sm font-medium text-gray-900"
-              >
-                New Password
-              </label>
-              <input
-                type="password"
-                name="newPassword"
-                placeholder="You new password"
-                value={formData.newPassword}
-                onChange={handleUpdatePasswordChange}
-                className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                required
-              />
-            </div>
-            <div className="mb-5">
-              <label
-                htmlFor="confirmPassword"
-                className="block mb-2 text-sm font-medium text-gray-900"
-              >
-                Confirm Password
-              </label>
-              <input
-                type="password"
-                placeholder="Confirm password"
-                value={formData.confirmPassword}
-                onChange={handleUpdatePasswordChange}
-                name="confirmPassword"
-                className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                required
-              />
-            </div>
+            <FloatingInput
+              label="Old password"
+              name="oldPassword"
+              icon={RiLockPasswordLine}
+              type="password"
+              value={formData.oldPassword}
+              onChange={handleUpdatePasswordChange}
+            />
+
+            <FloatingInput
+              label="New password"
+              name="newPassword"
+              icon={RiLockPasswordLine}
+              type="password"
+              value={formData.newPassword}
+              onChange={handleUpdatePasswordChange}
+            />
+
+            <FloatingInput
+              label="Confirm password"
+              name="confirmPassword"
+              icon={RiLockPasswordLine}
+              type="password"
+              value={formData.confirmPassword}
+              onChange={handleUpdatePasswordChange}
+            />
           </div>
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className={`text-white mt-5 bg-[#f96822] hover:bg-[#f0824a] rounded-lg text-lg w-full px-5 py-6 text-center shadow-xl ${
-              isLoading && isLoading === true && "opacity-50 cursor-not-allowed"
-            }`}
-          >
-            Change your password
-          </button>
+          <LoadingButton isLoading={isLoading}>Change Password</LoadingButton>
         </form>
       </div>
     </section>

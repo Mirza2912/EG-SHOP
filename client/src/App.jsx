@@ -64,7 +64,7 @@ const App = () => {
   const navigate = useNavigate();
 
   const stripeApiKey = import.meta.env.VITE_STRIPE_API_KEY;
-  console.log(stripeApiKey);
+  // console.log(stripeApiKey);
 
   const stripePromise = useMemo(() => loadStripe(stripeApiKey), [stripeApiKey]);
 
@@ -85,7 +85,9 @@ const App = () => {
     addToCartBackendMessage,
     addToCartUpdateBackendMessage,
     updateCartOfLocalMessage,
+    cartItems,
   } = useSelector((state) => state.cart);
+  // console.log(cartItems);
 
   const toastShownRef = useRef(false);
 
@@ -112,10 +114,8 @@ const App = () => {
     //user reagisteration success message show
     if (userRegisterMessage) {
       toast.success(userRegisterMessage);
-      timeout = setTimeout(() => {
-        navigate("/profile", { replace: true });
-        dispatch(clearUserRegisterationMessage());
-      }, 1500);
+      navigate("/profile", { replace: true });
+      dispatch(clearUserRegisterationMessage());
     }
     //user logout success message show
     if (logOutMessage) {
@@ -126,26 +126,20 @@ const App = () => {
       }
 
       dispatch(clearCartLocal());
-      timeout = setTimeout(() => {
-        dispatch(clearLogoutMessage());
-        navigate("/login");
-      }, 1500);
+      dispatch(clearLogoutMessage());
+      navigate("/");
     }
     //user update profile success message show
     if (editProfileMessage) {
       toast.success(editProfileMessage);
-      timeout = setTimeout(() => {
-        dispatch(clearEditProfileMessage());
-        navigate("/profile", { replace: true });
-      }, 1500);
+      dispatch(clearEditProfileMessage());
+      navigate("/profile", { replace: true });
     }
     //user update password message success message show
     if (changeUserPasswordMessage) {
       toast.success(changeUserPasswordMessage);
-      timeout = setTimeout(() => {
-        dispatch(clearChangeUserPasswordMessage());
-        navigate("/profile", { replace: true });
-      }, 1500);
+      dispatch(clearChangeUserPasswordMessage());
+      navigate("/profile", { replace: true });
     }
     //user delete success message show
     if (deleteUserMessage) {
@@ -207,7 +201,7 @@ const App = () => {
     //get cart if user logged in
     if (isAuthenticated !== "") {
       const guestCart = loadCartFromLocalStorage(); //this will be an array
-      // console.log(guestCart);
+      console.log(guestCart);
 
       //if logged in user have alreay select items when loggedout this will be store in backend also
       if (guestCart?.length > 0) {

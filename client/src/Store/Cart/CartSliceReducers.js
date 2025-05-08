@@ -13,7 +13,7 @@ const getCart = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get("/api/cart/");
-      //   console.log(response?.data?.cart?.items);
+      // console.log(response?.data?.cart?.items);
       return response?.data?.cart?.items; //returning fetched data
     } catch (error) {
       //   console.log(error);
