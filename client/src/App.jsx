@@ -43,7 +43,11 @@ import {
 } from "./Store/Cart/CartLocalStorageHandle.js";
 
 /* CART IMPORT STATEMENT */
-import { addToCartBackend, getCart } from "./Store/Cart/CartSliceReducers.js";
+import {
+  addToCartBackend,
+  clearWholeCartBackend,
+  getCart,
+} from "./Store/Cart/CartSliceReducers.js";
 import {
   clearAddToCartBackendMessage,
   clearAddToCartUpdateBackendMessage,
@@ -57,6 +61,25 @@ import { loadShippingFromLocalStorage } from "./Store/Order/OrderLocalStorageHan
 import ConfirmOrder from "./pages/Order/ConfirmOrder.jsx";
 import axios from "axios";
 import OrderComplete from "./pages/Order/OrderComplete.jsx";
+import AdminRoute from "./routes/AdminRoute.jsx";
+import DashBoardLayout from "./pages/Admin/DashBoardLayout.jsx";
+import DashboardHome from "./pages/Admin/DashboardHome.jsx";
+import AllUsers from "./pages/Admin/AllUsers.jsx";
+import SingleUserDetails from "./pages/Admin/SingleUserDetails.jsx";
+import AllProducts from "./pages/Admin/AllProducts.jsx";
+import SingleProductDetails from "./pages/Admin/SingleProduct.jsx";
+import CreateNewProduct from "./pages/Admin/CreateNewProduct.jsx";
+import UpdateSingleProduct from "./pages/Admin/UpdateSingleProduct.jsx";
+import AllOrders from "./pages/Admin/AllOrders.jsx";
+import SingleOrderDetailsAdmin from "./pages/Admin/SingleOrderDetailsAdmin.jsx";
+import Order from "./pages/Order/Order.jsx";
+import SingleOrder from "./pages/Order/SingleOrder.jsx";
+import {
+  clearGetAllOrdersMessage,
+  clearOrderItems,
+  clearOrderPlaceMessage,
+  clearShippingAddress,
+} from "./Store/Order/OrderSlice.js";
 
 /* APP COMPONENT */
 const App = () => {
@@ -87,6 +110,10 @@ const App = () => {
     updateCartOfLocalMessage,
     cartItems,
   } = useSelector((state) => state.cart);
+
+  const { orderPlacedMessage, getAllOrdersMessage } = useSelector(
+    (state) => state.order
+  );
   // console.log(cartItems);
 
   const toastShownRef = useRef(false);
@@ -144,10 +171,8 @@ const App = () => {
     //user delete success message show
     if (deleteUserMessage) {
       toast.success(deleteUserMessage);
-      timeout = setTimeout(() => {
-        dispatch(cleareUserDeleteMessage());
-        navigate("/login", { replace: true });
-      }, 1500);
+      dispatch(cleareUserDeleteMessage());
+      navigate("/", { replace: true });
     }
 
     /* FOR USER CART */
@@ -155,25 +180,34 @@ const App = () => {
     //Add to cart item to backend message -->when user logged in
     if (addToCartBackendMessage) {
       toast.success(addToCartBackendMessage);
-      timeout = setTimeout(() => {
-        dispatch(clearAddToCartBackendMessage());
-      }, 1500);
+      dispatch(clearAddToCartBackendMessage());
     }
 
     //update item of cart to backend message -->when user logged in
     if (addToCartUpdateBackendMessage) {
       toast.success(addToCartUpdateBackendMessage);
-      timeout = setTimeout(() => {
-        dispatch(clearAddToCartUpdateBackendMessage());
-      }, 1500);
+      dispatch(clearAddToCartUpdateBackendMessage());
     }
 
     //update item of cart to backend message -->when user is guest
     if (updateCartOfLocalMessage) {
       toast.success(updateCartOfLocalMessage);
-      timeout = setTimeout(() => {
-        dispatch(clearUpdateCartOfLocalMessage());
-      }, 1500);
+      dispatch(clearUpdateCartOfLocalMessage());
+    }
+
+    ///* Order */
+    if (orderPlacedMessage) {
+      toast.success(orderPlacedMessage);
+      dispatch(clearOrderPlaceMessage());
+      dispatch(clearCartLocal());
+      dispatch(clearWholeCartBackend());
+      dispatch(clearShippingAddress());
+      dispatch(clearOrderItems());
+    }
+
+    if (getAllOrdersMessage) {
+      toast.success(getAllOrdersMessage);
+      dispatch(clearGetAllOrdersMessage());
     }
 
     return () => clearTimeout(timeout);
@@ -187,6 +221,8 @@ const App = () => {
     addToCartUpdateBackendMessage,
     updateCartOfLocalMessage,
     error,
+    orderPlacedMessage,
+    getAllOrdersMessage,
   ]);
 
   /* USEEFFECT FOR LOGICS*/
@@ -201,7 +237,7 @@ const App = () => {
     //get cart if user logged in
     if (isAuthenticated !== "") {
       const guestCart = loadCartFromLocalStorage(); //this will be an array
-      console.log(guestCart);
+      // console.log(guestCart);
 
       //if logged in user have alreay select items when loggedout this will be store in backend also
       if (guestCart?.length > 0) {
@@ -258,12 +294,48 @@ const App = () => {
             />
             <Route path="shipping" element={<Shipping />} />
             <Route path="order-confirm" element={<ConfirmOrder />} />
-            <Route path="success" element={<OrderComplete />} />
           </Route>
+          <Route path="/user/orders" element={<Order />} />
+          <Route path="/user/order/:id" element={<SingleOrder />} />
         </Route>
         <Route path="/user/forgot-password" element={<ForgotUserPassword />} />
         <Route path="/user/otp-verification" element={<OtpVerification />} />
         <Route path="*" element={<NotFoundPage />} />
+
+        {/* /* Admin routes */}
+        <Route element={<AdminRoute />}>
+          <Route path="/admin/dashboard" element={<DashBoardLayout />}>
+            <Route index element={<DashboardHome />} />
+
+            {/* Users  */}
+            <Route path="users" element={<AllUsers />} />
+            <Route
+              path="users/single-user/details/:id"
+              element={<SingleUserDetails />}
+            />
+            {/* products  */}
+            <Route path="products" element={<AllProducts />} />
+            <Route
+              path="products/single-products/details/:id"
+              element={<SingleProductDetails />}
+            />
+            <Route
+              path="products/create-new-product"
+              element={<CreateNewProduct />}
+            />
+            <Route
+              path="products/product/update-product/:id"
+              element={<UpdateSingleProduct />}
+            />
+          </Route>
+
+          {/* Orders  */}
+          <Route path="orders" element={<AllOrders />} />
+          <Route
+            path="orders/order/details/:id"
+            element={<SingleOrderDetailsAdmin />}
+          />
+        </Route>
       </Routes>
       <Footer />
     </>

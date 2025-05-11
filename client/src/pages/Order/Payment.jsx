@@ -14,6 +14,7 @@ import { createOrder } from "../../Store/Order/OrderSliceReducer";
 import { FaAddressCard } from "react-icons/fa";
 import { FcExpired } from "react-icons/fc";
 import LoadingButton from "../../components/LoadingButton/LoadingButton";
+import { useEffect } from "react";
 
 const Payment = () => {
   const orderInfo = JSON.parse(sessionStorage.getItem("orderInfo"));
@@ -25,8 +26,9 @@ const Payment = () => {
 
   const { cartItems } = useSelector((state) => state.cart);
 
-  const { shippingAddress } = useSelector((state) => state.order);
-  // console.log(shippingAddress);
+  const { shippingAddress, singleOrderDetails, error } = useSelector(
+    (state) => state.order
+  );
 
   const { user } = useSelector((state) => state.auth);
 
@@ -51,7 +53,7 @@ const Payment = () => {
 
   // console.log(orderItems);
   // console.log(cartItems);
-
+  const itemsPrice = orderItems.reduce((sum, item) => sum + item.price, 0);
   const order = {
     shippingAddress,
     orderItems,
@@ -59,6 +61,7 @@ const Payment = () => {
     totalPrice: orderInfo?.totalPrice,
     isPaid: true,
     paidAt: new Date(Date.now()).toISOString(),
+    itemsPrice,
   };
 
   const handleSubmit = async (e) => {
@@ -128,10 +131,8 @@ const Payment = () => {
           // console.log(result.paymentIntent.id, result.paymentIntent.status);
 
           dispatch(createOrder(order));
-
-          toast.success("Order Placed Successfully");
           sessionStorage.removeItem("orderInfo");
-          navigate("/checkout/success", { replace: true });
+          navigate(`/user/orders`);
         } else {
           toast.error("There's some issue while processing payment ");
         }
@@ -146,6 +147,9 @@ const Payment = () => {
 
   return (
     <>
+      <p className="text-2xl sm:text-3xl font-semibold text-center mb-6">
+        Payment
+      </p>
       <div className="max-w-xl lg:max-w-2xl w-full mx-auto bg-white rounded-xl shadow-xl p-6 mb-10">
         <form onSubmit={(e) => handleSubmit(e)}>
           <h2 className="text-2xl sm:text-3xl font-semibold text-center mb-6">

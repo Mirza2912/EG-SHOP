@@ -60,6 +60,7 @@ const orderSchema = new mongoose.Schema(
     shippingPrice: { type: Number, default: 0.0 },
     totalPrice: { type: Number, default: 0.0 },
     isPaid: { type: Boolean, default: false },
+    itemsPrice: { type: Number },
     paidAt: { type: Date },
     orderStatus: { type: String, default: "Pending" },
     deliveredAt: { type: Date },

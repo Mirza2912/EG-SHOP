@@ -9,21 +9,23 @@ const Footer = () => {
           <div className="grid grid-cols-1 gap-8 px-4 py-6 lg:py-8 md:grid-cols-3">
             <div className="mx-5">
               <h2 className="mb-6 text-3xl font-semibold text-white ">
-                About EG Shop
+                About Fresh Finds
               </h2>
               <p className="text-white text-md">
-                EG STORE - worldwide Grocery store since 2021. We sell over
+                FRESH FINDS - worldwide Grocery store since 2021. We sell over
                 2000+ Category products on our web-site.
               </p>
               <div className="my-7">
-                <img src={footerLogo} className="w-13 h-10" alt="" />
+                {/* <img src={footerLogo} className="w-13 h-10" alt="" /> */}
+                <p className="text-white text-2xl">Fresh Finds</p>
               </div>
               <p className="text-white my-7">Phone No +2345678</p>
             </div>
 
             <div className="mx-5">
               <div>
-                <img src={footerLogo} alt="" />
+                {/* <img src={footerLogo} alt="" /> */}
+                <p className="text-white text-4xl">Fresh Finds</p>
               </div>
               <p className="my-7 text-white">
                 Register now to get update on promotion and coupons. Dont worry!
@@ -118,7 +120,7 @@ const Footer = () => {
 
           <div>
             <p className="text-white text-center pb-3">
-              Copyright 2021 EG-Shop Grocery | Design By Egens Labs
+              Copyright 2021 Fresh Finds | Design By Egens Labs
             </p>
           </div>
         </div>

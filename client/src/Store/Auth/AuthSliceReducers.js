@@ -68,10 +68,6 @@ const loadUser = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      // console.log(error.response.data?.errors); // Log the error
-      // console.log(error.response.data?.message); // Log the error
-      // console.log(error.message); // Log the error
-
       return rejectWithValue(
         error.response.data?.errors ||
           error.response.data?.message ||

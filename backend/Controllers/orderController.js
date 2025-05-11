@@ -11,6 +11,7 @@ const createOrder = async (req, res) => {
       totalPrice,
       isPaid,
       paidAt,
+      itemsPrice,
     } = req.body;
 
     // Validate that order items exist
@@ -19,7 +20,6 @@ const createOrder = async (req, res) => {
         .status(400)
         .json({ success: false, message: "No order items" });
     }
-    console.log(orderItems);
 
     // Create a new order document with the logged-in user's ID and the order items
     const order = new Order({
@@ -30,6 +30,7 @@ const createOrder = async (req, res) => {
       shippingPrice,
       totalPrice,
       isPaid,
+      itemsPrice,
     });
 
     // Save the order to generate an _id
@@ -94,11 +95,17 @@ const getOrderById = async (req, res) => {
 // Get orders placed by the currently logged-in user
 const getMyOrders = async (req, res) => {
   try {
-    const orders = await Order.find({ user: req.user.userId }).populate({
-      path: "orderItems.product",
-      select: "name price image",
+    const orders = await Order.find({ user: req.user._id })
+      .populate({
+        path: "orderItems.product",
+        select: "name price image",
+      })
+      .sort({ createdAt: -1 });
+    res.status(200).json({
+      success: true,
+      data: orders,
+      message: `${req.user?.name}'s all orders`,
     });
-    res.status(200).json({ success: true, data: orders });
   } catch (err) {
     console.error("Error fetching user orders:", err);
     res
@@ -110,11 +117,19 @@ const getMyOrders = async (req, res) => {
 // Get all orders (admin functionality)
 const getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.find().populate("user", "name email").populate({
-      path: "orderItems.product",
-      select: "name price image",
+    const orders = await Order.find({ user: req.user._id })
+      .populate("user", "name email")
+      .populate({
+        path: "orderItems.product",
+        select: "name price image",
+      });
+    console.log(orders);
+
+    res.status(200).json({
+      success: true,
+      data: orders,
+      message: "Order placed successfully",
     });
-    res.status(200).json({ success: true, data: orders });
   } catch (err) {
     console.error("Error fetching orders:", err);
     res

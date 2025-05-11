@@ -196,7 +196,6 @@ const clearCart = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "Cart cleared",
       cart,
       message: "cart empty successfully",
     });

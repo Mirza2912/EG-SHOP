@@ -33,7 +33,8 @@ const Navbar = () => {
         <div className="container mx-auto flex justify-between py-5 px-5 lg:px-16 md:px-8  items-center">
           {/* Logo */}
           <Link to={"/"}>
-            <img src={logo} />
+            {/* <img src={logo} /> */}
+            <p>Fresh Finds</p>
           </Link>
 
           {/* Toggle btn */}
@@ -104,6 +105,12 @@ const Navbar = () => {
                   className="mr-5 text-gray-500 hover:text-[#f98662] cursor-pointer"
                 >
                   Log out
+                </Link>
+                <Link
+                  to={"/user/orders"}
+                  className="mr-5 text-gray-500 hover:text-[#f98662] cursor-pointer"
+                >
+                  Orders
                 </Link>
               </>
             )}

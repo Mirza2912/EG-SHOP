@@ -27,4 +27,46 @@ const createOrder = createAsyncThunk(
   }
 );
 
-export { createOrder };
+const getAllOrders = createAsyncThunk(
+  "order/getAllOrders",
+  async (_, { rejectWithValue }) => {
+    try {
+      //   console.log(data);
+
+      const response = await axios.get("/api/orders/myorders");
+      // console.log(response?.data);
+      return response?.data;
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue(
+        error.response.data?.errors ||
+          error.response.data?.message ||
+          error.message ||
+          "Failed to getting orders"
+      );
+    }
+  }
+);
+
+const getSingleOrderDetails = createAsyncThunk(
+  "order/getSingleOrderDetails",
+  async (id, { rejectWithValue }) => {
+    try {
+      console.log(id);
+
+      const response = await axios.get(`/api/orders/${id}`);
+      console.log(response?.data);
+      return response?.data;
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue(
+        error.response.data?.errors ||
+          error.response.data?.message ||
+          error.message ||
+          "Failed to fetch order"
+      );
+    }
+  }
+);
+
+export { createOrder, getAllOrders, getSingleOrderDetails };
