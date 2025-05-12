@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Link, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
 
 const DashBoardLayout = () => {
   const [showPanel, setShowPanel] = useState(false);
@@ -19,7 +19,16 @@ const DashBoardLayout = () => {
           <h2 className="text-xl font-bold mb-2 text-gray-700">USER</h2>
           <ul className="space-y-2">
             <li className="group w-fit text-lg ml-2 relative cursor-pointer text-gray-600 hover:text-[#f98662] transition-colors duration-300">
-              <Link to={"/admin/dashboard/users"}> All Users</Link>
+              <NavLink
+                to="/admin/dashboard/users"
+                className={({ isActive }) =>
+                  isActive
+                    ? " text-[#f98662] font-semibold"
+                    : "text-gray-600 hover:text-[#f98662]"
+                }
+              >
+                All Users
+              </NavLink>
               <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#f98662] transition-all duration-300 group-hover:w-full origin-right"></span>
             </li>
           </ul>
@@ -30,11 +39,29 @@ const DashBoardLayout = () => {
           <h2 className="text-xl font-bold mb-2 text-gray-700">PRODUCTS</h2>
           <ul className="space-y-2">
             <li className="group w-fit text-lg ml-2 relative cursor-pointer text-gray-600 hover:text-[#f98662] transition-colors duration-300">
-              <Link to={"/"}>Create Product</Link>
+              <NavLink
+                to="/"
+                className={({ isActive }) =>
+                  isActive
+                    ? " text-[#f98662] font-semibold"
+                    : "text-gray-600 hover:text-[#f98662]"
+                }
+              >
+                Create Product
+              </NavLink>
               <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#f98662] transition-all duration-300 group-hover:w-full origin-right"></span>
             </li>
             <li className="group w-fit text-lg ml-2 relative cursor-pointer text-gray-600 hover:text-[#f98662] transition-colors duration-300">
-              <Link to={"/"}>All Products</Link>
+              <NavLink
+                to="/admin/dashboard/products"
+                className={({ isActive }) =>
+                  isActive
+                    ? " text-[#f98662] font-semibold"
+                    : "text-gray-600 hover:text-[#f98662]"
+                }
+              >
+                All Products
+              </NavLink>
               <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#f98662] transition-all duration-300 group-hover:w-full origin-right"></span>
             </li>
           </ul>
@@ -45,7 +72,16 @@ const DashBoardLayout = () => {
           <h2 className="text-xl font-bold mb-2 text-gray-700">ORDERS</h2>
           <ul className="space-y-2">
             <li className="group w-fit text-lg ml-2 relative cursor-pointer text-gray-600 hover:text-[#f98662] transition-colors duration-300">
-              <Link to={"/"}>All Orders</Link>
+              <NavLink
+                to="/"
+                className={({ isActive }) =>
+                  isActive
+                    ? " text-[#f98662] font-semibold"
+                    : "text-gray-600 hover:text-[#f98662]"
+                }
+              >
+                All Orders
+              </NavLink>
               <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#f98662] transition-all duration-300 group-hover:w-full origin-right"></span>
             </li>
           </ul>

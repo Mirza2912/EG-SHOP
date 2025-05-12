@@ -42,7 +42,12 @@ router.get(
 );
 router.get("/", getAllProductsValidation, validateRequest, getAllProducts);
 router.get("/singleProduct/:id", getProductById);
-router.delete("/deleteProduct/:id", deleteProduct);
+router.delete(
+  "/deleteProduct/:id",
+  authMiddleware,
+  adminMiddleware,
+  deleteProduct
+);
 router.get("/featuredProducts", getFeaturedProducts);
 
 module.exports = router;

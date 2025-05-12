@@ -95,4 +95,56 @@ const getALlProductsAdmin = createAsyncThunk(
   }
 );
 
-export { getAllProducts, getSingleProduct, getALlProductsAdmin };
+//single product details
+const getSingleProductAdmin = createAsyncThunk(
+  "products/getSingleProductAdmin",
+  async (id, { rejectWithValue }) => {
+    try {
+      // console.log(id);
+
+      /*making api call with axios for getting single  product from backend */
+      const response = await axios.get(`/api/products/singleProduct/${id}`);
+      // console.log(response?.data?.product);
+      return response?.data?.product; //returning fetched data
+    } catch (error) {
+      console.log(error.response.data?.message);
+      return rejectWithValue(
+        error.response.data?.errors ||
+          error.response.data?.message ||
+          error.message ||
+          "Failed to fetch single product details"
+      );
+    }
+  }
+);
+
+//single product details
+const deleteProduct = createAsyncThunk(
+  "products/deleteProduct",
+  async (id, { rejectWithValue }) => {
+    try {
+      // console.log(id);
+
+      /*making api call with axios for getting single  product from backend */
+      const response = await axios.delete(`/api/products//deleteProduct/${id}`);
+      // console.log(response?.data);
+      return response?.data?.message; //returning fetched data
+    } catch (error) {
+      console.log(error.response.data?.message);
+      return rejectWithValue(
+        error.response.data?.errors ||
+          error.response.data?.message ||
+          error.message ||
+          "Failed to delete product"
+      );
+    }
+  }
+);
+
+export {
+  getAllProducts,
+  getSingleProduct,
+  getALlProductsAdmin,
+  getSingleProductAdmin,
+  deleteProduct,
+};

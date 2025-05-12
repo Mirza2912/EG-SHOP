@@ -163,7 +163,7 @@ const AdminUsersTable = () => {
                       <td
                         key={cellIndex}
                         {...cell.getCellProps()}
-                        className="px-3 sm:px-4 py-2 border border-gray-300"
+                        className="px-2 sm:px-4 py-2 border border-gray-300"
                       >
                         {cell.render("Cell")}
                       </td>

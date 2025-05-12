@@ -1,8 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
+  deleteProduct,
   getAllProducts,
   getALlProductsAdmin,
   getSingleProduct,
+  getSingleProductAdmin,
 } from "./ProductSliceReducers";
 
 // Product slice
@@ -12,14 +14,19 @@ const productSlice = createSlice({
     products: [],
     adminProducts: [],
     singleProduct: {},
+    singleProductAdmin: {},
     page: 1,
     isLoading: false,
     error: null,
     singleProductMessage: "",
+    deleteProductMessage: "",
   },
   reducers: {
     clearSingleProductMessage: (state) => {
       state.singleProductMessage = "";
+    },
+    clearDeleteProductMessage: (state) => {
+      state.deleteProductMessage = "";
     },
     clearError: (state) => {
       state.error = null;
@@ -65,9 +72,41 @@ const productSlice = createSlice({
       .addCase(getALlProductsAdmin.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
+      })
+      .addCase(getSingleProductAdmin.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(getSingleProductAdmin.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.singleProductAdmin = action.payload;
+      })
+      .addCase(getSingleProductAdmin.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(deleteProduct.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(deleteProduct.fulfilled, (state, action) => {
+        state.isLoading = false;
+        const deleteProductId = action.meta.arg;
+        state.adminProducts = state.adminProducts?.filter(
+          (prod) => prod._id !== deleteProductId
+        );
+        state.deleteProductMessage = action.payload;
+      })
+      .addCase(deleteProduct.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
       });
   },
 });
 
-export const { clearError, clearSingleProductMessage } = productSlice.actions;
+export const {
+  clearError,
+  clearSingleProductMessage,
+  clearDeleteProductMessage,
+} = productSlice.actions;
 export default productSlice.reducer;

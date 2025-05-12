@@ -45,7 +45,7 @@ const signup = async (req, res) => {
     const token = jwt.sign(
       { userId: newUser._id, email: newUser.email },
       process.env.JWT_KEY, // Use environment variable in production
-      { expiresIn: "1h" }
+      { expiresIn: "3h" }
     );
     // Send success response
     res
@@ -96,7 +96,7 @@ const login = async (req, res) => {
         role: existingUser.role,
       },
       process.env.JWT_KEY, // Use your secret from .env
-      { expiresIn: "1h" }
+      { expiresIn: "3h" }
     );
 
     res

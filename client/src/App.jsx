@@ -84,6 +84,7 @@ import {
   clearShippingAddress,
 } from "./Store/Order/OrderSlice.js";
 import UserSpeedDial from "./components/SpeedDial/SpeedDial.jsx";
+import { clearDeleteProductMessage } from "./Store/Products/ProductSlice.js";
 
 /* APP COMPONENT */
 const App = () => {
@@ -122,6 +123,8 @@ const App = () => {
   const { orderPlacedMessage, getAllOrdersMessage } = useSelector(
     (state) => state.order
   );
+
+  const { deleteProductMessage } = useSelector((state) => state.products);
   // console.log(cartItems);
 
   const toastShownRef = useRef(false);
@@ -231,6 +234,10 @@ const App = () => {
       toast.success(adminDeleteUserMessage);
       dispatch(clearAdminDeleteUserMessage());
     }
+    if (deleteProductMessage) {
+      toast.success(deleteProductMessage);
+      dispatch(clearDeleteProductMessage());
+    }
 
     return () => clearTimeout(timeout);
   }, [
@@ -248,6 +255,7 @@ const App = () => {
     singleUserDetailsMessage,
     updateUserRoleMessage,
     adminDeleteUserMessage,
+    deleteProductMessage,
   ]);
 
   /* USEEFFECT FOR LOGICS*/
