@@ -19,7 +19,7 @@ const DashBoardLayout = () => {
           <h2 className="text-xl font-bold mb-2 text-gray-700">USER</h2>
           <ul className="space-y-2">
             <li className="group w-fit text-lg ml-2 relative cursor-pointer text-gray-600 hover:text-[#f98662] transition-colors duration-300">
-              <Link to={"/"}> All Users</Link>
+              <Link to={"/admin/dashboard/users"}> All Users</Link>
               <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#f98662] transition-all duration-300 group-hover:w-full origin-right"></span>
             </li>
           </ul>
