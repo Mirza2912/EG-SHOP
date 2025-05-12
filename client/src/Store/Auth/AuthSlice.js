@@ -3,6 +3,7 @@ import {
   changeUserPassword,
   editUserProfile,
   forgotPassword,
+  getAllUsers,
   loadUser,
   registerUser,
   userDelete,
@@ -14,6 +15,7 @@ const authSlice = createSlice({
   name: "auth",
   initialState: {
     user: null,
+    allUsers: [],
     isLoading: false,
     error: null,
     userRegisterMessage: "",
@@ -143,6 +145,18 @@ const authSlice = createSlice({
         state.forgotPasswordMessage = action.payload?.message;
       })
       .addCase(forgotPassword.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(getAllUsers.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(getAllUsers.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.allUsers = action.payload;
+      })
+      .addCase(getAllUsers.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
       });

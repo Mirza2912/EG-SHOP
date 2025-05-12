@@ -18,6 +18,8 @@ const {
   singleProductValidation,
   deleteProductValidation,
 } = require("../Validations/productValidation");
+const authMiddleware = require("../Middlewares/authMiddleware");
+const adminMiddleware = require("../Middlewares/adminMiddleware");
 
 // Routes to manage products
 const router = express.Router();
@@ -31,6 +33,12 @@ router.put(
   updateProductValidation,
   validateRequest,
   updateProduct
+);
+router.get(
+  "/admin/products",
+  authMiddleware,
+  adminMiddleware,
+  getFeaturedProducts
 );
 router.get("/", getAllProductsValidation, validateRequest, getAllProducts);
 router.get("/singleProduct/:id", getProductById);

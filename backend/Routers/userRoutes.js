@@ -14,11 +14,12 @@ const {
   changeUserPasswordValidation,
   viewUserSingle,
 } = require("../Validations/authValidation");
+const adminMiddleware = require("../Middlewares/adminMiddleware");
 
 const router = express.Router();
 
 router.get("/user/profile", authMiddleware, getUserDetails);
-router.get("/users", getAllUsers);
+router.get("/users", authMiddleware, adminMiddleware, getAllUsers);
 router.put(
   "/users/me/edit-profile",
   updateUserProfileValidation,

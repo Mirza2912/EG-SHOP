@@ -80,6 +80,7 @@ import {
   clearOrderPlaceMessage,
   clearShippingAddress,
 } from "./Store/Order/OrderSlice.js";
+import UserSpeedDial from "./components/SpeedDial/SpeedDial.jsx";
 
 /* APP COMPONENT */
 const App = () => {
@@ -101,6 +102,7 @@ const App = () => {
     userRegisterMessage,
     isAuthenticated,
     error,
+    user,
   } = useSelector((state) => state.auth);
 
   /* CART STATE*/
@@ -261,7 +263,9 @@ const App = () => {
   return (
     <>
       <Navbar />
-
+      {isAuthenticated && isAuthenticated !== "" && (
+        <UserSpeedDial user={user} />
+      )}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/shop" element={<Shop />} />

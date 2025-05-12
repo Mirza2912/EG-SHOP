@@ -24,6 +24,12 @@ const getUserDetails = async (req, res) => {
 const getAllUsers = async (req, res) => {
   try {
     const users = await User.find({}, "-password"); // Exclude passwords in the response
+    if (!users) {
+      res.status(500).json({
+        success: false,
+        message: "Users not found",
+      });
+    }
     res.status(200).json({
       success: true,
       data: users,

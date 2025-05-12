@@ -1,11 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getAllProducts, getSingleProduct } from "./ProductSliceReducers";
+import {
+  getAllProducts,
+  getALlProductsAdmin,
+  getSingleProduct,
+} from "./ProductSliceReducers";
 
 // Product slice
 const productSlice = createSlice({
   name: "products",
   initialState: {
     products: [],
+    adminProducts: [],
     singleProduct: {},
     page: 1,
     isLoading: false,
@@ -46,6 +51,18 @@ const productSlice = createSlice({
         // state.singleProductMessage = action.payload?.message;
       })
       .addCase(getSingleProduct.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(getALlProductsAdmin.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(getALlProductsAdmin.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.adminProducts = action.payload;
+      })
+      .addCase(getALlProductsAdmin.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
       });

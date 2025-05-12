@@ -203,6 +203,32 @@ const forgotPassword = createAsyncThunk(
   }
 );
 
+//ADMIN METHODS
+
+// get all users
+const getAllUsers = createAsyncThunk(
+  "user/getAllUsers",
+  async (_, { rejectWithValue }) => {
+    // console.log(email);
+
+    try {
+      const response = await axios.get("/api/auth/users");
+
+      // console.log(response?.data);
+
+      return response?.data?.data; //returning fetched data
+    } catch (error) {
+      // console.log(error.response.data);
+      return rejectWithValue(
+        error.response.data?.errors ||
+          error.response.data?.message ||
+          error.message ||
+          "Failed to fetch users"
+      );
+    }
+  }
+);
+
 export {
   registerUser,
   userLogin,
@@ -212,4 +238,5 @@ export {
   changeUserPassword,
   userDelete,
   forgotPassword,
+  getAllUsers,
 };

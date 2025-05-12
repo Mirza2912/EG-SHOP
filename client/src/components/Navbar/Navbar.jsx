@@ -100,7 +100,7 @@ const Navbar = () => {
                 >
                   Profile
                 </Link>
-                <Link
+                {/* <Link
                   onClick={handleLogout}
                   className="mr-5 text-gray-500 hover:text-[#f98662] cursor-pointer"
                 >
@@ -111,7 +111,7 @@ const Navbar = () => {
                   className="mr-5 text-gray-500 hover:text-[#f98662] cursor-pointer"
                 >
                   Orders
-                </Link>
+                </Link> */}
               </>
             )}
           </ul>

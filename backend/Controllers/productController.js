@@ -374,11 +374,38 @@ const getFeaturedProducts = async (req, res) => {
   }
 };
 
+//admin
+
+//getALlProducts
+const getAllProductsAdmin = async (req, res) => {
+  try {
+    const product = await Product.find();
+
+    if (!product) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Products not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "All products",
+      product,
+    });
+  } catch (err) {
+    // console.error("Error deleting product:", err);
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: err.message });
+  }
+};
+
 module.exports = {
   createProduct,
   getAllProducts,
   getProductById,
   updateProduct,
   deleteProduct,
+  getAllProductsAdmin,
   getFeaturedProducts,
 };
