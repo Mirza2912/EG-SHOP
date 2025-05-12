@@ -6,8 +6,9 @@ const {
   changePassword,
   getUserDetails,
   editUserProfile,
-} = require("../Controllers/UserController");
-const { body } = require("express-validator");
+  updateUserRole,
+  deleteUserAdmin,
+} = require("../Controllers/userController.js");
 const authMiddleware = require("../Middlewares/authMiddleware");
 const {
   updateUserProfileValidation,
@@ -27,7 +28,19 @@ router.put(
   editUserProfile
 );
 router.delete("/users/me/delete-account", authMiddleware, deleteUser);
-router.get("/users/:id", viewUser);
+router.delete(
+  "/user/delete-account/:id",
+  authMiddleware,
+  adminMiddleware,
+  deleteUserAdmin
+);
+router.get("/user/:id", authMiddleware, adminMiddleware, viewUser);
+router.put(
+  "/user/update-role/:id",
+  authMiddleware,
+  adminMiddleware,
+  updateUserRole
+);
 router.put(
   "/users/me/change-password",
   changeUserPasswordValidation,

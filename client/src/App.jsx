@@ -21,12 +21,15 @@ import Login from "./pages/Register/Login";
 import Signup from "./pages/Register/Signup.jsx";
 import Profile from "./pages/User/Profile.jsx";
 import {
+  clearAdminDeleteUserMessage,
   clearChangeUserPasswordMessage,
   clearEditProfileMessage,
   clearError,
   cleareUserDeleteMessage,
   clearForgotPasswordMessage,
   clearLogoutMessage,
+  clearSingleUserDetailsMessage,
+  clearUpdateUserRoleMessage,
   clearUserRegisterationMessage,
 } from "./Store/Auth/AuthSlice.js";
 import { loadUser } from "./Store/Auth/AuthSliceReducers.js";
@@ -103,6 +106,9 @@ const App = () => {
     isAuthenticated,
     error,
     user,
+    singleUserDetailsMessage,
+    updateUserRoleMessage,
+    adminDeleteUserMessage,
   } = useSelector((state) => state.auth);
 
   /* CART STATE*/
@@ -209,7 +215,21 @@ const App = () => {
 
     if (getAllOrdersMessage) {
       toast.success(getAllOrdersMessage);
-      dispatch(clearGetAllOrdersMessage());
+      dispatch(clearSingleUserDetailsMessage());
+    }
+
+    /* ADMIN */
+    if (singleUserDetailsMessage) {
+      toast.success(singleUserDetailsMessage);
+      dispatch(clearSingleUserDetailsMessage());
+    }
+    if (updateUserRoleMessage) {
+      toast.success(updateUserRoleMessage);
+      dispatch(clearUpdateUserRoleMessage());
+    }
+    if (adminDeleteUserMessage) {
+      toast.success(adminDeleteUserMessage);
+      dispatch(clearAdminDeleteUserMessage());
     }
 
     return () => clearTimeout(timeout);
@@ -225,6 +245,9 @@ const App = () => {
     error,
     orderPlacedMessage,
     getAllOrdersMessage,
+    singleUserDetailsMessage,
+    updateUserRoleMessage,
+    adminDeleteUserMessage,
   ]);
 
   /* USEEFFECT FOR LOGICS*/

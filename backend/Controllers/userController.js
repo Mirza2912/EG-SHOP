@@ -23,7 +23,7 @@ const getUserDetails = async (req, res) => {
 // Controller to get all users
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({}, "-password"); // Exclude passwords in the response
+    const users = await User.find({}, "-password").sort({ createdAt: -1 }); // Exclude passwords in the response
     if (!users) {
       res.status(500).json({
         success: false,
@@ -42,31 +42,7 @@ const getAllUsers = async (req, res) => {
     });
   }
 };
-// Controller to view user
-const viewUser = async (req, res) => {
-  try {
-    const { id } = req.params; // Get the user ID from the request params
-    const user = await User.findById(id, "-password"); // Find user by ID and exclude password
 
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      data: user,
-    });
-  } catch (err) {
-    console.error("Error fetching user:", err);
-    res.status(500).json({
-      success: false,
-      message: "Server error while fetching user",
-    });
-  }
-};
 // Controller to edit/update user
 const editUserProfile = async (req, res) => {
   const { name, email, phone } = req.body;
@@ -194,6 +170,97 @@ const changePassword = async (req, res) => {
     });
   }
 };
+
+// Controller to view user --->admin
+const viewUser = async (req, res) => {
+  try {
+    const { id } = req.params; // Get the user ID from the request params
+    const user = await User.findById(id, "-password"); // Find user by ID and exclude password
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: user,
+      message: `${user?.name}'s details`,
+    });
+  } catch (err) {
+    console.error("Error fetching user:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server error while fetching user",
+    });
+  }
+};
+
+// Update user role --->admin
+const updateUserRole = async (req, res) => {
+  try {
+    const { id } = req.params;
+    // console.log(req.body?.role);
+
+    const user = await User.findByIdAndUpdate(
+      id,
+      { role: req.body?.role },
+      { new: true }
+    ); // Find user by ID and exclude password
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    // console.log(user);
+
+    res.status(200).json({
+      success: true,
+      data: user,
+      message: `${user?.name}'s role updated successfully`,
+    });
+  } catch (err) {
+    console.error("Error fetching user:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server error while updating user",
+    });
+  }
+};
+
+// Controller to delete user ---> admin
+const deleteUserAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+    // console.log(id);
+
+    // Find the user by ID and delete it
+    const deletedUser = await User.findByIdAndDelete(id);
+    // console.log(deleteUser);
+
+    if (!deletedUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: `User deleted successfully`,
+    });
+  } catch (err) {
+    console.error("Error deleting user:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server error while deleting user",
+    });
+  }
+};
 module.exports = {
   getAllUsers,
   editUserProfile,
@@ -201,4 +268,6 @@ module.exports = {
   viewUser,
   changePassword,
   getUserDetails,
+  updateUserRole,
+  deleteUserAdmin,
 };

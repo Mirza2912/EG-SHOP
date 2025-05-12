@@ -229,6 +229,83 @@ const getAllUsers = createAsyncThunk(
   }
 );
 
+//For User details
+const getSingleUserDetails = createAsyncThunk(
+  "auth/getSingleUserDetails",
+  async (id, { rejectWithValue }) => {
+    console.log(id);
+
+    try {
+      const response = await axios.get(`/api/auth/user/${id}`);
+      // console.log(response.data);
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response.data?.errors ||
+          error.response.data?.message ||
+          error.message ||
+          "Failed to load user's details"
+      );
+    }
+  }
+);
+
+//update user role
+const updateUserRole = createAsyncThunk(
+  "user/updateUserRole",
+  async (data, { rejectWithValue }) => {
+    // console.log(data);
+
+    try {
+      const response = await axios.put(
+        `/api/auth/user/update-role/${data?.id}`,
+        data,
+        config
+      );
+
+      // console.log(response?.data);
+
+      return response?.data;
+    } catch (error) {
+      // console.log(error);
+      return rejectWithValue(
+        error.response.data?.errors ||
+          error.response.data?.message ||
+          error.message ||
+          "Failed to update user's role"
+      );
+    }
+  }
+);
+
+//delete user
+const deleteUser = createAsyncThunk(
+  "user/deleteUser",
+  async (id, { rejectWithValue }) => {
+    // console.log(id);
+
+    try {
+      const response = await axios.delete(
+        `/api/auth/user/delete-account/${id}`,
+        config
+      );
+
+      // console.log(response?.data);
+
+      return response?.data;
+    } catch (error) {
+      // console.log(error);
+      return rejectWithValue(
+        error.response.data?.errors ||
+          error.response.data?.message ||
+          error.message ||
+          "Failed to delete user"
+      );
+    }
+  }
+);
+
 export {
   registerUser,
   userLogin,
@@ -239,4 +316,7 @@ export {
   userDelete,
   forgotPassword,
   getAllUsers,
+  getSingleUserDetails,
+  updateUserRole,
+  deleteUser,
 };

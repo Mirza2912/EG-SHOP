@@ -1,11 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   changeUserPassword,
+  deleteUser,
   editUserProfile,
   forgotPassword,
   getAllUsers,
+  getSingleUserDetails,
   loadUser,
   registerUser,
+  updateUserRole,
   userDelete,
   userLogin,
   userLogOut,
@@ -16,6 +19,7 @@ const authSlice = createSlice({
   initialState: {
     user: null,
     allUsers: [],
+    singleUserDetails: {},
     isLoading: false,
     error: null,
     userRegisterMessage: "",
@@ -25,6 +29,9 @@ const authSlice = createSlice({
     changeUserPasswordMessage: "",
     deleteUserMessage: "",
     forgotPasswordMessage: "",
+    singleUserDetailsMessage: "",
+    updateUserRoleMessage: "",
+    adminDeleteUserMessage: "",
   },
   reducers: {
     clearUserRegisterationMessage: (state) => {
@@ -47,6 +54,15 @@ const authSlice = createSlice({
     },
     clearForgotPasswordMessage: (state) => {
       state.forgotPasswordMessage = "";
+    },
+    clearSingleUserDetailsMessage: (state) => {
+      state.singleUserDetailsMessage = "";
+    },
+    clearUpdateUserRoleMessage: (state) => {
+      state.updateUserRoleMessage = "";
+    },
+    clearAdminDeleteUserMessage: (state) => {
+      state.adminDeleteUserMessage = "";
     },
   },
   extraReducers: (builder) => {
@@ -159,6 +175,44 @@ const authSlice = createSlice({
       .addCase(getAllUsers.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
+      })
+      .addCase(getSingleUserDetails.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(getSingleUserDetails.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.singleUserDetails = action.payload;
+        state.singleUserDetailsMessage = action.payload?.message;
+      })
+      .addCase(getSingleUserDetails.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(updateUserRole.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(updateUserRole.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.singleUserDetails = action.payload;
+        state.updateUserRoleMessage = action.payload?.message;
+      })
+      .addCase(updateUserRole.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(deleteUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.adminDeleteUserMessage = action.payload?.message;
+        const deletedUserId = action.meta.arg;
+        state.allUsers = state.allUsers?.filter(
+          (user) => user._id !== deletedUserId
+        );
+      })
+      .addCase(deleteUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
       });
   },
 });
@@ -171,6 +225,9 @@ export const {
   clearChangeUserPasswordMessage,
   cleareUserDeleteMessage,
   clearForgotPasswordMessage,
+  clearSingleUserDetailsMessage,
+  clearUpdateUserRoleMessage,
+  clearAdminDeleteUserMessage,
 } = authSlice.actions;
 
 export default authSlice.reducer;
