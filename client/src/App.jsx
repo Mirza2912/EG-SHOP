@@ -85,6 +85,8 @@ import {
 } from "./Store/Order/OrderSlice.js";
 import UserSpeedDial from "./components/SpeedDial/SpeedDial.jsx";
 import { clearDeleteProductMessage } from "./Store/Products/ProductSlice.js";
+import AdminDashboard from "./admin/page.jsx";
+import UsersPage from "./admin/users/page.jsx";
 
 /* APP COMPONENT */
 const App = () => {
@@ -306,6 +308,9 @@ const App = () => {
         <Route path="/cart" element={<Cart />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/testadmin" element={<AdminDashboard />} />
+        <Route path="/admin/users" element={<UsersPage />} />
+        <Route path="/testadmin" element={<AdminDashboard />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<Profile />} />
           <Route path="/user/edit-profile" element={<EditUserProfile />} />
