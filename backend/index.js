@@ -11,6 +11,7 @@ const orderRoutes = require("./Routers/orderRoutes");
 const paymentRouters = require("./Routers/paymentRoute");
 const cloudinary = require("cloudinary");
 const fileUpload = require("express-fileupload");
+const cors = require("cors");
 // Connect to MongoDB
 connectDB();
 // console.log(cloudinary.v2.uploader);
@@ -19,6 +20,8 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser()); // Use cookie-parser
 app.use(fileUpload({ useTempFiles: true }));
+
+app.use(cors());
 
 // Global error handler
 app.use((err, req, res, next) => {

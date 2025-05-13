@@ -141,20 +141,19 @@ const AdminProductsTable = () => {
   );
 
   return (
-    <div className="my-7">
-      <h2 className="lg:text-6xl text-5xl font-bold text-gray-900 text-center mb-3">
-        All Products
-      </h2>
-      <div className="flex items-center justify-center text-gray-900 gap-1 text-md font-normal mb-4">
-        <Link to="/">Home</Link>
-        <span>/</span>
-        <span>All Products</span>
-      </div>
-
+    <div>
       {isLoading ? (
         <Loader />
       ) : (
-        <div className="overflow-x-auto bg-bg-color p-2 sm:p-5 w-full max-w-screen overflow-y-hidden mx-auto">
+        <div className="overflow-x-auto bg-bg-color p-2 sm:p-5 w-full md:w-[80vw] bg-white shadow-xl rounded-2xl lg:w-[70vw] mx-auto">
+          <h2 className="lg:text-6xl text-5xl font-bold text-gray-900 text-center mb-3">
+            All Products
+          </h2>
+          <div className="flex items-center justify-center text-gray-900 gap-1 text-md font-normal mb-4">
+            <Link to="/">Home</Link>
+            <span>/</span>
+            <span>All Products</span>
+          </div>
           {/* Search filters */}
           <div className="flex flex-wrap flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 mb-4 w-full">
             <input

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import innerBannr from "../../assets/inner-banner.jpg";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { registerUser } from "../../Store/Auth/AuthSliceReducers";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -14,7 +14,7 @@ import LoadingButton from "../../components/LoadingButton/LoadingButton";
 
 const Signup = () => {
   const dispatch = useDispatch();
-
+  const location = useLocation();
   const { isLoading, error, userRegisterMessage } = useSelector(
     (state) => state.auth
   );
@@ -43,6 +43,12 @@ const Signup = () => {
       });
     }
   };
+
+  useEffect(() => {
+    if (userRegisterMessage !== "") {
+      navigate(from, { replace: true });
+    }
+  }, [userRegisterMessage]);
 
   return (
     <>

@@ -104,21 +104,18 @@ const AdminUsersTable = () => {
 
   return (
     <>
-      <div className="my-7">
-        <h2 className="lg:text-6xl text-5xl font-bold text-gray-900 text-center mb-3">
-          All Users
-        </h2>
-        <div className="flex items-center justify-center text-gray-900 gap-1 text-md font-normal">
-          <Link to={"/"}>Home</Link>
-          <span>/</span>
-          <span>All Uesrs</span>
-        </div>
-      </div>
-
       {isLoading ? (
         <Loader />
       ) : (
-        <div className="overflow-x-auto bg-bg-color p-2 sm:p-5 w-full md:w-[80vw] lg:w-[70vw] mx-auto">
+        <div className="overflow-x-auto bg-bg-color p-2 sm:p-5 w-full md:w-[80vw] bg-white shadow-xl rounded-2xl lg:w-[70vw] mx-auto">
+          <h2 className="lg:text-6xl text-5xl font-bold text-gray-900 text-center mb-3">
+            All Users
+          </h2>
+          <div className="flex items-center justify-center text-gray-900 gap-1 text-md font-normal mb-5">
+            <Link to={"/"}>Home</Link>
+            <span>/</span>
+            <span>All Uesrs</span>
+          </div>
           <input
             type="text"
             placeholder="Search by name..."
@@ -131,7 +128,7 @@ const AdminUsersTable = () => {
             {...getTableProps()}
             className="min-w-max w-full text-xs sm:text-sm table-auto border-collapse border border-gray-400"
           >
-            <thead className="bg-gray-900 text-white/90">
+            <thead className="bg-[#F0F2F5] text-gray-900">
               {headerGroups.map((headerGroup, index) => (
                 <tr
                   key={index}
@@ -150,7 +147,7 @@ const AdminUsersTable = () => {
                 </tr>
               ))}
             </thead>
-            <tbody {...getTableBodyProps()} className="text-gray-900">
+            <tbody {...getTableBodyProps()} className="text-gray-900 bg-white">
               {page.map((row, rowIndex) => {
                 prepareRow(row);
                 return (

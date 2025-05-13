@@ -355,7 +355,7 @@ const App = () => {
               element={<SingleProductDetails />}
             />
             <Route
-              path="products/create-new-product"
+              path="product/create-new-product"
               element={<CreateNewProduct />}
             />
             <Route
