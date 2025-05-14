@@ -6,10 +6,15 @@ const bcrypt = require("bcryptjs");
 const getUserDetails = async (req, res) => {
   try {
     const { _id } = req.user;
-    // console.log(_id);
 
     const user = await User.findById(_id, "-password");
-    // console.log(user);
+
+    if (user && user.isSuspended === true) {
+      return res.status(400).json({
+        success: false,
+        message: "User is suspended by admin",
+      });
+    }
 
     res.status(200).json({ message: "User details", user });
   } catch (err) {
@@ -51,6 +56,13 @@ const editUserProfile = async (req, res) => {
     return res.status(400).json({ errors: errors.array()[0].msg });
   }
   try {
+    const user = await User.findById(req.user._id);
+    if (user && user.isSuspended === true) {
+      return res.status(400).json({
+        success: false,
+        message: "User is suspended  by admin",
+      });
+    }
     // Find user by ID and update the user's fields
     const updatedUser = await User.findByIdAndUpdate(
       req.user._id,
@@ -81,6 +93,13 @@ const editUserProfile = async (req, res) => {
 // Controller to delete user
 const deleteUser = async (req, res) => {
   try {
+    const user = await User.findById(req.user._id);
+    if (user && user.isSuspended === true) {
+      return res.status(400).json({
+        success: false,
+        message: "User is suspended  by admin",
+      });
+    }
     // Find the user by ID and delete it
     const deletedUser = await User.findByIdAndDelete(req.user._id);
 
@@ -129,6 +148,12 @@ const changePassword = async (req, res) => {
     }
     // Find user by ID
     const user = await User.findById(req.user._id);
+    if (user && user.isSuspended === true) {
+      return res.status(400).json({
+        success: false,
+        message: "User is suspended  by admin",
+      });
+    }
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -261,6 +286,38 @@ const deleteUserAdmin = async (req, res) => {
     });
   }
 };
+
+//to suspend user ---> admin
+const suspendUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Find the user by ID and suspend it
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    user.isSuspended = true;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: `User sespended successfully`,
+    });
+  } catch (err) {
+    console.error("Error deleting user:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server error while deleting user",
+    });
+  }
+};
+
 module.exports = {
   getAllUsers,
   editUserProfile,
@@ -269,5 +326,6 @@ module.exports = {
   changePassword,
   getUserDetails,
   updateUserRole,
+  suspendUser,
   deleteUserAdmin,
 };

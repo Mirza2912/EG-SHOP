@@ -84,9 +84,17 @@ import {
   clearShippingAddress,
 } from "./Store/Order/OrderSlice.js";
 import UserSpeedDial from "./components/SpeedDial/SpeedDial.jsx";
-import { clearDeleteProductMessage } from "./Store/Products/ProductSlice.js";
+import {
+  clearAddToFeaturedProduct,
+  clearDeleteProductMessage,
+  clearProductCreateMessage,
+} from "./Store/Products/ProductSlice.js";
 import AdminDashboard from "./admin/page.jsx";
 import UsersPage from "./admin/users/page.jsx";
+import ProductsPage from "./admin/products/page.jsx";
+import AdminUsersSingleUserDetails from "./admin/users/AdminUsersSingleUserDetails.jsx";
+import AdminSingleProductDetails from "./admin/products/productDetails/AdminSingleProductDetails.jsx";
+import AddProductPage from "./admin/products/add/page.jsx";
 
 /* APP COMPONENT */
 const App = () => {
@@ -126,7 +134,8 @@ const App = () => {
     (state) => state.order
   );
 
-  const { deleteProductMessage } = useSelector((state) => state.products);
+  const { deleteProductMessage, addToFeaturedProduct, productCreateMessage } =
+    useSelector((state) => state.products);
   // console.log(cartItems);
 
   const toastShownRef = useRef(false);
@@ -154,7 +163,7 @@ const App = () => {
     //user reagisteration success message show
     if (userRegisterMessage) {
       toast.success(userRegisterMessage);
-      navigate("/profile", { replace: true });
+      navigate("/", { replace: true });
       dispatch(clearUserRegisterationMessage());
     }
     //user logout success message show
@@ -240,7 +249,15 @@ const App = () => {
       toast.success(deleteProductMessage);
       dispatch(clearDeleteProductMessage());
     }
+    if (addToFeaturedProduct) {
+      toast.success(addToFeaturedProduct);
+      dispatch(clearAddToFeaturedProduct());
+    }
 
+    if (productCreateMessage) {
+      toast.success(productCreateMessage);
+      dispatch(clearProductCreateMessage());
+    }
     return () => clearTimeout(timeout);
   }, [
     logOutMessage,
@@ -258,6 +275,8 @@ const App = () => {
     updateUserRoleMessage,
     adminDeleteUserMessage,
     deleteProductMessage,
+    addToFeaturedProduct,
+    productCreateMessage,
   ]);
 
   /* USEEFFECT FOR LOGICS*/
@@ -308,9 +327,7 @@ const App = () => {
         <Route path="/cart" element={<Cart />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/testadmin" element={<AdminDashboard />} />
-        <Route path="/admin/users" element={<UsersPage />} />
-        <Route path="/testadmin" element={<AdminDashboard />} />
+
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<Profile />} />
           <Route path="/user/edit-profile" element={<EditUserProfile />} />
@@ -374,6 +391,26 @@ const App = () => {
           <Route
             path="orders/order/details/:id"
             element={<SingleOrderDetailsAdmin />}
+          />
+        </Route>
+
+        {/* New setup of admin  */}
+        <Route element={<AdminRoute />}>
+          <Route path="/admin-dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/users" element={<UsersPage />} />
+          <Route
+            path="/admin/users/single-user/:id"
+            element={<AdminUsersSingleUserDetails />}
+          />
+
+          <Route path="/admin/products" element={<ProductsPage />} />
+          <Route
+            path="/admin/products/create-product"
+            element={<AddProductPage />}
+          />
+          <Route
+            path="/admin/products/single-product/:id"
+            element={<AdminSingleProductDetails />}
           />
         </Route>
       </Routes>

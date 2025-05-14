@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
+  addToFeatured,
+  createNewProduct,
   deleteProduct,
   getAllProducts,
   getALlProductsAdmin,
@@ -20,6 +22,9 @@ const productSlice = createSlice({
     error: null,
     singleProductMessage: "",
     deleteProductMessage: "",
+    addToFeaturedProduct: "",
+
+    productCreateMessage: "",
   },
   reducers: {
     clearSingleProductMessage: (state) => {
@@ -27,6 +32,12 @@ const productSlice = createSlice({
     },
     clearDeleteProductMessage: (state) => {
       state.deleteProductMessage = "";
+    },
+    clearAddToFeaturedProduct: (state) => {
+      state.addToFeaturedProduct = "";
+    },
+    clearProductCreateMessage: (state) => {
+      state.productCreateMessage = "";
     },
     clearError: (state) => {
       state.error = null;
@@ -100,6 +111,30 @@ const productSlice = createSlice({
       .addCase(deleteProduct.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
+      })
+      .addCase(addToFeatured.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(addToFeatured.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.addToFeaturedProduct = action.payload;
+      })
+      .addCase(addToFeatured.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(createNewProduct.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(createNewProduct.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.productCreateMessage = action.payload?.message;
+      })
+      .addCase(createNewProduct.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
       });
   },
 });
@@ -108,5 +143,7 @@ export const {
   clearError,
   clearSingleProductMessage,
   clearDeleteProductMessage,
+  clearAddToFeaturedProduct,
+  clearProductCreateMessage,
 } = productSlice.actions;
 export default productSlice.reducer;

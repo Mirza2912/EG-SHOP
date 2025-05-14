@@ -15,6 +15,7 @@ import LoadingButton from "../../components/LoadingButton/LoadingButton";
 const Signup = () => {
   const dispatch = useDispatch();
   const location = useLocation();
+
   const { isLoading, error, userRegisterMessage } = useSelector(
     (state) => state.auth
   );
@@ -43,12 +44,6 @@ const Signup = () => {
       });
     }
   };
-
-  useEffect(() => {
-    if (userRegisterMessage !== "") {
-      navigate(from, { replace: true });
-    }
-  }, [userRegisterMessage]);
 
   return (
     <>

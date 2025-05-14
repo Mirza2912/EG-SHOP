@@ -7,6 +7,8 @@ const {
   updateProduct,
   deleteProduct,
   getFeaturedProducts,
+  addToFeatured,
+  getAllProductsAdmin,
 } = require("../Controllers/productController");
 const { body } = require("express-validator");
 const { query } = require("express-validator");
@@ -25,7 +27,14 @@ const adminMiddleware = require("../Middlewares/adminMiddleware");
 const router = express.Router();
 
 //this will be admin route --->Admin
-router.post("/create", createProductValidation, validateRequest, createProduct);
+router.post(
+  "/create",
+  createProductValidation,
+  validateRequest,
+  authMiddleware,
+  adminMiddleware,
+  createProduct
+);
 
 //route for update product also admin route ---->Admin
 router.put(
@@ -34,11 +43,17 @@ router.put(
   validateRequest,
   updateProduct
 );
+router.put(
+  "/make-feature-product/:id",
+  authMiddleware,
+  adminMiddleware,
+  addToFeatured
+);
 router.get(
   "/admin/products",
   authMiddleware,
   adminMiddleware,
-  getFeaturedProducts
+  getAllProductsAdmin
 );
 router.get("/", getAllProductsValidation, validateRequest, getAllProducts);
 router.get("/singleProduct/:id", getProductById);

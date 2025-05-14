@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AdminSidebar from "../components/admin-sidebar";
 import DashboardHeader from "../components/dashboard-header";
 import DashboardStats from "../components/dashboard-stats";
@@ -7,10 +7,25 @@ import RecentUsers from "../components/recent-users";
 import ProductsPage from "./products/page";
 import UsersPage from "./users/page";
 import SettingsPage from "./settings/page";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllUsers } from "../Store/Auth/AuthSliceReducers";
+import { getALlProductsAdmin } from "../Store/Products/ProductSliceReducers";
+import { getAllOrdersAdmin } from "../Store/Order/OrderSliceReducer";
 
 export default function AdminDashboard() {
   const [route, setRoute] = useState("dashboard");
-  console.log("route",route);
+
+  const { allUsers } = useSelector((state) => state.auth);
+  const { adminProducts } = useSelector((state) => state.products);
+  const { allOrders } = useSelector((state) => state.order);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAllUsers());
+    dispatch(getALlProductsAdmin());
+    dispatch(getAllOrdersAdmin());
+  }, [dispatch]);
   return (
     <>
       <div className="flex h-screen bg-gray-50">
@@ -45,13 +60,11 @@ export default function AdminDashboard() {
             <>
               <UsersPage />
             </>
-          ) :route=="settings"
-          ? (
+          ) : route == "settings" ? (
             <>
-            <SettingsPage />
+              <SettingsPage />
             </>
-          ):
-          (
+          ) : (
             ""
           )}
         </main>

@@ -12,7 +12,7 @@ const createProduct = async (req, res, next) => {
     return res.status(400).json({ errors: errors.array()[0].msg });
   }
   const data = req.body;
-  // console.log(data.category);
+  console.log(data);
 
   try {
     // 1.First i will check category given or not
@@ -24,20 +24,20 @@ const createProduct = async (req, res, next) => {
 
       //if exist
       if (categoryObj) {
-        // console.log("Category already exist" + categoryObj);
+        console.log("Category already exist" + categoryObj);
         // If the category exists, set the category field in the product data to the category's ID
         data.category = categoryObj?._id;
-        // console.log(categoryObj._id.toString());
+        console.log(categoryObj._id.toString());
       } else {
         // If the category does not exist, create a new category
         const newCategory = await Category.create({
           name: data.category,
-          maker: "6808c36faf63f56a717ba3de",
+          maker: req.user._id,
         });
-        // console.log("New category " + newCategory);
+        console.log("New category " + newCategory);
 
         if (!newCategory) {
-          // console.log("New categfory not create");
+          console.log("New categfory not create");
 
           return res.status(401).json({
             success: false,
@@ -45,7 +45,7 @@ const createProduct = async (req, res, next) => {
               "Failed to  create new category while creating new product",
           });
         }
-        // console.log(newCategory._id);
+        console.log(newCategory._id);
 
         //set data.category= id of category model because we create product with id of cateory model
         data.category = newCategory?._id;
@@ -57,20 +57,26 @@ const createProduct = async (req, res, next) => {
       });
     }
 
-    // console.log(data.category);
+    console.log(data.category);
 
     //2.If image given then check its type (url or file from local machine)
-    if (req.files?.images || data?.images) {
+    if (req.files?.images) {
+      console.log("good");
+
       //validation of image format
       const allowedFormats = ["image/jpeg", "image/png", "image/webp"];
       const maxSize = 5 * 1024 * 1024; // 5MB
 
       // 3.If image in file format
       if (req.files?.images) {
+        console.log("file i");
+
         // Ensure req.files?.images is an array
         const imagesArray = Array.isArray(req.files?.images)
           ? req.files?.images
           : [req.files?.images];
+
+        console.log("imagesArray :" + imagesArray);
 
         //validation of images
         for (let image of imagesArray) {
@@ -90,6 +96,7 @@ const createProduct = async (req, res, next) => {
             });
           }
         }
+        console.log("Allowed");
       }
       // 5.then call imageuploader on cloudinary function from utilities by giving parameters both
       const uploadedImages = await UploadProductImagesCloudinary(req, res);
@@ -100,15 +107,23 @@ const createProduct = async (req, res, next) => {
           message: `Something went wrong while uploading images`,
         });
       }
+      console.log("upload okay");
 
       //6.now set cloudinary given images urls in data(req.body)
       data.images = uploadedImages;
+      // data.user = req.user._id;
+      console.log(data);
     } else {
       return res.status(400).json({
         success: false,
         message: `Images are required.`,
       });
     }
+
+    // console.log(req.user);
+
+    data.user = req.user._id;
+    // console.log(data);
 
     //7.now finally create product
     const product = await Product.create(data);
@@ -125,7 +140,7 @@ const createProduct = async (req, res, next) => {
       message: "Product created successfully",
     });
   } catch (err) {
-    // console.error("Error creating product:", err);
+    console.error("Error creating product:", err);
     res
       .status(500)
       .json({ success: false, message: "Server error", error: err.message });
@@ -379,7 +394,7 @@ const getFeaturedProducts = async (req, res) => {
 //getALlProducts
 const getAllProductsAdmin = async (req, res) => {
   try {
-    const product = await Product.find();
+    const product = await Product.find().sort({ createAt: -1 });
 
     if (!product) {
       return res
@@ -400,6 +415,45 @@ const getAllProductsAdmin = async (req, res) => {
   }
 };
 
+const addToFeatured = async (req, res, next) => {
+  try {
+    const product = await Product.findById(req.params?.id);
+
+    if (!product) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      req.params?.id,
+      {
+        isFeatured: true,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if (!updatedProduct) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Now product is featured",
+    });
+  } catch (err) {
+    // console.error("Error updating product:", err);
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: err.message });
+  }
+};
+
 module.exports = {
   createProduct,
   getAllProducts,
@@ -408,4 +462,5 @@ module.exports = {
   deleteProduct,
   getAllProductsAdmin,
   getFeaturedProducts,
+  addToFeatured,
 };

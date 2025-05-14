@@ -19,7 +19,7 @@ connectDB();
 const app = express();
 app.use(express.json());
 app.use(cookieParser()); // Use cookie-parser
-app.use(fileUpload({ useTempFiles: true }));
+app.use(fileUpload({ useTempFiles: true, tempFileDir: "/tmp/" }));
 
 app.use(cors());
 

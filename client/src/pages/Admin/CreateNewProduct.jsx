@@ -10,8 +10,7 @@ import { getAllCategories } from "../../Store/Category/CategorySliceReducers";
 const CreateProduct = () => {
   const dispatch = useDispatch();
   const { category } = useSelector((state) => state.category); // assuming your category state is like this
-  // console.log(category);
-
+  const { isLoading } = useSelector((state) => state.products);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -223,7 +222,7 @@ const CreateProduct = () => {
               <label className="text-sm">Featured Product</label>
             </div>
 
-            <LoadingButton isLoading={false}>Create Product</LoadingButton>
+            <LoadingButton isLoading={isLoading}>Create Product</LoadingButton>
           </form>
         </div>
       </section>

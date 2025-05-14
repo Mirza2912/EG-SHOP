@@ -3,7 +3,6 @@
 // import { getAllUsers } from "../../Store/Auth/AuthSliceReducers";
 // import { useEffect, useMemo } from "react";
 
-
 // export default function UsersPage() {
 //   const dispatch=useDispatch();
 
@@ -67,44 +66,48 @@
 //   )
 // }
 
-
 import { useDispatch, useSelector } from "react-redux";
 import UsersTable from "../../components/users-table";
-import { getAllUsers, userDelete } from "../../Store/Auth/AuthSliceReducers";
+import {
+  deleteUser,
+  getAllUsers,
+  userDelete,
+} from "../../Store/Auth/AuthSliceReducers";
 import { useEffect, useMemo, useState } from "react";
 
 export default function UsersPage() {
   const dispatch = useDispatch();
   const { allUsers, isLoading, error } = useSelector((state) => state.auth);
-  
+
   // Add state for search query
   const [searchQuery, setSearchQuery] = useState("");
-
-  useEffect(() => {
-    dispatch(getAllUsers());
-  }, [dispatch]);
 
   // Filter users based on search query
   const filteredUsers = useMemo(() => {
     if (!allUsers) return [];
-    
+
     if (!searchQuery.trim()) return allUsers;
 
-    return allUsers.filter(user => 
-      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.phone?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.role.toLowerCase().includes(searchQuery.toLowerCase())
+    return allUsers.filter(
+      (user) =>
+        user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.phone?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.role.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [allUsers, searchQuery]);
-const handleDelete = (userId) => {
- return dispatch(userDelete(userId));
-}
+  const handleDelete = (userId) => {
+    return dispatch(deleteUser(userId));
+  };
+
+  useEffect(() => {
+    dispatch(getAllUsers());
+  }, []);
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Users Management</h1>
-        <button className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md flex items-center text-sm">
+        {/* <button className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md flex items-center text-sm">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-4 w-4 mr-2"
@@ -118,7 +121,7 @@ const handleDelete = (userId) => {
             <path d="M12 5v14M5 12h14" />
           </svg>
           Add New User
-        </button>
+        </button> */}
       </div>
 
       <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
@@ -145,10 +148,12 @@ const handleDelete = (userId) => {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-md text-sm">Filter</button>
+          <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-md text-sm">
+            Filter
+          </button>
         </div>
 
-        <UsersTable users={filteredUsers} handleDelete={handleDelete} />
+        <UsersTable users={filteredUsers} />
       </div>
     </div>
   );

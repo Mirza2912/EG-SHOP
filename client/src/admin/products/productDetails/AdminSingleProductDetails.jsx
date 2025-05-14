@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import {
-  getSingleProduct,
-  getSingleProductAdmin,
-} from "../../Store/Products/ProductSliceReducers";
+import { getSingleProductAdmin } from "../../../Store/Products/ProductSliceReducers";
 
-const SingleProduct = () => {
+const AdminSingleProductDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
 
@@ -25,20 +22,11 @@ const SingleProduct = () => {
   }, [singleProductAdmin]);
   return (
     <>
-      <div className="my-7">
-        <div>
-          <h2 className="lg:text-6xl text-5xl font-bold text-gray-900 text-center mb-3">
+      <div className="min-h-[90vh] flex items-center justify-center bg-gray-50">
+        <div className="lg:w-[75%] xl:w-[65%] w-full  sm:mx-4 md:w-[80%] md:mx-6 my-7 bg-white rounded-2xl shadow-lg  p-6 sm:p-10">
+          <h2 className="lg:text-6xl text-5xl font-bold text-gray-900 text-center mb-14">
             Single Product Details
           </h2>
-          <div className="flex items-center justify-center text-gray-900 gap-1 text-md font-normal">
-            <Link to={"/"}>Home</Link>
-            <span>/</span>
-            <Link to={"/admin/dashboard/products"}>All Products</Link>
-            <span>/</span>
-            <span>Single product</span>
-          </div>
-        </div>
-        <div className="max-w-4xl xl:mx-auto p-4 sm:p-6 lg:p-8 bg-white shadow rounded-lg mt-8 mx-4">
           <div className="flex flex-col gap-4 w-full sm:flex-row sm:items-start sm:justify-center sm:gap-4 md:gap-6">
             {/* Product Image */}
             <div className="w-full sm:w-1/2">
@@ -69,21 +57,29 @@ const SingleProduct = () => {
             </div>
 
             {/* Product Info */}
-            <div className="w-full sm:w-1/2 text-sm sm:text-base">
+            <div className="w-full sm:w-1/2 text-sm sm:text-base ">
               <div className="mb-3">
-                <span className="font-semibold text-gray-700">Name:</span>{" "}
+                <span className="font-semibold text-gray-900 text-xl ">
+                  Name:
+                </span>{" "}
                 {singleProductAdmin?.name}
               </div>
               <div className="mb-3">
-                <span className="font-semibold text-gray-700">Price:</span> $
-                {singleProductAdmin?.price}
+                <span className="font-semibold text-gray-900 text-xl ">
+                  Price:
+                </span>{" "}
+                ${singleProductAdmin?.price}
               </div>
               <div className="mb-3">
-                <span className="font-semibold text-gray-700">Category:</span>{" "}
+                <span className="font-semibold text-gray-900 text-xl ">
+                  Category:
+                </span>{" "}
                 {singleProductAdmin?.category?.name}
               </div>
               <div className="mb-3">
-                <span className="font-semibold text-gray-700">Stock:</span>{" "}
+                <span className="font-semibold text-gray-900 text-xl ">
+                  Stock:
+                </span>{" "}
                 <span
                   className={
                     singleProductAdmin?.stock > 0
@@ -97,21 +93,23 @@ const SingleProduct = () => {
                 </span>
               </div>
               <div className="mb-3">
-                <span className="font-semibold text-gray-700">Created:</span>{" "}
+                <span className="font-semibold text-gray-900 text-xl ">
+                  Created:
+                </span>{" "}
                 {new Date(singleProductAdmin?.createdAt).toLocaleDateString()}
               </div>
               <div className="mb-3">
-                <span className="font-semibold text-gray-700">
+                <span className="font-semibold text-gray-900 text-xl ">
                   Description:
                 </span>
-                <p className="text-gray-600 mt-1">
+                <p className="text-gray-900 mt-1">
                   {singleProductAdmin?.description}
                 </p>
               </div>
               <div className="mt-6 text-center flex items-center justify-start">
                 <Link
-                  to="/admin/dashboard/products"
-                  className="bg-[#f98662] text-white px-6 py-2 rounded shadow hover:bg-[#f9744d] transition"
+                  to="/admin/products"
+                  className="bg-[#f9744d] text-white px-6 py-2 rounded shadow hover:bg-[#f98662] transition"
                 >
                   Back to Products
                 </Link>
@@ -124,4 +122,4 @@ const SingleProduct = () => {
   );
 };
 
-export default SingleProduct;
+export default AdminSingleProductDetails;
