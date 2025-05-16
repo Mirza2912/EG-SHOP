@@ -36,6 +36,7 @@ const signup = async (req, res) => {
       email,
       password: hashedPassword, // Store hashed password
       phone,
+      isOnline: true,
     });
 
     // Save the user to the database
@@ -79,6 +80,10 @@ const login = async (req, res) => {
       return res.status(404).json({ message: "User does not exist" });
     }
 
+    if (existingUser && existingUser.isSuspended === true) {
+      return res.status(400).json({ message: "User is suspended by admin" });
+    }
+
     // Check if the password is correct
     const isPasswordCorrect = await bcrypt.compare(
       password,
@@ -98,6 +103,8 @@ const login = async (req, res) => {
       process.env.JWT_KEY, // Use your secret from .env
       { expiresIn: "3h" }
     );
+    existingUser.isOnline = true;
+    await existingUser.save();
 
     res
       .status(200)
@@ -107,7 +114,7 @@ const login = async (req, res) => {
       })
       .json({ message: "User logged in successfully", user: existingUser });
   } catch (err) {
-    // console.error("Error during login:", err);
+    console.error("Error during login:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -199,7 +206,11 @@ const verifyOtpAndResetPassword = async (req, res) => {
 };
 
 // Controllers/authController.js
-const logout = (req, res) => {
+const logout = async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  user.isOnline = false;
+  await user.save();
   // Clear the authentication cookie named "token"
   res.clearCookie("token", {
     httpOnly: true,

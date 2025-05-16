@@ -8,6 +8,7 @@ const {
   editUserProfile,
   updateUserRole,
   deleteUserAdmin,
+  suspendUser,
 } = require("../Controllers/userController.js");
 const authMiddleware = require("../Middlewares/authMiddleware");
 const {
@@ -35,6 +36,7 @@ router.delete(
   deleteUserAdmin
 );
 router.get("/user/:id", authMiddleware, adminMiddleware, viewUser);
+router.get("/user/suspend/:id", authMiddleware, adminMiddleware, suspendUser);
 router.put(
   "/user/update-role/:id",
   authMiddleware,

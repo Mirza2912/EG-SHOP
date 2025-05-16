@@ -29,7 +29,7 @@ const Navbar = () => {
 
   return (
     <div>
-      <header className="bg-[#F0F2F5] relative">
+      <header className="bg-[#F0F2F5] relative border-b-2 border-gray-200">
         <div className="container mx-auto flex justify-between py-5 px-5 lg:px-16 md:px-8  items-center">
           {/* Logo */}
           <Link to={"/"}>

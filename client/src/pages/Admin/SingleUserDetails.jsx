@@ -36,22 +36,22 @@ const SingleUserDetails = () => {
   }, [singleUserDetails]);
   return (
     <div className="min-h-[80vh] my-5 sm:my-10 md:my-14">
-      <div className="my-7">
-        <h2 className="lg:text-6xl text-5xl font-bold text-gray-900 text-center mb-3">
-          {singleUserDetails?.data?.name} Details
-        </h2>
-        <div className="flex items-center justify-center text-gray-900 gap-1 text-md font-normal">
-          <Link to={"/"}>Home</Link>
-          <span>/</span>
-          <Link to={"/"}>All Uesrs</Link>
-          <span>/</span>
-          <span>Single user</span>
-        </div>
-      </div>
       {isLoading ? (
         <Loader />
       ) : (
-        <div className="max-w-3xl mx-auto my-10 bg-white/90 rounded-xl shadow-md p-6 sm:p-10">
+        <div className="max-w-3xl sm:mx-auto mx-4 my-10 bg-white/90 rounded-2xl shadow-lg  p-6 sm:p-10">
+          <div className="my-7">
+            <h2 className="lg:text-6xl text-5xl font-bold text-gray-900 text-center mb-3">
+              {singleUserDetails?.data?.name} Details
+            </h2>
+            <div className="flex items-center justify-center text-gray-900 gap-1 text-md font-normal">
+              <Link to={"/"}>Home</Link>
+              <span>/</span>
+              <Link to={"/"}>All Uesrs</Link>
+              <span>/</span>
+              <span>Single user</span>
+            </div>
+          </div>
           <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-start">
             <div className="text-gray-900 text-base sm:text-lg space-y-2">
               <p>

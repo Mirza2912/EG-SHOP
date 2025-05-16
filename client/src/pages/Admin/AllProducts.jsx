@@ -11,7 +11,7 @@ const AllProducts = () => {
     dispatch(getAllCategories());
   }, []);
   return (
-    <div className="min-h-[80vh] my-5 sm:my-10 md:my-14">
+    <div className="min-h-[80vh] flex items-center justify-center px-4">
       <AdminProductsTable />
     </div>
   );

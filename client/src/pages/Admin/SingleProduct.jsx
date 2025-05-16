@@ -11,7 +11,7 @@ const SingleProduct = () => {
   const dispatch = useDispatch();
 
   const { singleProductAdmin } = useSelector((state) => state.products);
-  console.log(singleProductAdmin);
+  // console.log(singleProductAdmin);
 
   const [mainImage, setMainImage] = useState("");
 

@@ -10,17 +10,17 @@ const UploadProductImagesCloudinary = async (req, res) => {
 
     //it is an array where we will store object of uploaded images properties
     const uploadedImages = [];
-    // console.log("uploadImages before upload" + uploadedImages);
+    console.log("uploadImages before upload" + uploadedImages);
 
     //check is images given by local machine
     if (req.files?.images) {
-      // console.log("if comes : " + req.files?.images);
+      console.log("if comes : " + req.files?.images);
 
       //if images not in the form of array then convert to array
       const imagesArray = Array.isArray(req.files?.images)
         ? req.files?.images
         : [req.files?.images];
-      // console.log("convert images to array " + imagesArray);
+      console.log("convert images to array " + imagesArray);
 
       // const start = Date.now();
       //loop for upload image on cloudinary one by one and then store every image url and id in uploadedImages array
@@ -43,12 +43,12 @@ const UploadProductImagesCloudinary = async (req, res) => {
         )
       );
 
-      // console.log("uploadedLocalImages : " + uploadedLocalImages);
+      console.log("uploadedLocalImages : " + uploadedLocalImages);
 
       // console.log(`Upload Time: ${Date.now() - start}ms`);
       //if not upload successfully
       if (!uploadedLocalImages) {
-        // console.log("uploadedLocalImages error : " + uploadedLocalImages);
+        console.log("uploadedLocalImages error : " + uploadedLocalImages);
 
         return res.status(500).json({
           success: false,
@@ -77,70 +77,70 @@ const UploadProductImagesCloudinary = async (req, res) => {
       //     }
       //   });
       // });
-      // console.log("Images upload " + uploadedImages);
+      console.log("Images upload " + uploadedImages);
     }
 
     //if user gives images from google or another as only url(string)
-    if (req.body?.images) {
-      // console.log("req.body?.images : " + req.body?.images);
+    // if (req.body?.images) {
+    //   console.log("req.body?.images : " + req.body?.images);
 
-      //if images not in the form of array
-      const imagesArray = Array.isArray(req.body.images)
-        ? req.body.images
-        : [req.body.images];
-      // console.log("convert images to array " + imagesArray[0]);
-      // console.log(imagesArray[0]);
+    //   //if images not in the form of array
+    //   const imagesArray = Array.isArray(req.body.images)
+    //     ? req.body.images
+    //     : [req.body.images];
+    //   console.log("convert images to array " + imagesArray[0]);
+    //   console.log(imagesArray[0]);
 
-      // const start = Date.now();
-      //loop for upload image on cloudinary one by one and then store every image url and id in uploadedImages array
-      const uploadedLocalImages = await Promise.all(
-        imagesArray.map((image) =>
-          cloudinary.v2.uploader.upload(image, {
-            folder: "productImages",
-            quality: "auto:low",
-            chunk_size: 6000000, // Upload in 6MB chunks
-            transformation: [
-              {
-                width: 800,
-                height: 800,
-                crop: "limit",
-                fetch_format: "auto",
-                quality: "auto",
-              },
-            ],
-          })
-        )
-      );
+    //   // const start = Date.now();
+    //   //loop for upload image on cloudinary one by one and then store every image url and id in uploadedImages array
+    //   const uploadedLocalImages = await Promise.all(
+    //     imagesArray.map((image) =>
+    //       cloudinary.v2.uploader.upload(image, {
+    //         folder: "productImages",
+    //         quality: "auto:low",
+    //         chunk_size: 6000000, // Upload in 6MB chunks
+    //         transformation: [
+    //           {
+    //             width: 800,
+    //             height: 800,
+    //             crop: "limit",
+    //             fetch_format: "auto",
+    //             quality: "auto",
+    //           },
+    //         ],
+    //       })
+    //     )
+    //   );
 
-      // console.log("uploadedLocalImages : " + uploadedLocalImages);
-      // console.log(`Upload Time: ${Date.now() - start}ms`);
-      //if not upload successfully
-      if (!uploadedLocalImages) {
-        // console.log("uploadedLocalImages error : " + uploadedLocalImages);
+    //   // console.log("uploadedLocalImages : " + uploadedLocalImages);
+    //   // console.log(`Upload Time: ${Date.now() - start}ms`);
+    //   //if not upload successfully
+    //   if (!uploadedLocalImages) {
+    //     // console.log("uploadedLocalImages error : " + uploadedLocalImages);
 
-        return res.status(500).json({
-          success: false,
-          message: `Something went wrong while uploading image`,
-        });
-      }
+    //     return res.status(500).json({
+    //       success: false,
+    //       message: `Something went wrong while uploading image`,
+    //     });
+    //   }
 
-      // Store { url, public_id }
-      uploadedImages.push(
-        ...uploadedLocalImages.map((img) => ({
-          url: img.secure_url,
-          public_id: img.public_id,
-        }))
-      );
+    //   // Store { url, public_id }
+    //   uploadedImages.push(
+    //     ...uploadedLocalImages.map((img) => ({
+    //       url: img.secure_url,
+    //       public_id: img.public_id,
+    //     }))
+    //   );
 
-      //now delete tempfile
-      // imagesArray.forEach((image) => {
-      //   // console.log(image);
+    //   //now delete tempfile
+    //   // imagesArray.forEach((image) => {
+    //   //   // console.log(image);
 
-      //   fs.unlink(image.tempFilePath);
-      // });
+    //   //   fs.unlink(image.tempFilePath);
+    //   // });
 
-      // console.log("Uploaded images req.body.images : " + uploadedLocalImages);
-    }
+    //   // console.log("Uploaded images req.body.images : " + uploadedLocalImages);
+    // }
 
     // console.log("Final upload " + uploadedImages);
 

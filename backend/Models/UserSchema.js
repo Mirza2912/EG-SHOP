@@ -37,6 +37,15 @@ const userSchema = new mongoose.Schema(
     updatedAt: {
       type: Date,
     },
+    isOnline: {
+      type: Boolean,
+      default: false,
+    },
+
+    isSuspended: {
+      type: Boolean,
+      default: false,
+    },
 
     otp: String, // Token to reset password
     otpExpire: Date, // Expiration time for reset token

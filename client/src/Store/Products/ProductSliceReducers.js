@@ -1,6 +1,34 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+const config = {
+  headers: {
+    "Content-Type": "multipart/form-data",
+  },
+};
+//create product
+const createNewProduct = createAsyncThunk(
+  "products/createNewProduct",
+  async (data, { rejectWithValue }) => {
+    try {
+      console.log(data);
+
+      /*making api call with axios for getting product from backend */
+      const response = await axios.post(`/api/products/create`, data, config);
+      console.log(response?.data);
+      return response?.data; //returning fetched data
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue(
+        error.response.data?.errors ||
+          error.response.data?.message ||
+          error.message ||
+          "Failed to fetch all products"
+      );
+    }
+  }
+);
+
 //getAllProducts(with filters)
 const getAllProducts = createAsyncThunk(
   "products/getAllProducts",
@@ -126,7 +154,30 @@ const deleteProduct = createAsyncThunk(
       // console.log(id);
 
       /*making api call with axios for getting single  product from backend */
-      const response = await axios.delete(`/api/products//deleteProduct/${id}`);
+      const response = await axios.delete(`/api/products/deleteProduct/${id}`);
+      // console.log(response?.data);
+      return response?.data?.message; //returning fetched data
+    } catch (error) {
+      console.log(error.response.data?.message);
+      return rejectWithValue(
+        error.response.data?.errors ||
+          error.response.data?.message ||
+          error.message ||
+          "Failed to delete product"
+      );
+    }
+  }
+);
+
+//addToFeatured
+const addToFeatured = createAsyncThunk(
+  "products/addToFeatured",
+  async (id, { rejectWithValue }) => {
+    try {
+      /*making api call with axios for getting single  product from backend */
+      const response = await axios.put(
+        `/api/products/make-feature-product/${id}`
+      );
       // console.log(response?.data);
       return response?.data?.message; //returning fetched data
     } catch (error) {
@@ -147,4 +198,6 @@ export {
   getALlProductsAdmin,
   getSingleProductAdmin,
   deleteProduct,
+  addToFeatured,
+  createNewProduct,
 };

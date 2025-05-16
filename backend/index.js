@@ -11,6 +11,9 @@ const orderRoutes = require("./Routers/orderRoutes");
 const paymentRouters = require("./Routers/paymentRoute");
 const cloudinary = require("cloudinary");
 const fileUpload = require("express-fileupload");
+const cors = require("cors");
+
+const feedbackRouters = require('./Routers/feedbackRouter')
 // Connect to MongoDB
 connectDB();
 // console.log(cloudinary.v2.uploader);
@@ -18,7 +21,9 @@ connectDB();
 const app = express();
 app.use(express.json());
 app.use(cookieParser()); // Use cookie-parser
-app.use(fileUpload({ useTempFiles: true }));
+app.use(fileUpload({ useTempFiles: true, tempFileDir: "/tmp/" }));
+
+app.use(cors());
 
 // Global error handler
 app.use((err, req, res, next) => {
@@ -37,6 +42,7 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/payment", paymentRouters);
+app.use("/api/messages", feedbackRouters);
 // Uncaught Exception & Rejection Handlers
 process.on("uncaughtException", (err) => {
   console.error("Uncaught Exception:", err);

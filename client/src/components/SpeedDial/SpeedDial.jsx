@@ -44,7 +44,7 @@ const UserSpeedDial = ({ user }) => {
 
   //   Functions for speed dial actions
   function Dashboard() {
-    navigate("/admin/dashboard");
+    navigate("/admin-dashboard");
   }
 
   function Orders() {

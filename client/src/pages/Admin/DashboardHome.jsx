@@ -39,7 +39,7 @@ const DashboardHome = () => {
   }, [dispatch]);
   return (
     <>
-      <div className=" mt-10">
+      <div className=" ">
         <h2 className="lg:text-5xl xl:text-6xl text-4xl font-bold text-gray-700 text-center mb-3">
           Admin Dashboard
         </h2>
@@ -49,8 +49,7 @@ const DashboardHome = () => {
           <span>Admin dashboard</span>
         </div>
       </div>
-
-      <div className="w-full lg:mt-7 mt-8 flex items-center justify-center md:gap-10 gap-2 text-lg font-semibold px-2 flex-wrap">
+      <div className="w-full mt-10 lg:mt-7 bg-[#F0F2F5]  flex items-center justify-center md:gap-10 gap-2 text-lg font-semibold px-2 flex-wrap">
         <div className="w-[150px] h-[150px] bg-gray-900 text-white/90 text-center flex items-center justify-center flex-col rounded-full">
           <p className="text-xl">USERS</p>
           <p>{allUsers && allUsers.length}</p>
@@ -67,11 +66,11 @@ const DashboardHome = () => {
           <p>Amount</p>
           <p>Rs.{totalAmount && totalAmount}</p>
         </div>
-      </div>
 
-      <ChartComponent />
-      <BarChart />
-      <StockDoughnutChart />
+        <ChartComponent />
+        <BarChart />
+        <StockDoughnutChart />
+      </div>
     </>
   );
 };

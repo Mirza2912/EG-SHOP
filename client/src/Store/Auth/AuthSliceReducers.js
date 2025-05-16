@@ -68,6 +68,8 @@ const loadUser = createAsyncThunk(
 
       return response.data;
     } catch (error) {
+      console.log(error);
+
       return rejectWithValue(
         error.response.data?.errors ||
           error.response.data?.message ||
@@ -306,6 +308,30 @@ const deleteUser = createAsyncThunk(
   }
 );
 
+//suspend user
+const suspendUser = createAsyncThunk(
+  "user/suspendUser",
+  async (id, { rejectWithValue }) => {
+    // console.log(id);
+
+    try {
+      const response = await axios.get(`/api/auth/user/suspend/${id}`, config);
+
+      console.log(response?.data);
+
+      return response?.data;
+    } catch (error) {
+      // console.log(error);
+      return rejectWithValue(
+        error.response.data?.errors ||
+          error.response.data?.message ||
+          error.message ||
+          "Failed to delete user"
+      );
+    }
+  }
+);
+
 export {
   registerUser,
   userLogin,
@@ -319,4 +345,5 @@ export {
   getSingleUserDetails,
   updateUserRole,
   deleteUser,
+  suspendUser,
 };
