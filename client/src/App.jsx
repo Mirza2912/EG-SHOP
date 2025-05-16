@@ -95,6 +95,7 @@ import ProductsPage from "./admin/products/page.jsx";
 import AdminUsersSingleUserDetails from "./admin/users/AdminUsersSingleUserDetails.jsx";
 import AdminSingleProductDetails from "./admin/products/productDetails/AdminSingleProductDetails.jsx";
 import AddProductPage from "./admin/products/add/page.jsx";
+import ChatsPage from "./admin/chats/page.jsx";
 
 /* APP COMPONENT */
 const App = () => {
@@ -412,6 +413,7 @@ const App = () => {
             path="/admin/products/single-product/:id"
             element={<AdminSingleProductDetails />}
           />
+          <Route path="/admin/chats" element={<ChatsPage />} />
         </Route>
       </Routes>
       <Footer />

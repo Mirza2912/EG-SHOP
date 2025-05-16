@@ -12,6 +12,8 @@ const paymentRouters = require("./Routers/paymentRoute");
 const cloudinary = require("cloudinary");
 const fileUpload = require("express-fileupload");
 const cors = require("cors");
+
+const feedbackRouters = require('./Routers/feedbackRouter')
 // Connect to MongoDB
 connectDB();
 // console.log(cloudinary.v2.uploader);
@@ -40,6 +42,7 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/payment", paymentRouters);
+app.use("/api/messages", feedbackRouters);
 // Uncaught Exception & Rejection Handlers
 process.on("uncaughtException", (err) => {
   console.error("Uncaught Exception:", err);
