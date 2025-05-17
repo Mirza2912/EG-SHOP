@@ -29,6 +29,8 @@ import {
   clearForgotPasswordMessage,
   clearLogoutMessage,
   clearSingleUserDetailsMessage,
+  clearSuspendUserMessage,
+  clearUnSuspendUserMessage,
   clearUpdateUserRoleMessage,
   clearUserRegisterationMessage,
 } from "./Store/Auth/AuthSlice.js";
@@ -76,6 +78,7 @@ import UpdateSingleProduct from "./pages/Admin/UpdateSingleProduct.jsx";
 import AllOrders from "./pages/Admin/AllOrders.jsx";
 import SingleOrderDetailsAdmin from "./pages/Admin/SingleOrderDetailsAdmin.jsx";
 import Order from "./pages/Order/Order.jsx";
+import OrdersPage from "./admin/orders/page.jsx";
 import SingleOrder from "./pages/Order/SingleOrder.jsx";
 import {
   clearGetAllOrdersMessage,
@@ -87,6 +90,7 @@ import UserSpeedDial from "./components/SpeedDial/SpeedDial.jsx";
 import {
   clearAddToFeaturedProduct,
   clearDeleteProductMessage,
+  clearMakeProductUnFeaturedMessage,
   clearProductCreateMessage,
 } from "./Store/Products/ProductSlice.js";
 import AdminDashboard from "./admin/page.jsx";
@@ -96,6 +100,8 @@ import AdminUsersSingleUserDetails from "./admin/users/AdminUsersSingleUserDetai
 import AdminSingleProductDetails from "./admin/products/productDetails/AdminSingleProductDetails.jsx";
 import AddProductPage from "./admin/products/add/page.jsx";
 import ChatsPage from "./admin/chats/page.jsx";
+import AdminSidebar from "./components/admin-sidebar.jsx";
+import AdminDashboardMain from "./admin/AdminDashboardMain.jsx";
 
 /* APP COMPONENT */
 const App = () => {
@@ -121,6 +127,8 @@ const App = () => {
     singleUserDetailsMessage,
     updateUserRoleMessage,
     adminDeleteUserMessage,
+    suspendUserMessage,
+    unSuspendUserMessage,
   } = useSelector((state) => state.auth);
 
   /* CART STATE*/
@@ -135,8 +143,12 @@ const App = () => {
     (state) => state.order
   );
 
-  const { deleteProductMessage, addToFeaturedProduct, productCreateMessage } =
-    useSelector((state) => state.products);
+  const {
+    deleteProductMessage,
+    addToFeaturedProduct,
+    productCreateMessage,
+    makeProductUnFeaturedMessage,
+  } = useSelector((state) => state.products);
   // console.log(cartItems);
 
   const toastShownRef = useRef(false);
@@ -254,11 +266,23 @@ const App = () => {
       toast.success(addToFeaturedProduct);
       dispatch(clearAddToFeaturedProduct());
     }
-
     if (productCreateMessage) {
       toast.success(productCreateMessage);
       dispatch(clearProductCreateMessage());
     }
+    if (suspendUserMessage) {
+      toast.success(suspendUserMessage);
+      dispatch(clearSuspendUserMessage());
+    }
+    if (unSuspendUserMessage) {
+      toast.success(unSuspendUserMessage);
+      dispatch(clearUnSuspendUserMessage());
+    }
+    if (makeProductUnFeaturedMessage) {
+      toast.success(makeProductUnFeaturedMessage);
+      dispatch(clearMakeProductUnFeaturedMessage());
+    }
+
     return () => clearTimeout(timeout);
   }, [
     logOutMessage,
@@ -278,6 +302,9 @@ const App = () => {
     deleteProductMessage,
     addToFeaturedProduct,
     productCreateMessage,
+    suspendUserMessage,
+    unSuspendUserMessage,
+    makeProductUnFeaturedMessage,
   ]);
 
   /* USEEFFECT FOR LOGICS*/
@@ -361,17 +388,15 @@ const App = () => {
         <Route path="*" element={<NotFoundPage />} />
 
         {/* /* Admin routes */}
-        <Route element={<AdminRoute />}>
+        {/* <Route element={<AdminRoute />}>
           <Route path="/admin/dashboard" element={<DashBoardLayout />}>
             <Route index element={<DashboardHome />} />
 
-            {/* Users  */}
             <Route path="users" element={<AllUsers />} />
             <Route
               path="users/single-user/details/:id"
               element={<SingleUserDetails />}
             />
-            {/* products  */}
             <Route path="products" element={<AllProducts />} />
             <Route
               path="products/single-products/details/:id"
@@ -387,34 +412,35 @@ const App = () => {
             />
           </Route>
 
-          {/* Orders  */}
           <Route path="orders" element={<AllOrders />} />
           <Route
             path="orders/order/details/:id"
             element={<SingleOrderDetailsAdmin />}
           />
-        </Route>
+        </Route> */}
 
         {/* New setup of admin  */}
         <Route element={<AdminRoute />}>
-          <Route path="/admin-dashboard" element={<AdminDashboard />} />
-          <Route path="/admin/users" element={<UsersPage />} />
-          <Route
-            path="/admin/users/single-user/:id"
-            element={<AdminUsersSingleUserDetails />}
-          />
-
-          <Route path="/admin/products" element={<ProductsPage />} />
-          <Route
-            path="/admin/products/create-product"
-            element={<AddProductPage />}
-          />
-          <Route
-            path="/admin/products/single-product/:id"
-            element={<AdminSingleProductDetails />}
-          />
-          <Route path="/admin/chats" element={<ChatsPage />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />}>
+            <Route index element={<AdminDashboardMain />} />
+            <Route path="users" element={<UsersPage />} />
+            <Route
+              path="users/single-user/:id"
+              element={<AdminUsersSingleUserDetails />}
+            />
+            <Route path="products" element={<ProductsPage />} />
+            <Route
+              path="products/create-product"
+              element={<AddProductPage />}
+            />
+            <Route
+              path="products/single-product/:id"
+              element={<AdminSingleProductDetails />}
+            />
+            <Route path="orders" element={<OrdersPage />} />
+          </Route>
         </Route>
+        <Route path="/admin/chats" element={<ChatsPage />} />
       </Routes>
       <Footer />
     </>

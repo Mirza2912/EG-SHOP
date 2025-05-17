@@ -7,11 +7,14 @@ import {
   deleteProduct,
   getAllProducts,
   getALlProductsAdmin,
+  makeUnfeatured,
 } from "../Store/Products/ProductSliceReducers";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export default function ProductsTable({ products }) {
   const dispatch = useDispatch();
+  // console.log(route);
+
   const [dropdownOpen, setDropdownOpen] = useState(null);
 
   const { adminProducts } = useSelector((state) => state.products);
@@ -178,25 +181,29 @@ export default function ProductsTable({ products }) {
                               aria-orientation="vertical"
                             >
                               <Link
-                                to={`/admin/products/single-product/${product._id}`}
+                                to={`/admin/dashboard/products/single-product/${product._id}`}
                                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
                                 role="menuitem"
                               >
                                 View details
                               </Link>
-                              <button
+                              {/* <button
                                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
                                 role="menuitem"
                               >
                                 Update inventory
-                              </button>
+                              </button> */}
                               <button
-                                onClick={() => AddToFeatured(product._id)}
+                                onClick={() =>
+                                  product.isFeatured === true
+                                    ? dispatch(makeUnfeatured(product._id))
+                                    : dispatch(AddToFeatured(product._id))
+                                }
                                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
                                 role="menuitem"
                               >
                                 {product.isFeatured === true
-                                  ? "Featured"
+                                  ? "Un Featured"
                                   : "Add to featured"}
                               </button>
                             </div>

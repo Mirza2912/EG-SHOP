@@ -251,7 +251,7 @@ const CreateProduct = () => {
 
   return (
     <>
-      <div className="mt-12">
+      <div className="mt-12 flex flex-col items-center">
         <h2 className="lg:text-6xl text-5xl font-bold text-gray-900 text-center mb-3">
           Create Product
         </h2>
@@ -261,6 +261,14 @@ const CreateProduct = () => {
           <Link to="/admin/dashboard/products">Products</Link>
           <span>/</span>
           <span>Create</span>
+        </div>
+        <div className="mt-5">
+          <Link
+            to={"/admin/dashboard/products"}
+            className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md flex items-center text-sm"
+          >
+            Go to products
+          </Link>
         </div>
       </div>
 

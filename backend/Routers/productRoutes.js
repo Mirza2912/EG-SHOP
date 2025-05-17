@@ -9,6 +9,7 @@ const {
   getFeaturedProducts,
   addToFeatured,
   getAllProductsAdmin,
+  makeUnFeatured,
 } = require("../Controllers/productController");
 const { body } = require("express-validator");
 const { query } = require("express-validator");
@@ -48,6 +49,12 @@ router.put(
   authMiddleware,
   adminMiddleware,
   addToFeatured
+);
+router.put(
+  "/make-product-unfeatured/:id",
+  authMiddleware,
+  adminMiddleware,
+  makeUnFeatured
 );
 router.get(
   "/admin/products",

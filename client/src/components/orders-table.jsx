@@ -1,42 +1,9 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import React from "react";
+import { useSelector } from "react-redux";
 import Loader from "./Loader/Loader";
-import {
-  deleteUser,
-  getAllUsers,
-  suspendUser,
-  unSuspendUser,
-} from "../Store/Auth/AuthSliceReducers";
-// import { userDelete } from "../Store/Auth/AuthSliceReducers"
 
-export default function UsersTable({ users }) {
-  const [dropdownOpen, setDropdownOpen] = useState(null);
-  const { allUsers, isLoading } = useSelector((state) => state.auth);
-
-  const navigate = useNavigate();
-  const disptach = useDispatch();
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const usersPerPage = 8;
-
-  const startIndex = (currentPage - 1) * usersPerPage;
-  const endIndex = startIndex + usersPerPage;
-
-  const paginatedUsers = users?.slice(startIndex, endIndex);
-
-  const totalPages = Math.ceil(allUsers && allUsers?.length / usersPerPage);
-
-  const toggleDropdown = (userId) => {
-    if (dropdownOpen === userId) {
-      setDropdownOpen(null);
-    } else {
-      setDropdownOpen(userId);
-    }
-  };
-  useEffect(() => {
-    disptach(getAllUsers());
-  }, [disptach]);
+const OrdersTable = () => {
+  const { isLoading } = useSelector((state) => state.order);
   return (
     <>
       {isLoading ? (
@@ -60,7 +27,7 @@ export default function UsersTable({ users }) {
                   <th className="font-medium text-right pb-3 pr-4">Actions</th>
                 </tr>
               </thead>
-              <tbody>
+              {/* <tbody>
                 {paginatedUsers &&
                   paginatedUsers?.map((user) => (
                     <tr
@@ -109,9 +76,7 @@ export default function UsersTable({ users }) {
                         <div className="flex justify-end gap-2">
                           <button
                             onClick={() =>
-                              navigate(
-                                `/admin/dashboard/users/single-user/${user._id}`
-                              )
+                              navigate(`/admin/users/single-user/${user._id}`)
                             }
                             className="p-1 rounded-md hover:bg-gray-100 text-orange-500"
                           >
@@ -180,7 +145,7 @@ export default function UsersTable({ users }) {
                                   aria-orientation="vertical"
                                 >
                                   <Link
-                                    to={`/admin/dashboard/users/single-user/${user._id}`}
+                                    to={`/admin/users/single-user/${user._id}`}
                                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
                                     role="menuitem"
                                   >
@@ -207,11 +172,11 @@ export default function UsersTable({ users }) {
                       </td>
                     </tr>
                   ))}
-              </tbody>
+              </tbody> */}
             </table>
           </div>
 
-          <div className="flex items-center justify-between">
+          {/* <div className="flex items-center justify-between">
             <p className="text-sm text-gray-500">
               Showing {paginatedUsers.length} of {allUsers.length} users
             </p>
@@ -256,9 +221,11 @@ export default function UsersTable({ users }) {
                 Next
               </button>
             </div>
-          </div>
+          </div> */}
         </div>
       )}
     </>
   );
-}
+};
+
+export default OrdersTable;

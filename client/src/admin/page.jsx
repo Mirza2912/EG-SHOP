@@ -7,18 +7,15 @@ import RecentUsers from "../components/recent-users";
 import ProductsPage from "./products/page";
 import UsersPage from "./users/page";
 import SettingsPage from "./settings/page";
+import OrdersPage from "./orders/page";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllUsers } from "../Store/Auth/AuthSliceReducers";
 import { getALlProductsAdmin } from "../Store/Products/ProductSliceReducers";
 import { getAllOrdersAdmin } from "../Store/Order/OrderSliceReducer";
+import AdminSingleProductDetails from "./products/productDetails/AdminSingleProductDetails";
+import { Outlet } from "react-router-dom";
 
 export default function AdminDashboard() {
-  const [route, setRoute] = useState("dashboard");
-
-  const { allUsers } = useSelector((state) => state.auth);
-  const { adminProducts } = useSelector((state) => state.products);
-  const { allOrders } = useSelector((state) => state.order);
-
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -29,44 +26,9 @@ export default function AdminDashboard() {
   return (
     <>
       <div className="flex h-screen bg-gray-50">
-        <AdminSidebar route={route} setRoute={setRoute} />
+        <AdminSidebar />
         <main className="flex-1 overflow-auto">
-          {route == "dashboard" ? (
-            <>
-              <div className="p-6 space-y-6">
-                <DashboardHeader />
-                <DashboardStats />
-
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-                    <h2 className="text-xl font-semibold mb-4">Recent Users</h2>
-                    <RecentUsers />
-                  </div>
-
-                  <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-                    <h2 className="text-xl font-semibold mb-4">
-                      Recent Products
-                    </h2>
-                    <RecentProducts />
-                  </div>
-                </div>
-              </div>
-            </>
-          ) : route == "products" ? (
-            <>
-              <ProductsPage />
-            </>
-          ) : route == "users" ? (
-            <>
-              <UsersPage />
-            </>
-          ) : route == "settings" ? (
-            <>
-              <SettingsPage />
-            </>
-          ) : (
-            ""
-          )}
+          <Outlet />
         </main>
       </div>
     </>

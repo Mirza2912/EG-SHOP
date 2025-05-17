@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { deleteProduct } from "../Store/Products/ProductSliceReducers";
 
 export default function RecentProducts() {
@@ -99,7 +99,7 @@ export default function RecentProducts() {
                             aria-orientation="vertical"
                           >
                             <Link
-                              to={`/admin/products/single-product/${product._id}`}
+                              to={`/admin/dashboard/products/single-product/${product._id}`}
                               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
                               role="menuitem"
                             >
@@ -133,7 +133,7 @@ export default function RecentProducts() {
 
       <div className="flex justify-center">
         <Link
-          to={"/admin/products"}
+          to={"/admin/dashboard/products"}
           className="border border-gray-300 text-orange-500 px-4 py-2 rounded-md text-sm hover:bg-gray-50"
         >
           View All Products

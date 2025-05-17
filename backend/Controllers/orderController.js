@@ -117,10 +117,10 @@ const getMyOrders = async (req, res) => {
 // Get all orders (admin functionality)
 const getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.find().populate("user", "name email").populate({
-      path: "orderItems.product",
-      select: "name price image",
-    });
+    const orders = await Order.find()
+      .populate("user", "name email") // Populate user with name and email
+      .populate("orderItems.product")
+      .sort({ createAt: -1 });
     // console.log(orders);
 
     res.status(200).json({

@@ -179,19 +179,41 @@ const addToFeatured = createAsyncThunk(
         `/api/products/make-feature-product/${id}`
       );
       // console.log(response?.data);
-      return response?.data?.message; //returning fetched data
+      return response?.data; //returning fetched data
     } catch (error) {
       console.log(error.response.data?.message);
       return rejectWithValue(
         error.response.data?.errors ||
           error.response.data?.message ||
           error.message ||
-          "Failed to delete product"
+          "Failed to make product featured"
       );
     }
   }
 );
 
+//addToFeatured
+const makeUnfeatured = createAsyncThunk(
+  "products/makeUnfeatured",
+  async (id, { rejectWithValue }) => {
+    try {
+      /*making api call with axios for getting single  product from backend */
+      const response = await axios.put(
+        `/api/products/make-product-unfeatured/${id}`
+      );
+      // console.log(response?.data);
+      return response?.data; //returning fetched data
+    } catch (error) {
+      console.log(error.response.data?.message);
+      return rejectWithValue(
+        error.response.data?.errors ||
+          error.response.data?.message ||
+          error.message ||
+          "Failed to make product unfeatured"
+      );
+    }
+  }
+);
 export {
   getAllProducts,
   getSingleProduct,
@@ -200,4 +222,5 @@ export {
   deleteProduct,
   addToFeatured,
   createNewProduct,
+  makeUnfeatured,
 };

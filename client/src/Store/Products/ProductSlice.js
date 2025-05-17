@@ -7,6 +7,7 @@ import {
   getALlProductsAdmin,
   getSingleProduct,
   getSingleProductAdmin,
+  makeUnfeatured,
 } from "./ProductSliceReducers";
 
 // Product slice
@@ -23,8 +24,8 @@ const productSlice = createSlice({
     singleProductMessage: "",
     deleteProductMessage: "",
     addToFeaturedProduct: "",
-
     productCreateMessage: "",
+    makeProductUnFeaturedMessage: "",
   },
   reducers: {
     clearSingleProductMessage: (state) => {
@@ -35,6 +36,9 @@ const productSlice = createSlice({
     },
     clearAddToFeaturedProduct: (state) => {
       state.addToFeaturedProduct = "";
+    },
+    clearMakeProductUnFeaturedMessage: (state) => {
+      state.makeProductUnFeaturedMessage = "";
     },
     clearProductCreateMessage: (state) => {
       state.productCreateMessage = "";
@@ -118,9 +122,29 @@ const productSlice = createSlice({
       })
       .addCase(addToFeatured.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.addToFeaturedProduct = action.payload;
+        state.addToFeaturedProduct = action.payload?.message;
+        const updatedProduct = action.payload?.product;
+        state.adminProducts = state.adminProducts.map((prod) =>
+          prod._id === updatedProduct._id ? updatedProduct : prod
+        );
       })
       .addCase(addToFeatured.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(makeUnfeatured.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(makeUnfeatured.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.makeProductUnFeaturedMessage = action.payload?.message;
+        const updatedProduct = action.payload?.product;
+        state.adminProducts = state.adminProducts.map((prod) =>
+          prod._id === updatedProduct._id ? updatedProduct : prod
+        );
+      })
+      .addCase(makeUnfeatured.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
       })
@@ -145,5 +169,6 @@ export const {
   clearDeleteProductMessage,
   clearAddToFeaturedProduct,
   clearProductCreateMessage,
+  clearMakeProductUnFeaturedMessage,
 } = productSlice.actions;
 export default productSlice.reducer;

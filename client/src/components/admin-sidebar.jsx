@@ -1,14 +1,14 @@
-"use client"
+import { Link, NavLink, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { userLogOut } from "../Store/Auth/AuthSliceReducers";
+import ListAltIcon from "@mui/icons-material/ListAlt";
 
-import { Link, useLocation } from "react-router-dom"
+export default function AdminSidebar() {
+  const dispatch = useDispatch();
 
-export default function AdminSidebar({route,setRoute}) {
-    const location = useLocation()
-    const pathname = location.pathname
-
-  const isActive = (path) => {
-    return pathname === path || pathname?.startsWith(`${path}/`)
-  }
+  const handleLogout = () => {
+    dispatch(userLogOut());
+  };
 
   return (
     <aside className="w-64 bg-white border-r border-gray-200 h-screen flex flex-col">
@@ -18,14 +18,14 @@ export default function AdminSidebar({route,setRoute}) {
       </div>
 
       <nav className="flex-1 p-4 space-y-1">
-        <button
-          onClick={() => setRoute("dashboard")}
-          className={`flex items-center px-4 py-3 rounded-lg text-sm w-full ${
-            // isActive("/admin") && pathname === "/testadmin"
-            route == "dashboard"
-              ? "bg-orange-50 text-orange-500"
-              : "text-gray-700 hover:bg-gray-100"
-          }`}
+        <NavLink
+          to={"/admin/dashboard"}
+          end
+          className={({ isActive }) =>
+            isActive
+              ? "bg-orange-50 text-orange-500 flex items-center justify-start p-2"
+              : "text-gray-700 hover:bg-gray-100 flex items-center justify-start p-2"
+          }
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -43,13 +43,15 @@ export default function AdminSidebar({route,setRoute}) {
             <rect x="16" y="16" width="6" height="6" />
           </svg>
           Dashboard
-        </button>
+        </NavLink>
 
-        <button
-        onClick={() => setRoute("users")}
-          className={`flex items-center px-4 py-3 rounded-lg text-sm w-full ${
-            route=="users" ? "bg-orange-50 text-orange-500" : "text-gray-700 hover:bg-gray-100"
-          }`}
+        <NavLink
+          to={"/admin/dashboard/users"}
+          className={({ isActive }) =>
+            isActive
+              ? "bg-orange-50 text-orange-500 flex items-center justify-start p-2"
+              : "text-gray-700 hover:bg-gray-100 flex items-center justify-start p-2"
+          }
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -67,14 +69,15 @@ export default function AdminSidebar({route,setRoute}) {
             <path d="M16 3.13a4 4 0 0 1 0 7.75" />
           </svg>
           Users
-        </button>
+        </NavLink>
 
-        <button
-          onClick={() => setRoute("products")}
-          
-          className={`flex items-center px-4 py-3 rounded-lg text-sm w-full ${
-            route=="products" ? "bg-orange-50 text-orange-500" : "text-gray-700 hover:bg-gray-100"
-          }`}
+        <NavLink
+          to={"/admin/dashboard/products"}
+          className={({ isActive }) =>
+            isActive
+              ? "bg-orange-50 text-orange-500 flex items-center justify-start p-2"
+              : "text-gray-700 hover:bg-gray-100 flex items-center justify-start p-2"
+          }
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -91,15 +94,29 @@ export default function AdminSidebar({route,setRoute}) {
             <path d="M16 10a4 4 0 0 1-8 0" />
           </svg>
           Products
-        </button>
+        </NavLink>
+
+        <NavLink
+          to={"/admin/dashboard/orders"}
+          className={({ isActive }) =>
+            isActive
+              ? "bg-orange-50 text-orange-500 flex items-center justify-start p-2"
+              : "text-gray-700 hover:bg-gray-100 flex items-center justify-start p-2"
+          }
+        >
+          <ListAltIcon className="mr-3 h-5 w-5" />
+          Orders
+        </NavLink>
       </nav>
 
       <div className="p-4 border-t mt-auto">
-        <button
-          onClick={() => setRoute("settings")}
-          className={`flex items-center px-4 py-3 rounded-lg text-sm w-full ${
-            route=="settings" ? "bg-orange-50 text-orange-500" : "text-gray-700 hover:bg-gray-100"
-          }`}
+        <NavLink
+          to={"/admin/dashboard/setting"}
+          className={({ isActive }) =>
+            isActive
+              ? "bg-orange-50 text-orange-500 flex items-center justify-start p-2"
+              : "text-gray-700 hover:bg-gray-100 flex items-center justify-start p-2"
+          }
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -115,9 +132,12 @@ export default function AdminSidebar({route,setRoute}) {
             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
           </svg>
           Settings
-        </button>
+        </NavLink>
 
-        <button className="flex items-center px-4 py-3 rounded-lg text-sm text-gray-700 hover:bg-gray-100 w-full">
+        <button
+          onClick={handleLogout}
+          className="flex items-center px-4 py-3 rounded-lg text-sm text-gray-700 hover:bg-gray-100 w-full"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="mr-3 h-5 w-5"
@@ -136,5 +156,5 @@ export default function AdminSidebar({route,setRoute}) {
         </button>
       </div>
     </aside>
-  )
+  );
 }

@@ -439,12 +439,53 @@ const addToFeatured = async (req, res, next) => {
     if (!updatedProduct) {
       return res
         .status(404)
-        .json({ success: false, message: "Product not found" });
+        .json({ success: false, message: "Product not found", product });
     }
 
     res.status(200).json({
       success: true,
-      message: "Now product is featured",
+      message: `Now ${updatedProduct?.name} is featured`,
+      product: updatedProduct,
+    });
+  } catch (err) {
+    // console.error("Error updating product:", err);
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: err.message });
+  }
+};
+
+const makeUnFeatured = async (req, res, next) => {
+  try {
+    const product = await Product.findById(req.params?.id);
+
+    if (!product) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      req.params?.id,
+      {
+        isFeatured: false,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if (!updatedProduct) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found", product });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: `Now ${updatedProduct?.name} is un featured`,
+      product: updatedProduct,
     });
   } catch (err) {
     // console.error("Error updating product:", err);
@@ -463,4 +504,5 @@ module.exports = {
   getAllProductsAdmin,
   getFeaturedProducts,
   addToFeatured,
+  makeUnFeatured,
 };

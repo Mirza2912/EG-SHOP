@@ -56,7 +56,7 @@ export default function DashboardHeader() {
           </svg>
         </button>
         <Link
-          to={"/admin/products/create-product"}
+          to={"/admin/dashboard/products/create-product"}
           className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md flex items-center text-sm"
         >
           <svg

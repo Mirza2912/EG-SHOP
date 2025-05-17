@@ -307,7 +307,8 @@ const suspendUser = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: `User sespended successfully`,
+      message: `${user?.name} sespended successfully`,
+      user,
     });
   } catch (err) {
     console.error("Error deleting user:", err);
@@ -318,6 +319,37 @@ const suspendUser = async (req, res) => {
   }
 };
 
+//to suspend user ---> admin
+const unsSuspendUSer = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Find the user by ID and suspend it
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    user.isSuspended = false;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: `${user?.name} unSuspend successfully`,
+      user,
+    });
+  } catch (err) {
+    console.error("Error deleting user:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server error while deleting user",
+    });
+  }
+};
 module.exports = {
   getAllUsers,
   editUserProfile,
@@ -328,4 +360,5 @@ module.exports = {
   updateUserRole,
   suspendUser,
   deleteUserAdmin,
+  unsSuspendUSer,
 };

@@ -8,7 +8,7 @@ import {
 import Loader from "../../components/Loader/Loader";
 import { FaRegEdit } from "react-icons/fa";
 
-const AdminUsersSingleUserDetails = () => {
+const AdminUsersSingleUserDetails = ({}) => {
   const { id } = useParams();
   // console.log(id);
 
@@ -112,8 +112,8 @@ const AdminUsersSingleUserDetails = () => {
 
           <div className="mt-6 text-center">
             <Link
-              to="/admin/users"
-              className="bg-[#f9744d] text-white px-6 py-2 rounded shadow hover:bg-[#f98662] transition"
+              to="/admin/dashboard/users"
+              className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md text-sm"
             >
               Back to Users
             </Link>

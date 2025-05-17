@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { deleteUser } from "../Store/Auth/AuthSliceReducers";
 
 export default function RecentUsers() {
@@ -94,14 +94,14 @@ export default function RecentUsers() {
                             aria-orientation="vertical"
                           >
                             <Link
-                              to={`/admin/users/single-user/${user._id}`}
+                              to={`/admin/dashboard/users/single-user/${user._id}`}
                               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
                               role="menuitem"
                             >
                               View details
                             </Link>
                             <Link
-                              to={`/admin/users/single-user/${user._id}`}
+                              to={`/admin/dashboard/users/single-user/${user._id}`}
                               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
                               role="menuitem"
                             >
@@ -127,7 +127,7 @@ export default function RecentUsers() {
 
       <div className="flex justify-center">
         <Link
-          to={"/admin/users"}
+          to={"/admin/dashboard/users"}
           className="border border-gray-300 text-orange-500 px-4 py-2 rounded-md text-sm hover:bg-gray-50"
         >
           View All Users

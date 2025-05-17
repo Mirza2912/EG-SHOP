@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 
 export default function ProductsPage() {
   const dispatch = useDispatch();
+  // console.log(route);
 
   const { adminProducts } = useSelector((state) => state.products);
   // Add state for search query
@@ -24,13 +25,13 @@ export default function ProductsPage() {
 
   useEffect(() => {
     dispatch(getALlProductsAdmin());
-  }, []);
+  }, [dispatch]);
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Products Management</h1>
         <Link
-          to={"/admin/products/create-product"}
+          to={"/admin/dashboard/products/create-product"}
           className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md flex items-center text-sm"
         >
           <svg

@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { getSingleProductAdmin } from "../../../Store/Products/ProductSliceReducers";
 
-const AdminSingleProductDetails = () => {
+const AdminSingleProductDetails = ({ route, setRoute }) => {
   const { id } = useParams();
+  const location = useLocation();
   const dispatch = useDispatch();
+
+  console.log(route);
 
   const { singleProductAdmin } = useSelector((state) => state.products);
   // console.log(singleProductAdmin);
@@ -108,7 +111,7 @@ const AdminSingleProductDetails = () => {
               </div>
               <div className="mt-6 text-center flex items-center justify-start">
                 <Link
-                  to="/admin/products"
+                  to="/admin/dashboard/products"
                   className="bg-[#f9744d] text-white px-6 py-2 rounded shadow hover:bg-[#f98662] transition"
                 >
                   Back to Products

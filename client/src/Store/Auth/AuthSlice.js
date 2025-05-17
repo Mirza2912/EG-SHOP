@@ -8,6 +8,8 @@ import {
   getSingleUserDetails,
   loadUser,
   registerUser,
+  suspendUser,
+  unSuspendUser,
   updateUserRole,
   userDelete,
   userLogin,
@@ -32,6 +34,8 @@ const authSlice = createSlice({
     singleUserDetailsMessage: "",
     updateUserRoleMessage: "",
     adminDeleteUserMessage: "",
+    suspendUserMessage: "",
+    unSuspendUserMessage: "",
   },
   reducers: {
     clearUserRegisterationMessage: (state) => {
@@ -63,6 +67,12 @@ const authSlice = createSlice({
     },
     clearAdminDeleteUserMessage: (state) => {
       state.adminDeleteUserMessage = "";
+    },
+    clearSuspendUserMessage: (state) => {
+      state.suspendUserMessage = "";
+    },
+    clearUnSuspendUserMessage: (state) => {
+      state.unSuspendUserMessage = "";
     },
   },
   extraReducers: (builder) => {
@@ -213,6 +223,30 @@ const authSlice = createSlice({
       .addCase(deleteUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
+      })
+      .addCase(suspendUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.suspendUserMessage = action.payload?.message;
+        const updatedUser = action.payload?.user;
+        state.allUsers = state.allUsers.map((user) =>
+          user._id === updatedUser._id ? updatedUser : user
+        );
+      })
+      .addCase(suspendUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(unSuspendUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.unSuspendUserMessage = action.payload?.message;
+        const updatedUser = action.payload?.user;
+        state.allUsers = state.allUsers.map((user) =>
+          user._id === updatedUser._id ? updatedUser : user
+        );
+      })
+      .addCase(unSuspendUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
       });
   },
 });
@@ -228,6 +262,8 @@ export const {
   clearSingleUserDetailsMessage,
   clearUpdateUserRoleMessage,
   clearAdminDeleteUserMessage,
+  clearSuspendUserMessage,
+  clearUnSuspendUserMessage,
 } = authSlice.actions;
 
 export default authSlice.reducer;
