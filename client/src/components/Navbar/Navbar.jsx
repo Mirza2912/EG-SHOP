@@ -100,6 +100,12 @@ const Navbar = () => {
                 >
                   Profile
                 </Link>
+                <Link
+                  to={"/chat"}
+                  className="mr-5 text-gray-500 hover:text-[#f98662] cursor-pointer"
+                >
+                  Chat
+                </Link>
                 {/* <Link
                   onClick={handleLogout}
                   className="mr-5 text-gray-500 hover:text-[#f98662] cursor-pointer"

@@ -62,21 +62,8 @@ import {
 import Checkout from "./pages/Order/Checkout.jsx";
 import Shipping from "./pages/Order/Shipping.jsx";
 import Payment from "./pages/Order/Payment.jsx";
-import { loadShippingFromLocalStorage } from "./Store/Order/OrderLocalStorageHandler.js";
 import ConfirmOrder from "./pages/Order/ConfirmOrder.jsx";
-import axios from "axios";
-import OrderComplete from "./pages/Order/OrderComplete.jsx";
 import AdminRoute from "./routes/AdminRoute.jsx";
-import DashBoardLayout from "./pages/Admin/DashBoardLayout.jsx";
-import DashboardHome from "./pages/Admin/DashboardHome.jsx";
-import AllUsers from "./pages/Admin/AllUsers.jsx";
-import SingleUserDetails from "./pages/Admin/SingleUserDetails.jsx";
-import AllProducts from "./pages/Admin/AllProducts.jsx";
-import SingleProductDetails from "./pages/Admin/SingleProduct.jsx";
-import CreateNewProduct from "./pages/Admin/CreateNewProduct.jsx";
-import UpdateSingleProduct from "./pages/Admin/UpdateSingleProduct.jsx";
-import AllOrders from "./pages/Admin/AllOrders.jsx";
-import SingleOrderDetailsAdmin from "./pages/Admin/SingleOrderDetailsAdmin.jsx";
 import Order from "./pages/Order/Order.jsx";
 import OrdersPage from "./admin/orders/page.jsx";
 import SingleOrder from "./pages/Order/SingleOrder.jsx";
@@ -102,6 +89,7 @@ import AddProductPage from "./admin/products/add/page.jsx";
 import ChatsPage from "./admin/chats/page.jsx";
 import AdminSidebar from "./components/admin-sidebar.jsx";
 import AdminDashboardMain from "./admin/AdminDashboardMain.jsx";
+import Chat from "./pages/chat/chat.jsx";
 
 /* APP COMPONENT */
 const App = () => {
@@ -242,7 +230,7 @@ const App = () => {
 
     if (getAllOrdersMessage) {
       toast.success(getAllOrdersMessage);
-      dispatch(clearSingleUserDetailsMessage());
+      dispatch(clearGetAllOrdersMessage());
     }
 
     /* ADMIN */
@@ -382,42 +370,11 @@ const App = () => {
           </Route>
           <Route path="/user/orders" element={<Order />} />
           <Route path="/user/order/:id" element={<SingleOrder />} />
+          <Route path="/chat" element={<Chat />} />
         </Route>
         <Route path="/user/forgot-password" element={<ForgotUserPassword />} />
         <Route path="/user/otp-verification" element={<OtpVerification />} />
         <Route path="*" element={<NotFoundPage />} />
-
-        {/* /* Admin routes */}
-        {/* <Route element={<AdminRoute />}>
-          <Route path="/admin/dashboard" element={<DashBoardLayout />}>
-            <Route index element={<DashboardHome />} />
-
-            <Route path="users" element={<AllUsers />} />
-            <Route
-              path="users/single-user/details/:id"
-              element={<SingleUserDetails />}
-            />
-            <Route path="products" element={<AllProducts />} />
-            <Route
-              path="products/single-products/details/:id"
-              element={<SingleProductDetails />}
-            />
-            <Route
-              path="product/create-new-product"
-              element={<CreateNewProduct />}
-            />
-            <Route
-              path="products/product/update-product/:id"
-              element={<UpdateSingleProduct />}
-            />
-          </Route>
-
-          <Route path="orders" element={<AllOrders />} />
-          <Route
-            path="orders/order/details/:id"
-            element={<SingleOrderDetailsAdmin />}
-          />
-        </Route> */}
 
         {/* New setup of admin  */}
         <Route element={<AdminRoute />}>
@@ -439,8 +396,8 @@ const App = () => {
             />
             <Route path="orders" element={<OrdersPage />} />
           </Route>
+          <Route path="/admin/chats" element={<ChatsPage />} />
         </Route>
-        <Route path="/admin/chats" element={<ChatsPage />} />
       </Routes>
       <Footer />
     </>
