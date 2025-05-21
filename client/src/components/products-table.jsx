@@ -64,6 +64,7 @@ export default function ProductsTable({ products }) {
               <th className="font-medium text-left pb-3">Product</th>
               <th className="font-medium text-left pb-3">Price</th>
               <th className="font-medium text-left pb-3">Stock</th>
+              <th className="font-medium text-left pb-3">Calories</th>
               <th className="font-medium text-left pb-3">Status</th>
               <th className="font-medium text-right pb-3 pr-4">Actions</th>
             </tr>
@@ -99,6 +100,9 @@ export default function ProductsTable({ products }) {
                   </td>
                   <td className="py-3">
                     <span className="text-sm">{product.stock} units</span>
+                  </td>
+                  <td className="py-3">
+                    <span className="text-sm">{product.calories}</span>
                   </td>
                   <td className="py-3">
                     <span

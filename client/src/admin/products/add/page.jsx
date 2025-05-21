@@ -143,6 +143,7 @@ import {
 import FloatingInput from "../../../components/FloatingInput/FloatingInput";
 import LoadingButton from "../../../components/LoadingButton/LoadingButton";
 import { createNewProduct } from "../../../Store/Products/ProductSliceReducers";
+import { PiBowlFood } from "react-icons/pi";
 
 const CreateProduct = () => {
   const dispatch = useDispatch();
@@ -160,6 +161,7 @@ const CreateProduct = () => {
     category: "",
     isReturnAble: false,
     isFeatured: false,
+    calories: 0,
   });
 
   const navigate = useNavigate();
@@ -240,6 +242,7 @@ const CreateProduct = () => {
         category: "",
         isReturnAble: false,
         isFeatured: false,
+        calories: 0,
       });
       navigate("/admin/products");
     }
@@ -315,6 +318,14 @@ const CreateProduct = () => {
                 value={formData.discount}
                 onChange={handleChange}
                 icon={MdOutlineMail}
+              />
+              <FloatingInput
+                label="Calories"
+                name="calories"
+                type="number"
+                value={formData.calories}
+                onChange={handleChange}
+                icon={PiBowlFood}
               />
 
               <div className="col-span-1 md:col-span-2">

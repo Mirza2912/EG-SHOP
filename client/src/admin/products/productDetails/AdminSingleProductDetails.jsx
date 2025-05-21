@@ -81,6 +81,12 @@ const AdminSingleProductDetails = ({ route, setRoute }) => {
               </div>
               <div className="mb-3">
                 <span className="font-semibold text-gray-900 text-xl ">
+                  Calories:
+                </span>{" "}
+                {singleProductAdmin?.calories}
+              </div>
+              <div className="mb-3">
+                <span className="font-semibold text-gray-900 text-xl ">
                   Stock:
                 </span>{" "}
                 <span
@@ -91,13 +97,13 @@ const AdminSingleProductDetails = ({ route, setRoute }) => {
                   }
                 >
                   {singleProductAdmin?.stock > 0
-                    ? `${singleProductAdmin?.stock} available`
+                    ? `${singleProductAdmin?.stock}`
                     : "Out of Stock"}
                 </span>
               </div>
               <div className="mb-3">
                 <span className="font-semibold text-gray-900 text-xl ">
-                  Created:
+                  CreatedAt:
                 </span>{" "}
                 {new Date(singleProductAdmin?.createdAt).toLocaleDateString()}
               </div>

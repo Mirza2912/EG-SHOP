@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllOrdersAdmin } from "../../Store/Order/OrderSliceReducer";
-import Loader from "../../components/Loader/Loader";
 import OrdersTable from "../../components/orders-table";
 
 const page = () => {
   const dispatch = useDispatch();
+  const { allOrders } = useSelector((state) => state.order);
 
   useEffect(() => {
     dispatch(getAllOrdersAdmin());
@@ -17,7 +17,7 @@ const page = () => {
       </div>
 
       <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-        <OrdersTable />
+        <OrdersTable orders={allOrders} />
       </div>
     </div>
   );

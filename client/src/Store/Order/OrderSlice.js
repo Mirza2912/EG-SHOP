@@ -7,9 +7,12 @@ import {
 } from "./OrderLocalStorageHandler";
 import {
   createOrder,
+  deleteOrderAdmin,
   getAllOrders,
   getAllOrdersAdmin,
   getSingleOrderDetails,
+  getSingleOrderDetailsAdmin,
+  updateOrderStatus,
 } from "./OrderSliceReducer";
 
 // Product slice
@@ -19,11 +22,14 @@ const orderSlice = createSlice({
     order: [],
     allOrders: [],
     singleOrderDetails: {},
+    singleOrderAdmin: {},
     shippingAddress: loadShippingFromLocalStorage(),
     orderItems: loadOrderItemsFromLocalStorage(),
     paymentMethod: "",
     orderPlacedMessage: "",
     getAllOrdersMessage: "",
+    updateOrderStatusMessage: "",
+    deleteOrderAdminMessage: "",
     otherDetails: { taxPrice: null, shippingPrice: null, totalPrice: null },
     isLoading: false,
     error: null,
@@ -53,6 +59,14 @@ const orderSlice = createSlice({
 
     clearOrderPlaceMessage: (state) => {
       state.orderPlacedMessage = "";
+    },
+
+    clearUpdateOrderStatusMessage: (state) => {
+      state.updateOrderStatusMessage = "";
+    },
+
+    clearDeleteOrderAdminMessage: (state) => {
+      state.deleteOrderAdminMessage = "";
     },
 
     clearError: (state) => {
@@ -113,6 +127,50 @@ const orderSlice = createSlice({
       .addCase(getAllOrdersAdmin.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
+      })
+      .addCase(getSingleOrderDetailsAdmin.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(getSingleOrderDetailsAdmin.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.singleOrderAdmin = action.payload;
+        state.error = null;
+      })
+      .addCase(getSingleOrderDetailsAdmin.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(updateOrderStatus.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(updateOrderStatus.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.singleOrderAdmin = action.payload;
+        state.updateOrderStatusMessage = action.payload?.message;
+        state.error = null;
+      })
+      .addCase(updateOrderStatus.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(deleteOrderAdmin.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(deleteOrderAdmin.fulfilled, (state, action) => {
+        state.isLoading = false;
+        const deleteOrderId = action.meta.arg;
+        state.allOrders = state.allOrders?.filter(
+          (order) => order._id !== deleteOrderId
+        );
+        state.deleteOrderAdminMessage = action.payload?.message;
+        state.error = null;
+      })
+      .addCase(deleteOrderAdmin.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
       });
   },
 });
@@ -125,5 +183,7 @@ export const {
   clearOrderPlaceMessage,
   clearGetAllOrdersMessage,
   clearShippingAddress,
+  clearUpdateOrderStatusMessage,
+  clearDeleteOrderAdminMessage,
 } = orderSlice.actions;
 export default orderSlice.reducer;

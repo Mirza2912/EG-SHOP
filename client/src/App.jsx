@@ -68,10 +68,12 @@ import Order from "./pages/Order/Order.jsx";
 import OrdersPage from "./admin/orders/page.jsx";
 import SingleOrder from "./pages/Order/SingleOrder.jsx";
 import {
+  clearDeleteOrderAdminMessage,
   clearGetAllOrdersMessage,
   clearOrderItems,
   clearOrderPlaceMessage,
   clearShippingAddress,
+  clearUpdateOrderStatusMessage,
 } from "./Store/Order/OrderSlice.js";
 import UserSpeedDial from "./components/SpeedDial/SpeedDial.jsx";
 import {
@@ -90,6 +92,7 @@ import ChatsPage from "./admin/chats/page.jsx";
 import AdminSidebar from "./components/admin-sidebar.jsx";
 import AdminDashboardMain from "./admin/AdminDashboardMain.jsx";
 import Chat from "./pages/chat/chat.jsx";
+import AdminSingleOrderDetails from "./admin/orders/AdminSingleOrderDetails.jsx";
 
 /* APP COMPONENT */
 const App = () => {
@@ -127,9 +130,12 @@ const App = () => {
     cartItems,
   } = useSelector((state) => state.cart);
 
-  const { orderPlacedMessage, getAllOrdersMessage } = useSelector(
-    (state) => state.order
-  );
+  const {
+    orderPlacedMessage,
+    updateOrderStatusMessage,
+    getAllOrdersMessage,
+    deleteOrderAdminMessage,
+  } = useSelector((state) => state.order);
 
   const {
     deleteProductMessage,
@@ -270,6 +276,15 @@ const App = () => {
       toast.success(makeProductUnFeaturedMessage);
       dispatch(clearMakeProductUnFeaturedMessage());
     }
+    if (updateOrderStatusMessage) {
+      toast.success(updateOrderStatusMessage);
+      dispatch(clearUpdateOrderStatusMessage());
+    }
+
+    if (deleteOrderAdminMessage) {
+      toast.success(deleteOrderAdminMessage);
+      dispatch(clearDeleteOrderAdminMessage());
+    }
 
     return () => clearTimeout(timeout);
   }, [
@@ -283,7 +298,6 @@ const App = () => {
     updateCartOfLocalMessage,
     error,
     orderPlacedMessage,
-    getAllOrdersMessage,
     singleUserDetailsMessage,
     updateUserRoleMessage,
     adminDeleteUserMessage,
@@ -292,7 +306,10 @@ const App = () => {
     productCreateMessage,
     suspendUserMessage,
     unSuspendUserMessage,
+    updateOrderStatusMessage,
     makeProductUnFeaturedMessage,
+    getAllOrdersMessage,
+    deleteOrderAdminMessage,
   ]);
 
   /* USEEFFECT FOR LOGICS*/
@@ -395,6 +412,11 @@ const App = () => {
               element={<AdminSingleProductDetails />}
             />
             <Route path="orders" element={<OrdersPage />} />
+
+            <Route
+              path="orders/single-order/:id"
+              element={<AdminSingleOrderDetails />}
+            />
           </Route>
           <Route path="/admin/chats" element={<ChatsPage />} />
         </Route>

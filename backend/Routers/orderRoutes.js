@@ -12,6 +12,8 @@ const {
   getMyOrders,
   getAllOrders,
   updateOrderStatus,
+  getOrderByIdAdmin,
+  deleteOrderAdmin,
 } = require("../Controllers/orderController");
 const { createOrderValidation } = require("../Validations/orderValidations");
 
@@ -30,6 +32,18 @@ router.get("/", authMiddleware, adminMiddleware, getAllOrders);
 
 // Update order status (admin only)
 // For example, mark an order as 'Paid' or 'Delivered'
-router.put("/:id", authMiddleware, adminMiddleware, updateOrderStatus);
+router.put("/update/:id", authMiddleware, adminMiddleware, updateOrderStatus);
+router.get(
+  "/single-order/admin/:id",
+  authMiddleware,
+  adminMiddleware,
+  getOrderByIdAdmin
+);
+router.delete(
+  "/single-order/delete/:id",
+  authMiddleware,
+  adminMiddleware,
+  deleteOrderAdmin
+);
 
 module.exports = router;

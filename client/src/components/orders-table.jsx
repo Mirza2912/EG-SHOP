@@ -1,9 +1,42 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Loader from "./Loader/Loader";
+import {
+  deleteOrderAdmin,
+  getAllOrdersAdmin,
+  getSingleOrderDetails,
+} from "../Store/Order/OrderSliceReducer";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
-const OrdersTable = () => {
-  const { isLoading } = useSelector((state) => state.order);
+const OrdersTable = ({ orders }) => {
+  const { isLoading, allOrders } = useSelector((state) => state.order);
+
+  const [dropdownOpen, setDropdownOpen] = useState(null);
+
+  const navigate = useNavigate();
+  const disptach = useDispatch();
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const ordersPerPage = 10;
+
+  const startIndex = (currentPage - 1) * ordersPerPage;
+  const endIndex = startIndex + ordersPerPage;
+
+  const paginatedOrders = orders?.slice(startIndex, endIndex);
+
+  const totalPages = Math.ceil(allOrders && allOrders?.length / ordersPerPage);
+
+  const toggleDropdown = (userId) => {
+    if (dropdownOpen === userId) {
+      setDropdownOpen(null);
+    } else {
+      setDropdownOpen(userId);
+    }
+  };
+
+  useEffect(() => {
+    disptach(getAllOrdersAdmin());
+  }, []);
   return (
     <>
       {isLoading ? (
@@ -21,17 +54,17 @@ const OrdersTable = () => {
                     />
                   </th>
                   <th className="font-medium text-left pb-3">User</th>
-                  <th className="font-medium text-left pb-3">Role</th>
-                  <th className="font-medium text-left pb-3">Phone</th>
+                  <th className="font-medium text-left pb-3">Items</th>
+                  <th className="font-medium text-left pb-3">Total</th>
                   <th className="font-medium text-left pb-3">Status</th>
                   <th className="font-medium text-right pb-3 pr-4">Actions</th>
                 </tr>
               </thead>
-              {/* <tbody>
-                {paginatedUsers &&
-                  paginatedUsers?.map((user) => (
+              <tbody>
+                {paginatedOrders &&
+                  paginatedOrders?.map((order) => (
                     <tr
-                      key={user._id}
+                      key={order._id}
                       className="border-b last:border-0 hover:bg-gray-50"
                     >
                       <td className="py-3 pl-4">
@@ -43,41 +76,41 @@ const OrdersTable = () => {
                       <td className="py-3">
                         <div className="flex items-center gap-3">
                           <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-medium">
-                            {user.name.charAt(0)}
+                            {order.user?.name.charAt(0)}
                           </div>
                           <div>
-                            <p className="text-sm font-medium">{user.name}</p>
+                            <p className="text-sm font-medium">
+                              {order.user?.name}
+                            </p>
                             <p className="text-xs text-gray-500">
-                              {user.email}
+                              {order.user?.email}
                             </p>
                           </div>
                         </div>
                       </td>
                       <td className="py-3">
-                        <span className="text-sm">{user.role}</span>
-                      </td>
-                      <td className="py-3">
-                        <span className="text-sm text-gray-500">
-                          {user.phone}
+                        <span className="text-sm">
+                          {order.orderItems?.length}
                         </span>
                       </td>
                       <td className="py-3">
-                        <span
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            user.isOnline
-                              ? "bg-green-100 text-green-800"
-                              : "bg-gray-100 text-gray-800"
-                          }`}
-                        >
-                          {user.isOnline ? "Active" : "Inactive"}
+                        <span className="text-sm text-gray-500">
+                          Rs.{order.totalPrice}
+                        </span>
+                      </td>
+                      <td className="py-3">
+                        <span className="text-sm text-gray-500">
+                          {order.orderStatus}
                         </span>
                       </td>
                       <td className="py-3 text-right pr-4">
                         <div className="flex justify-end gap-2">
                           <button
-                            onClick={() =>
-                              navigate(`/admin/users/single-user/${user._id}`)
-                            }
+                            onClick={() => {
+                              navigate(
+                                `/admin/dashboard/orders/single-order/${order._id}`
+                              );
+                            }}
                             className="p-1 rounded-md hover:bg-gray-100 text-orange-500"
                           >
                             <svg
@@ -96,7 +129,9 @@ const OrdersTable = () => {
                             <Link className="sr-only">Edit</Link>
                           </button>
                           <button
-                            onClick={() => disptach(deleteUser(user?._id))}
+                            onClick={() =>
+                              disptach(deleteOrderAdmin(order?._id))
+                            }
                             className="p-1 rounded-md hover:bg-gray-100 text-red-500"
                           >
                             <svg
@@ -118,7 +153,7 @@ const OrdersTable = () => {
                           </button>
                           <div className="relative">
                             <button
-                              onClick={() => toggleDropdown(user._id)}
+                              onClick={() => toggleDropdown(order._id)}
                               className="p-1 rounded-md hover:bg-gray-100"
                             >
                               <svg
@@ -137,32 +172,23 @@ const OrdersTable = () => {
                               </svg>
                               <span className="sr-only">More options</span>
                             </button>
-                            {dropdownOpen === user._id && (
+                            {dropdownOpen === order._id && (
                               <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
                                 <div
                                   className="py-1"
                                   role="menu"
                                   aria-orientation="vertical"
                                 >
-                                  <Link
-                                    to={`/admin/users/single-user/${user._id}`}
+                                  <button
+                                    onClick={() => {
+                                      navigate(
+                                        `/admin/dashboard/orders/single-order/${order._id}`
+                                      );
+                                    }}
                                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
                                     role="menuitem"
                                   >
-                                    View profile
-                                  </Link>
-                                  <button
-                                    onClick={() =>
-                                      user?.isSuspended === false
-                                        ? disptach(suspendUser(user._id))
-                                        : disptach(unSuspendUser(user._id))
-                                    }
-                                    className={`block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left `}
-                                    role="menuitem"
-                                  >
-                                    {user?.isSuspended === true
-                                      ? "Unsuspend account"
-                                      : " Suspend account"}
+                                    View order
                                   </button>
                                 </div>
                               </div>
@@ -172,7 +198,7 @@ const OrdersTable = () => {
                       </td>
                     </tr>
                   ))}
-              </tbody> */}
+              </tbody>
             </table>
           </div>
 

@@ -118,9 +118,10 @@ const getMyOrders = async (req, res) => {
 const getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find()
+      .sort({ createdAt: -1 })
       .populate("user", "name email") // Populate user with name and email
-      .populate("orderItems.product")
-      .sort({ createAt: -1 });
+      .populate("orderItems.product");
+
     // console.log(orders);
 
     res.status(200).json({
@@ -141,7 +142,13 @@ const getAllOrders = async (req, res) => {
 const updateOrderStatus = async (req, res) => {
   try {
     const { status } = req.body; // New status (e.g., 'Paid', 'Delivered', etc.)
-    const order = await Order.findById(req.params.id);
+    // console.log(status);
+
+    const order = await Order.findByIdAndUpdate(
+      req.params.id,
+      { orderStatus: status },
+      { new: true }
+    );
 
     if (!order) {
       return res
@@ -150,18 +157,57 @@ const updateOrderStatus = async (req, res) => {
     }
 
     order.orderStatus = status;
-    if (status === "Paid") {
-      order.isPaid = true;
-      order.paidAt = Date.now();
-    }
-    if (status === "Delivered") {
-      order.deliveredAt = Date.now();
-    }
+    await order.save();
 
-    const updatedOrder = await order.save();
-    res.status(200).json({ success: true, data: updatedOrder });
+    res.status(200).json({
+      success: true,
+      data: order,
+      message: "status updated successfully",
+    });
   } catch (err) {
     console.error("Error updating order status:", err);
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: err.message });
+  }
+};
+
+const getOrderByIdAdmin = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id)
+      .populate("user", "name email")
+      .populate("orderItems.product", "name price image");
+
+    if (!order) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Order not found" });
+    }
+
+    res.status(200).json({ success: true, data: order });
+  } catch (err) {
+    console.error("Error fetching order:", err);
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: err.message });
+  }
+};
+
+const deleteOrderAdmin = async (req, res) => {
+  try {
+    const order = await Order.findByIdAndDelete(req.params.id);
+
+    if (!order) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Order not found" });
+    }
+
+    res
+      .status(200)
+      .json({ success: true, message: "Order deleted successfully" });
+  } catch (err) {
+    console.error("Error fetching order:", err);
     res
       .status(500)
       .json({ success: false, message: "Server error", error: err.message });
@@ -174,4 +220,6 @@ module.exports = {
   getMyOrders,
   getAllOrders,
   updateOrderStatus,
+  getOrderByIdAdmin,
+  deleteOrderAdmin,
 };

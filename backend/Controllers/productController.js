@@ -394,7 +394,7 @@ const getFeaturedProducts = async (req, res) => {
 //getALlProducts
 const getAllProductsAdmin = async (req, res) => {
   try {
-    const product = await Product.find().sort({ createAt: -1 });
+    const product = await Product.find().sort({ createdAt: -1 });
 
     if (!product) {
       return res
