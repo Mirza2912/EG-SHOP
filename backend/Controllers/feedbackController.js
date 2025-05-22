@@ -6,7 +6,7 @@ const messageController = {
   sendMessage: async (req, res) => {
     try {
       const { message, recipientId } = req.body;
-      console.log("is admin: ", req.user);
+      // console.log("is admin: ", req.user);
       const senderId = req.user._id;
       if (req.user.role === "admin") {
         if (!recipientId) {
@@ -95,16 +95,25 @@ const messageController = {
     try {
       const userId = req.user._id;
       const { recipientId } = req.params; // Optional recipientId for admins
+      // console.log(recipientId);
 
       let conversations = [];
       let messages = [];
 
       if (req.user.role === "admin") {
         if (recipientId) {
+          // console.log(recipientId);
+
           // Admin wants a specific conversation with a user
           const conversation = await Conversation.findOne({
             participants: { $all: [userId, recipientId], $size: 2 },
-          }).populate("lastMessage");
+          })
+            .populate({
+              path: "participants",
+              select: "name email role isOnline",
+            })
+            .populate("lastMessage");
+          // console.log(JSON.stringify(conversation, null, 2));
 
           if (!conversation) {
             return res
@@ -113,8 +122,8 @@ const messageController = {
           }
 
           messages = await Message.find({ conversationId: conversation._id })
-            .populate("sender", "name email")
-            .populate("recipient", "name email")
+            .populate("sender", "name email role isOnline")
+            .populate("recipient", "name email role isOnline")
             .sort("createdAt");
 
           return res
@@ -124,15 +133,15 @@ const messageController = {
           // Admin wants all conversations
           conversations = await Conversation.find({
             participants: userId,
-          }).populate("lastMessage participants", "name email");
+          }).populate("lastMessage participants", "name email role isOnline");
 
           // Fetch messages for each conversation
           const conversationPromises = conversations.map(async (conv) => {
             const convMessages = await Message.find({
               conversationId: conv._id,
             })
-              .populate("sender", "name email")
-              .populate("recipient", "name email")
+              .populate("sender", "name email role isOnline")
+              .populate("recipient", "name email role isOnline")
               .sort("createdAt");
             return { conversation: conv, messages: convMessages };
           });
@@ -175,7 +184,9 @@ const messageController = {
   markAsRead: async (req, res) => {
     try {
       const userId = req.user._id;
+
       const { recipientId } = req.params;
+      console.log("id  " + recipientId);
 
       let conversation;
       if (req.user.role === "admin" && recipientId) {
@@ -194,16 +205,17 @@ const messageController = {
           .json({ success: false, message: "Conversation not found" });
       }
 
-      await Message.updateMany(
-        { conversationId: conversation._id, recipient: userId, isRead: false },
+      const messages = await Message.updateMany(
+        { conversationId: conversation?._id, recipient: userId, isRead: false },
         { $set: { isRead: true } }
       );
       conversation.unreadCount = 0;
       await conversation.save();
 
-      res
-        .status(200)
-        .json({ success: true, message: "Messages marked as read" });
+      res.status(200).json({
+        success: true,
+        message: "Messages marked as read",
+      });
     } catch (error) {
       console.error("Error in markAsRead:", error);
       res.status(500).json({

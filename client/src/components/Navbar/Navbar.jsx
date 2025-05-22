@@ -14,7 +14,7 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   const { cartItems } = useSelector((state) => state.cart);
   // console.log(cartItems.length);
@@ -100,12 +100,7 @@ const Navbar = () => {
                 >
                   Profile
                 </Link>
-                <Link
-                  to={"/chat"}
-                  className="mr-5 text-gray-500 hover:text-[#f98662] cursor-pointer"
-                >
-                  Chat
-                </Link>
+
                 {/* <Link
                   onClick={handleLogout}
                   className="mr-5 text-gray-500 hover:text-[#f98662] cursor-pointer"
@@ -119,6 +114,16 @@ const Navbar = () => {
                   Orders
                 </Link> */}
               </>
+            )}
+            {isAuthenticated !== "" && user?.user?.role === "user" ? (
+              <Link
+                to={"/chat"}
+                className="mr-5 text-gray-500 hover:text-[#f98662] cursor-pointer"
+              >
+                Chat
+              </Link>
+            ) : (
+              <></>
             )}
           </ul>
 

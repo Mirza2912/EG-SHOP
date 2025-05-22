@@ -22,7 +22,7 @@ const adminMiddleware = require("../Middlewares/adminMiddleware");
 const router = express.Router();
 
 router.get("/user/profile", authMiddleware, getUserDetails);
-router.get("/users", authMiddleware, adminMiddleware, getAllUsers);
+router.get("/users", authMiddleware, getAllUsers);
 router.put(
   "/users/me/edit-profile",
   updateUserProfileValidation,

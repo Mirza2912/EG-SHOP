@@ -417,8 +417,8 @@ const App = () => {
               path="orders/single-order/:id"
               element={<AdminSingleOrderDetails />}
             />
+            <Route path="chats" element={<ChatsPage />} />
           </Route>
-          <Route path="/admin/chats" element={<ChatsPage />} />
         </Route>
       </Routes>
       <Footer />
