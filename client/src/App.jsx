@@ -102,7 +102,7 @@ const App = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const stripeApiKey = import.meta.env.VITE_STRIPE_API_KEY;
+  const stripeApiKey = 'pk_test_51RJa1SBTb9eIYRTvyX0Rh8tG2PiE1ITTLJuLt1xXIGxISNqbP9avpoy3RpLNtUtkUl9p1SppmMKq5NjVzLLmJqn000qPUP0dYK';
   // console.log(stripeApiKey);
 
   const stripePromise = useMemo(() => loadStripe(stripeApiKey), [stripeApiKey]);
