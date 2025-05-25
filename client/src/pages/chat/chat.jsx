@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { socket } from "../../utils/socket";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
@@ -9,6 +10,7 @@ const Chat = () => {
   const [admin, setAdmin] = useState(null);
   const { user } = useSelector((state) => state.auth);
   const userId = user?.user?._id;
+  // console.log(messages && messages[messages.length - 1]);
 
   const config = {
     headers: {
@@ -36,6 +38,8 @@ const Chat = () => {
         { message: text },
         config
       );
+      // console.log(res.data);
+
       socket.emit("message", {
         sender: userId,
         message: text,
@@ -60,6 +64,15 @@ const Chat = () => {
       socket.off("receiveMessage");
     };
   }, []);
+  const scrollRef = useRef(null);
+
+  // Scroll only inside message box
+  useEffect(() => {
+    scrollRef.current?.scrollTo({
+      top: scrollRef.current.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [messages]);
 
   // useEffect(() => {
   //   if (!userId) return;
@@ -116,31 +129,92 @@ const Chat = () => {
   // };
 
   return (
-    <div className="max-w-lg mx-auto">
-      <h2 className="text-xl font-bold">Chat with Admin</h2>
-      <div className="h-96 overflow-y-auto border p-2">
-        {messages &&
-          messages.map((msg, i) => (
-            <div
-              key={i}
-              className={msg.sender === userId ? "text-right" : "text-left"}
+    <div className="min-h-screen -mt-7 flex items-center justify-center bg-gray-100 p-4">
+      <div className="w-full max-w-2xl bg-white rounded-xl shadow-lg flex flex-col h-[80vh] my-auto">
+        {/* Header */}
+        <div className="px-6 py-4 border-b">
+          <h2 className="text-2xl font-semibold text-orange-500">
+            Chat with Admin
+          </h2>
+        </div>
+
+        {/* Messages */}
+        <div
+          ref={scrollRef}
+          className="flex-1 overflow-y-auto px-6 py-4 space-y-3"
+        >
+          {messages &&
+            messages.map((msg) => {
+              const isUser = msg.sender?.role === "user";
+              const isAdmin = msg.sender?.role === "admin";
+              const initial = isAdmin
+                ? "A"
+                : msg.sender?.name?.charAt(0)?.toUpperCase();
+
+              return (
+                <div
+                  key={msg._id}
+                  className={`flex items-end gap-2 mb-3 ${
+                    isUser ? "justify-end" : "justify-start"
+                  }`}
+                >
+                  {/* Avatar on left for Admin */}
+                  {isAdmin && (
+                    <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600  font-medium">
+                      {initial}
+                    </div>
+                  )}
+
+                  {/* Message Bubble */}
+                  <div
+                    className={`max-w-[70%] px-4 py-2 rounded-lg text-sm shadow ${
+                      isUser
+                        ? "bg-orange-500 text-white rounded-br-none"
+                        : "bg-white border border-gray-200 text-gray-800 rounded-bl-none"
+                    }`}
+                  >
+                    <p>{msg?.message}</p>
+                  </div>
+
+                  {/* Avatar on right for User */}
+                  {isUser && (
+                    <div className="h-8 w-8 rounded-full  bg-orange-100 flex items-center justify-center text-orange-600 font-medium">
+                      {initial}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+        </div>
+
+        {/* Input */}
+        <div className="border-t px-4 py-3 bg-gray-50 flex items-center gap-2">
+          <input
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="Type a message..."
+          />
+          <button
+            className="bg-orange-500 hover:bg-orange-600 text-white p-2 rounded-lg"
+            onClick={sendMessage}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             >
-              <p>{msg.message}</p>
-            </div>
-          ))}
+              <line x1="22" y1="2" x2="11" y2="13" />
+              <polygon points="22 2 15 22 11 13 2 9 22 2" />
+            </svg>
+          </button>
+        </div>
       </div>
-      <input
-        className="border p-1 w-full"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder="Type message..."
-      />
-      <button
-        className="bg-green-500 text-white px-4 py-1 mt-1"
-        onClick={sendMessage}
-      >
-        Send
-      </button>
     </div>
   );
 };

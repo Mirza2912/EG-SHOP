@@ -107,6 +107,17 @@ export default function AdminSidebar() {
           <ListAltIcon className="mr-3 h-5 w-5" />
           Orders
         </NavLink>
+        <NavLink
+          to={"/admin/dashboard/chats"}
+          className={({ isActive }) =>
+            isActive
+              ? "bg-orange-50 text-orange-500 flex items-center justify-start p-2"
+              : "text-gray-700 hover:bg-gray-100 flex items-center justify-start p-2"
+          }
+        >
+          <ListAltIcon className="mr-3 h-5 w-5" />
+          Chats
+        </NavLink>
       </nav>
 
       <div className="p-4 border-t mt-auto">

@@ -7,11 +7,13 @@ import { Provider } from "react-redux";
 import store from "./Store/store.js";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ScrollToTop from "./utils/ScrollToTop.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   // <React.StrictMode>
   <Provider store={store}>
     <Router>
+      <ScrollToTop />
       <App />
       <ToastContainer
         position="bottom-center"

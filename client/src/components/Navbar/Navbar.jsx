@@ -7,6 +7,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { IoCartOutline } from "react-icons/io5";
 import { IoSearchOutline } from "react-icons/io5";
 import { userLogOut } from "../../Store/Auth/AuthSliceReducers";
+import Login from "../../pages/Register/Login";
+import Logo from "../Logo/Logo";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -34,7 +36,8 @@ const Navbar = () => {
           {/* Logo */}
           <Link to={"/"}>
             {/* <img src={logo} /> */}
-            <p>Fresh Finds</p>
+
+            <Logo />
           </Link>
 
           {/* Toggle btn */}

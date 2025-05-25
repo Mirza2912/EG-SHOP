@@ -1,5 +1,6 @@
 import React from "react";
 import footerLogo from "../../assets/footer-logo.png";
+import Logo from "../Logo/Logo";
 
 const Footer = () => {
   return (
@@ -17,7 +18,9 @@ const Footer = () => {
               </p>
               <div className="my-7">
                 {/* <img src={footerLogo} className="w-13 h-10" alt="" /> */}
-                <p className="text-white text-2xl">Fresh Finds</p>
+                <p className="text-white text-2xl">
+                  <Logo />
+                </p>
               </div>
               <p className="text-white my-7">Phone No +2345678</p>
             </div>
@@ -25,7 +28,9 @@ const Footer = () => {
             <div className="mx-5">
               <div>
                 {/* <img src={footerLogo} alt="" /> */}
-                <p className="text-white text-4xl">Fresh Finds</p>
+                <p className="text-white text-4xl">
+                  <Logo />
+                </p>
               </div>
               <p className="my-7 text-white">
                 Register now to get update on promotion and coupons. Dont worry!

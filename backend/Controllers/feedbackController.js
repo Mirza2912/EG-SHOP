@@ -79,6 +79,11 @@ const messageController = {
       conversation.unreadCount += 1;
       await conversation.save();
 
+      await newMessage.populate([
+        { path: "sender", select: "name email role" },
+        { path: "recipient", select: "name email role" },
+      ]);
+
       res.status(201).json({ success: true, message: newMessage });
     } catch (error) {
       console.error("Error in sendMessage:", error);
@@ -164,8 +169,8 @@ const messageController = {
         }
 
         messages = await Message.find({ conversationId: conversation._id })
-          .populate("sender", "name email")
-          .populate("recipient", "name email")
+          .populate("sender", "name email role")
+          .populate("recipient", "name email role")
           .sort("createdAt");
 
         return res.status(200).json({ success: true, conversation, messages });

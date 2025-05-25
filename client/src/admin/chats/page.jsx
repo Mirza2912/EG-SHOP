@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 
 export default function ChatsPage() {
@@ -110,10 +110,20 @@ export default function ChatsPage() {
     }
   }, [activeChat]);
 
+  const scrollRef = useRef(null);
+
+  // Scroll only inside message box
+  useEffect(() => {
+    scrollRef.current?.scrollTo({
+      top: scrollRef.current.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [singleChat]);
+
   return (
     <div className="p-6 h-[calc(100vh-64px)] flex flex-col">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Customer Support</h1>
+        <h1 className="text-4xl font-bold">Customer Support</h1>
       </div>
 
       <div className="flex flex-1 gap-6 h-full overflow-hidden">
@@ -323,7 +333,10 @@ export default function ChatsPage() {
                 </div> */}
               </div>
 
-              <div className="flex-1 p-4 overflow-y-auto bg-gray-50">
+              <div
+                className="flex-1 p-4 overflow-y-auto bg-gray-50"
+                ref={scrollRef}
+              >
                 <div className="space-y-4">
                   {/* <div className="text-center">
                     <span className="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full">
@@ -376,7 +389,7 @@ export default function ChatsPage() {
               <div className="p-4 border-t">
                 <form
                   onSubmit={handleSendMessage}
-                  className="flex items-end gap-2"
+                  className="flex items-center justify-center gap-2"
                 >
                   <div className="flex-1 relative">
                     <textarea
@@ -385,73 +398,9 @@ export default function ChatsPage() {
                         setMessageText(e.target.value);
                       }}
                       placeholder="Type your message..."
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none"
-                      rows={2}
+                      className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none"
+                      rows={1}
                     />
-                    <div className="absolute bottom-2 right-2 flex gap-1">
-                      <button
-                        type="button"
-                        className="p-1 text-gray-500 hover:text-gray-700"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                          <circle cx="12" cy="10" r="3" />
-                        </svg>
-                      </button>
-                      <button
-                        type="button"
-                        className="p-1 text-gray-500 hover:text-gray-700"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <rect
-                            x="3"
-                            y="3"
-                            width="18"
-                            height="18"
-                            rx="2"
-                            ry="2"
-                          />
-                          <circle cx="8.5" cy="8.5" r="1.5" />
-                          <polyline points="21 15 16 10 5 21" />
-                        </svg>
-                      </button>
-                      <button
-                        type="button"
-                        className="p-1 text-gray-500 hover:text-gray-700"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
-                          <polyline points="14 2 14 8 20 8" />
-                        </svg>
-                      </button>
-                    </div>
                   </div>
                   <button
                     type="submit"
